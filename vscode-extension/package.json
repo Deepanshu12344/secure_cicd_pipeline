@@ -1,0 +1,76 @@
+{
+  "name": "secure-cicd-vscode",
+  "displayName": "SecureCI/CD - AI Security Scanner",
+  "description": "Real-time security scanning and risk assessment for CI/CD pipelines",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Security",
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "secureCicd.scanWorkspace",
+        "title": "SecureCI/CD: Scan Workspace"
+      },
+      {
+        "command": "secureCicd.scanFile",
+        "title": "SecureCI/CD: Scan Current File"
+      },
+      {
+        "command": "secureCicd.viewRisks",
+        "title": "SecureCI/CD: View Identified Risks"
+      },
+      {
+        "command": "secureCicd.configureProject",
+        "title": "SecureCI/CD: Configure Project"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "secureCicdPanel",
+          "name": "SecureCI/CD",
+          "when": "workspaceFolderCount != 0"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "SecureCI/CD",
+      "properties": {
+        "secureCicd.apiUrl": {
+          "type": "string",
+          "default": "http://localhost:5000/api",
+          "description": "Backend API URL"
+        },
+        "secureCicd.autoScan": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic scanning on file save"
+        },
+        "secureCicd.riskThreshold": {
+          "type": "string",
+          "default": "medium",
+          "enum": ["low", "medium", "high", "critical"],
+          "description": "Minimum risk level to report"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "vscode": "^1.1.37"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0"
+  }
+}

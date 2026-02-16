@@ -1,0 +1,44 @@
+{
+  "name": "secure-cicd-backend",
+  "version": "1.0.0",
+  "description": "AI-Based Secure CI/CD Pipeline Backend with Risk Scoring",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
+  },
+  "keywords": [
+    "CI/CD",
+    "Security",
+    "AI",
+    "Risk Scoring",
+    "DevSecOps"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2",
+    "bcryptjs": "^2.4.3",
+    "google-auth-library": "^9.15.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.1",
+    "multer": "^1.4.5-lts.1",
+    "express-validator": "^7.0.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.56.0",
+    "@types/express": "^4.17.21"
+  }
+}

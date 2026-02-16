@@ -1,0 +1,76 @@
+name: secure-cicd-pipeline
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/secure-cicd
+      - ML_ENGINE_URL=http://ml-engine:5001
+    depends_on:
+      - mongo
+      - ml-engine
+    volumes:
+      - ./backend/src:/app/src
+    networks:
+      - secure-cicd-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+    networks:
+      - secure-cicd-network
+
+  ml-engine:
+    build:
+      context: ./ml-engine
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=development
+      - BACKEND_URL=http://backend:5000
+    volumes:
+      - ./ml-engine/src:/app/src
+    networks:
+      - secure-cicd-network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=secure-cicd
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - secure-cicd-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - secure-cicd-network
+
+volumes:
+  mongo-data:
+  redis-data:
+
+networks:
+  secure-cicd-network:
+    driver: bridge
