@@ -1,27 +1,39 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { fileURLToPath } from 'url';
-import path from 'path';
-
-dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
+import session from 'express-session';
+import { FRONTEND_URL } from './config/env.js';
+import passport from './config/passport.js';
 import authRoutes from './routes/auth.js';
 import projectRoutes from './routes/projects.js';
 import scanRoutes from './routes/scans.js';
 import riskRoutes from './routes/risks.js';
 import pipelineRoutes from './routes/pipelines.js';
 import dashboardRoutes from './routes/dashboard.js';
+import githubRoutes from './routes/github.js';
+
+const app = express();
+
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true
+  })
+);
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'github-oauth-secret',
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/health', (req, res) => {
   res.json({ status: 'Backend is running', timestamp: new Date() });
@@ -33,6 +45,7 @@ app.use('/api/scans', scanRoutes);
 app.use('/api/risks', riskRoutes);
 app.use('/api/pipelines', pipelineRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api', githubRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -51,7 +64,6 @@ const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 const ensureUserIndexes = async () => {
   const usersCollection = mongoose.connection.collection('users');
-
   const indexes = await usersCollection.indexes();
   const legacyGoogleIndex = indexes.find((index) => index.name === 'googleId_1');
 
@@ -82,7 +94,7 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`Backend server running on port ${PORT}`);
-      console.log(`API Documentation: http://localhost:${PORT}/api/docs`);
+      console.log(`Health Check: http://localhost:${PORT}/health`);
     });
   } catch (error) {
     console.error('Failed to start backend:', error.message);

@@ -5,6 +5,7 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 const apiClient = axios.create({
   baseURL: API_BASE,
   timeout: 10000,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -23,6 +24,7 @@ export const projectsApi = {
   getAll: () => apiClient.get('/projects'),
   getById: (id) => apiClient.get(`/projects/${id}`),
   create: (data) => apiClient.post('/projects', data),
+  importGithub: (repo) => apiClient.post('/projects/import/github', { repo }),
   update: (id, data) => apiClient.patch(`/projects/${id}`, data),
   delete: (id) => apiClient.delete(`/projects/${id}`)
 }
@@ -63,6 +65,12 @@ export const authApi = {
   getGoogleClientId: () => apiClient.get('/auth/google/client-id'),
   googleLogin: (data) => apiClient.post('/auth/google', data),
   logout: () => apiClient.post('/auth/logout')
+}
+
+export const githubApi = {
+  getConnectUrl: (token) => `${API_BASE}/auth/github?token=${encodeURIComponent(token)}`,
+  getStatus: () => apiClient.get('/github/status'),
+  getRepos: () => apiClient.get('/github/repos')
 }
 
 export default apiClient

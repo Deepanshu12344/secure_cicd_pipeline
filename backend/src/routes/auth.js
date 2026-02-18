@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { OAuth2Client } from 'google-auth-library';
+import '../config/env.js';
 import User from '../models/User.js';
 
 const router = express.Router();
@@ -20,6 +21,7 @@ const sanitizeUser = (user) => ({
 const createToken = (user) =>
   jwt.sign(
     {
+      id: String(user._id),
       sub: String(user._id),
       email: user.email,
       role: user.role
