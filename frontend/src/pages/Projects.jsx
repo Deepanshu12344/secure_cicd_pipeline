@@ -1,31 +1,53 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
-  ArrowDownTrayIcon,
-  GlobeAltIcon,
-  LockClosedIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  StarIcon,
-  TrashIcon
-} from '@heroicons/react/24/outline'
+  Search,
+  Clock,
+  Star,
+  GitMerge,
+  MoreHorizontal,
+  Lock,
+  Globe,
+  Download,
+  Github,
+  Plus,
+  Trash2,
+  Pencil
+} from 'lucide-react'
 import { githubApi, projectsApi } from '../services/api'
 import { useAuthStore } from '../store/auth'
 
-export default function Projects() {
+const formatRelative = (value) => {
+  if (!value) return 'just now'
+  const date = new Date(value)
+  const diff = Date.now() - date.getTime()
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  if (hours < 1) return 'just now'
+  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`
+  const days = Math.floor(hours / 24)
+  return `${days} day${days === 1 ? '' : 's'} ago`
+}
+
+const Projects = () => {
   const location = useLocation()
   const token = useAuthStore((state) => state.token)
+
+  const [activeTab, setActiveTab] = useState('contributed')
   const [projects, setProjects] = useState([])
   const [githubConnected, setGithubConnected] = useState(false)
   const [githubRepos, setGithubRepos] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingRepos, setLoadingRepos] = useState(false)
   const [showImportPanel, setShowImportPanel] = useState(false)
-  const [editingProject, setEditingProject] = useState(null)
-  const [editName, setEditName] = useState('')
-  const [editDescription, setEditDescription] = useState('')
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [searchText, setSearchText] = useState('')
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
+  const [newProject, setNewProject] = useState({
+    name: '',
+    description: '',
+    repositoryUrl: ''
+  })
 
   const importedRepoIds = useMemo(
     () => new Set(projects.map((project) => String(project.githubRepoId || ''))),
@@ -48,9 +70,11 @@ export default function Projects() {
 
   useEffect(() => {
     let mounted = true
+
     const bootstrap = async () => {
       setLoading(true)
       setError('')
+
       try {
         await Promise.all([loadProjects(), loadGithubStatus()])
       } catch (err) {
@@ -65,6 +89,7 @@ export default function Projects() {
     }
 
     bootstrap()
+
     return () => {
       mounted = false
     }
@@ -73,15 +98,18 @@ export default function Projects() {
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const githubState = params.get('github')
+
     if (githubState === 'connected') {
       setInfo('GitHub connected successfully. You can import repositories now.')
       setGithubConnected(true)
     }
+
     if (githubState === 'link_failed') {
       setError('GitHub linking failed. Please try connecting again.')
     }
+
     if (githubState === 'config_missing') {
-      setError('GitHub OAuth is not configured on backend. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in backend/.env.')
+      setError('GitHub OAuth is not configured on backend. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET.')
     }
   }, [location.search])
 
@@ -90,6 +118,7 @@ export default function Projects() {
       setError('You must be logged in to connect GitHub')
       return
     }
+
     window.location.href = githubApi.getConnectUrl(token)
   }
 
@@ -97,6 +126,7 @@ export default function Projects() {
     setLoadingRepos(true)
     setError('')
     setInfo('')
+
     try {
       const response = await githubApi.getRepos()
       setGithubRepos(response.data?.data || [])
@@ -111,6 +141,7 @@ export default function Projects() {
   const handleImportRepo = async (repo) => {
     setError('')
     setInfo('')
+
     try {
       const response = await projectsApi.importGithub(repo)
       setInfo(response.data?.message || `Imported ${repo.name}`)
@@ -120,41 +151,33 @@ export default function Projects() {
     }
   }
 
-  const openEditModal = (project) => {
-    setEditingProject(project)
-    setEditName(project.name || '')
-    setEditDescription(project.description || '')
-  }
-
-  const handleUpdateProject = async (e) => {
+  const handleCreateProject = async (e) => {
     e.preventDefault()
-    if (!editingProject) {
-      return
-    }
-
     setError('')
     setInfo('')
+
     try {
-      await projectsApi.update(editingProject.id, {
-        name: editName,
-        description: editDescription
+      await projectsApi.create({
+        ...newProject,
+        repositoryType: 'github'
       })
-      setInfo('Project updated successfully')
-      setEditingProject(null)
+
+      setShowCreateModal(false)
+      setNewProject({ name: '', description: '', repositoryUrl: '' })
+      setInfo('Project created successfully')
       await loadProjects()
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to update project')
+      setError(err.response?.data?.error || 'Failed to create project')
     }
   }
 
   const handleDeleteProject = async (project) => {
     const shouldDelete = window.confirm(`Delete "${project.name}"?`)
-    if (!shouldDelete) {
-      return
-    }
+    if (!shouldDelete) return
 
     setError('')
     setInfo('')
+
     try {
       await projectsApi.delete(project.id)
       setInfo('Project deleted successfully')
@@ -164,151 +187,279 @@ export default function Projects() {
     }
   }
 
+  const filteredProjects = useMemo(() => {
+    const q = searchText.trim().toLowerCase()
+
+    return projects.filter((project) => {
+      const byTab =
+        activeTab === 'inactive'
+          ? project.status === 'inactive'
+          : activeTab === 'starred'
+            ? Number(project.stars || 0) > 0
+            : true
+
+      const bySearch =
+        q.length < 1 ||
+        String(project.name || '').toLowerCase().includes(q) ||
+        String(project.fullName || '').toLowerCase().includes(q)
+
+      return byTab && bySearch
+    })
+  }, [activeTab, projects, searchText])
+
+  const tabs = useMemo(() => {
+    const inactiveCount = projects.filter((project) => project.status === 'inactive').length
+    const starredCount = projects.filter((project) => Number(project.stars || 0) > 0).length
+
+    return [
+      { id: 'contributed', label: 'Contributed', count: projects.length },
+      { id: 'starred', label: 'Starred', count: starredCount },
+      { id: 'personal', label: 'Personal', count: projects.length },
+      { id: 'member', label: 'Member', count: projects.length },
+      { id: 'inactive', label: 'Inactive', count: inactiveCount }
+    ]
+  }, [projects])
+
   if (loading) {
-    return <div className="text-slate-300">Loading projects...</div>
+    return <div className="bg-white min-h-[calc(100vh-48px)] p-6 text-[#666]">Loading projects...</div>
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-3xl font-bold text-white">Projects</h1>
-        <div className="flex flex-wrap items-center gap-3">
-          {githubConnected ? (
-            <button onClick={handleLoadRepos} className="btn-secondary flex items-center gap-2" disabled={loadingRepos}>
-              <ArrowDownTrayIcon className="h-5 w-5" />
-              {loadingRepos ? 'Fetching Repos...' : 'Import from GitHub'}
+    <div className="bg-white min-h-[calc(100vh-48px)]">
+      <div className="border-b border-gray-200 bg-white px-6 py-3">
+        <div className="flex items-center gap-2 text-sm text-[#6e49cb]">
+          <Link to="/" className="hover:underline">Your work</Link>
+          <span className="text-gray-400">/</span>
+          <span className="text-[#303030]">Projects</span>
+        </div>
+      </div>
+
+      <div className="px-6 py-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-normal text-[#303030]">Projects</h1>
+          <div className="flex items-center gap-3">
+            {githubConnected ? (
+              <button
+                onClick={handleLoadRepos}
+                disabled={loadingRepos}
+                className="px-4 py-2 text-sm text-[#1f75cb] hover:text-[#1068bf] transition-colors inline-flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                {loadingRepos ? 'Fetching...' : 'Import from GitHub'}
+              </button>
+            ) : (
+              <button
+                onClick={handleConnectGithub}
+                className="px-4 py-2 text-sm text-[#1f75cb] hover:text-[#1068bf] transition-colors inline-flex items-center gap-2"
+              >
+                <Github className="w-4 h-4" />
+                Connect GitHub
+              </button>
+            )}
+
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="px-4 py-2 bg-[#1f75cb] text-white text-sm font-medium rounded hover:bg-[#1068bf] transition-colors inline-flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              New project
             </button>
+          </div>
+        </div>
+
+        {error ? <div className="mb-4 px-4 py-3 text-sm bg-[#fff1f2] border border-[#fecdd3] text-[#be123c] rounded">{error}</div> : null}
+        {info ? <div className="mb-4 px-4 py-3 text-sm bg-[#ecfdf3] border border-[#bbf7d0] text-[#166534] rounded">{info}</div> : null}
+
+        {showImportPanel ? (
+          <div className="border border-gray-200 rounded p-4 mb-6">
+            <h2 className="text-sm font-semibold text-[#303030] mb-3">Your GitHub Repositories</h2>
+            {githubRepos.length === 0 ? <p className="text-sm text-[#666]">No repositories found.</p> : null}
+
+            <div className="space-y-2 max-h-72 overflow-auto">
+              {githubRepos.map((repo) => {
+                const alreadyImported = importedRepoIds.has(String(repo.id))
+
+                return (
+                  <div key={repo.id} className="flex items-center justify-between gap-3 border border-gray-200 rounded p-3">
+                    <div className="min-w-0">
+                      <p className="text-sm text-[#303030] truncate">{repo.fullName || repo.name}</p>
+                      <p className="text-xs text-[#666] truncate">{repo.description || 'No description'}</p>
+                    </div>
+                    <button
+                      disabled={alreadyImported}
+                      onClick={() => handleImportRepo(repo)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
+                        alreadyImported
+                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                          : 'bg-[#1f75cb] text-white hover:bg-[#1068bf]'
+                      }`}
+                    >
+                      {alreadyImported ? 'Imported' : 'Import'}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ) : null}
+
+        <div className="border-b border-gray-200 mb-6">
+          <div className="flex gap-6">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`pb-3 text-sm font-medium transition-colors relative ${
+                  activeTab === tab.id
+                    ? 'text-[#303030] border-b-2 border-[#303030]'
+                    : 'text-[#666] hover:text-[#303030]'
+                }`}
+              >
+                {tab.label}
+                <span
+                  className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${
+                    activeTab === tab.id ? 'bg-gray-200 text-[#303030]' : 'bg-gray-100 text-[#666]'
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-2">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#303030] border border-gray-300 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors">
+              <Clock className="w-4 h-4" />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="flex-1 relative">
+            <input
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              type="text"
+              placeholder="Filter or search (3 character minimum)"
+              className="w-full pl-3 pr-10 py-1.5 bg-white border border-gray-300 rounded text-sm text-[#303030] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1f75cb] focus:border-transparent"
+            />
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded">
+              <Search className="w-4 h-4 text-gray-500" />
+            </button>
+          </div>
+        </div>
+
+        <div className="border border-gray-200 rounded">
+          {filteredProjects.length === 0 ? (
+            <div className="p-8 text-center text-sm text-[#666]">No projects found.</div>
           ) : (
-            <button onClick={handleConnectGithub} className="btn-secondary flex items-center gap-2">
-              <PlusIcon className="h-5 w-5" />
-              Connect GitHub
-            </button>
+            filteredProjects.map((project) => (
+              <div
+                key={project.id}
+                className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors border-b last:border-b-0 border-gray-200"
+              >
+                <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
+                  {project.isPrivate ? <Lock className="w-5 h-5 text-gray-500" /> : <Globe className="w-5 h-5 text-gray-500" />}
+                </div>
+
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="w-6 h-6 bg-[#1f75cb] text-white rounded flex items-center justify-center text-xs font-semibold">
+                    {(project.name || 'P').slice(0, 1).toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Link to={`/projects/${project.id}`} className="text-sm font-medium text-[#1f75cb] hover:underline truncate">
+                      {project.fullName || project.name}
+                    </Link>
+                    <span className="px-2 py-0.5 bg-[#dbf0ff] text-[#1f75cb] text-xs font-medium rounded">Owner</span>
+                  </div>
+                  <div className="text-xs text-[#666] truncate mt-1">{project.description || 'No description'}</div>
+                </div>
+
+                <div className="flex items-center gap-6 text-sm text-[#666] flex-shrink-0">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4" />
+                    <span>{project.stars ?? 0}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <GitMerge className="w-4 h-4" />
+                    <span>{project.forks ?? 0}</span>
+                  </div>
+                </div>
+
+                <div className="text-xs text-[#666] flex-shrink-0">Created {formatRelative(project.createdAt)}</div>
+
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={() => handleDeleteProject(project)}
+                    className="p-1 hover:bg-gray-200 rounded transition-colors"
+                    title="Delete"
+                  >
+                    <Trash2 className="w-4 h-4 text-[#303030]" />
+                  </button>
+                  <button className="p-1 hover:bg-gray-200 rounded transition-colors" title="More">
+                    <MoreHorizontal className="w-5 h-5 text-[#303030]" />
+                  </button>
+                </div>
+              </div>
+            ))
           )}
         </div>
       </div>
 
-      {error ? <div className="rounded-lg border border-red-600/40 bg-red-900/20 p-3 text-sm text-red-300">{error}</div> : null}
-      {info ? <div className="rounded-lg border border-green-600/40 bg-green-900/20 p-3 text-sm text-green-300">{info}</div> : null}
+      {showCreateModal ? (
+        <div className="fixed inset-0 bg-black/35 flex items-center justify-center px-4 z-20">
+          <form onSubmit={handleCreateProject} className="w-full max-w-lg bg-white border border-gray-200 rounded p-5">
+            <h3 className="text-lg font-medium text-[#303030] mb-4">Create Project</h3>
 
-      {showImportPanel ? (
-        <div className="card p-4">
-          <h2 className="mb-4 text-lg font-semibold text-white">Your GitHub Repositories</h2>
-          <div className="space-y-3">
-            {githubRepos.length === 0 ? <p className="text-sm text-slate-400">No repositories found.</p> : null}
-            {githubRepos.map((repo) => {
-              const alreadyImported = importedRepoIds.has(String(repo.id))
-              return (
-                <div key={repo.id} className="flex flex-col gap-3 rounded-lg border border-slate-700 bg-slate-900/60 p-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-white">{repo.fullName || repo.name}</span>
-                      {repo.private ? (
-                        <LockClosedIcon className="h-4 w-4 text-amber-300" title="Private repository" />
-                      ) : (
-                        <GlobeAltIcon className="h-4 w-4 text-emerald-300" title="Public repository" />
-                      )}
-                    </div>
-                    <div className="mt-1 flex items-center gap-3 text-xs text-slate-400">
-                      <span className="inline-flex items-center gap-1">
-                        <StarIcon className="h-4 w-4" />
-                        {repo.stars ?? 0}
-                      </span>
-                      <span>Forks: {repo.forks ?? 0}</span>
-                    </div>
-                  </div>
-                  <button
-                    disabled={alreadyImported}
-                    onClick={() => handleImportRepo(repo)}
-                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      alreadyImported
-                        ? 'cursor-not-allowed bg-slate-700 text-slate-400'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                    }`}
-                  >
-                    {alreadyImported ? 'Imported' : 'Import'}
-                  </button>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      ) : null}
-
-      {projects.length === 0 ? (
-        <div className="card p-8 text-center text-slate-400">No projects imported yet.</div>
-      ) : (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          {projects.map((project) => (
-            <div key={project.id} className="card p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-semibold text-white">{project.name}</h3>
-                    {project.isPrivate ? (
-                      <LockClosedIcon className="h-4 w-4 text-amber-300" title="Private repository" />
-                    ) : (
-                      <GlobeAltIcon className="h-4 w-4 text-emerald-300" title="Public repository" />
-                    )}
-                  </div>
-                  <p className="mt-1 text-sm text-slate-400">{project.description || 'No description'}</p>
-                </div>
-                <span className="badge badge-low">{project.status || 'active'}</span>
-              </div>
-
-              <div className="mt-4 flex items-center gap-4 text-sm text-slate-300">
-                <span className="inline-flex items-center gap-1">
-                  <StarIcon className="h-4 w-4" />
-                  {project.stars ?? 0}
-                </span>
-                <span>Forks: {project.forks ?? 0}</span>
-              </div>
-
-              <div className="mt-4 flex items-center gap-2">
-                <button onClick={() => openEditModal(project)} className="btn-secondary flex items-center gap-1 px-3 py-1.5 text-sm">
-                  <PencilSquareIcon className="h-4 w-4" />
-                  Edit
-                </button>
-                <button onClick={() => handleDeleteProject(project)} className="rounded-lg bg-red-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-600">
-                  <span className="inline-flex items-center gap-1">
-                    <TrashIcon className="h-4 w-4" />
-                    Delete
-                  </span>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {editingProject ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <form onSubmit={handleUpdateProject} className="w-full max-w-md rounded-lg border border-slate-700 bg-slate-800 p-5">
-            <h3 className="mb-4 text-lg font-semibold text-white">Edit Project</h3>
             <div className="space-y-3">
               <div>
-                <label className="mb-1 block text-sm text-slate-300">Name</label>
+                <label className="block text-sm text-[#303030] mb-1">Project Name</label>
                 <input
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="w-full rounded-lg border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100"
                   required
+                  value={newProject.name}
+                  onChange={(e) => setNewProject((prev) => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-[#303030] focus:outline-none focus:ring-2 focus:ring-[#1f75cb]"
+                  placeholder="my-project"
                 />
               </div>
+
               <div>
-                <label className="mb-1 block text-sm text-slate-300">Description</label>
+                <label className="block text-sm text-[#303030] mb-1">Repository URL</label>
+                <input
+                  required
+                  value={newProject.repositoryUrl}
+                  onChange={(e) => setNewProject((prev) => ({ ...prev, repositoryUrl: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-[#303030] focus:outline-none focus:ring-2 focus:ring-[#1f75cb]"
+                  placeholder="https://github.com/org/repo"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-[#303030] mb-1">Description</label>
                 <textarea
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  className="min-h-24 w-full rounded-lg border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100"
+                  value={newProject.description}
+                  onChange={(e) => setNewProject((prev) => ({ ...prev, description: e.target.value }))}
+                  className="w-full min-h-24 px-3 py-2 border border-gray-300 rounded text-sm text-[#303030] focus:outline-none focus:ring-2 focus:ring-[#1f75cb]"
                 />
               </div>
             </div>
+
             <div className="mt-5 flex justify-end gap-2">
-              <button type="button" onClick={() => setEditingProject(null)} className="btn-secondary">
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className="px-3 py-2 border border-gray-300 text-sm text-[#303030] rounded hover:bg-gray-50"
+              >
                 Cancel
               </button>
-              <button type="submit" className="btn-primary">
-                Save Changes
+              <button type="submit" className="px-3 py-2 bg-[#1f75cb] text-white text-sm font-medium rounded hover:bg-[#1068bf]">
+                Create
               </button>
             </div>
           </form>
@@ -317,3 +468,5 @@ export default function Projects() {
     </div>
   )
 }
+
+export default Projects

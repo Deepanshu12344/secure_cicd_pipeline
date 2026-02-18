@@ -292,6 +292,18 @@ router.get('/me', authenticateToken, (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid');
+      res.json({
+        success: true,
+        message: 'Logged out successfully'
+      });
+    });
+    return;
+  }
+
+  res.clearCookie('connect.sid');
   res.json({
     success: true,
     message: 'Logged out successfully'

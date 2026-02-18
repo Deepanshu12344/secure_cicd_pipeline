@@ -10,6 +10,21 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
+      if (user?.email) {
+        sessionStorage.setItem('lastGoogleEmail', user.email)
+      }
+
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.disableAutoSelect()
+        if (user?.email) {
+          window.google.accounts.id.revoke(user.email, () => {})
+        }
+      }
+    } catch {
+      // Ignore Google SDK errors and continue logout.
+    }
+
+    try {
       await authApi.logout()
     } catch {
       // Ignore logout API errors and clear local session regardless.

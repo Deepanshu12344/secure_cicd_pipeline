@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 import { authApi } from '../services/api'
 import { useAuthStore } from '../store/auth'
 
@@ -52,6 +51,7 @@ export default function Login() {
     }
 
     let mounted = true
+
     authApi
       .getGoogleClientId()
       .then((response) => {
@@ -61,7 +61,7 @@ export default function Login() {
         }
       })
       .catch(() => {
-        // Ignore; manual login/register still works.
+        // Manual login/register still works.
       })
 
     return () => {
@@ -96,9 +96,17 @@ export default function Login() {
         return
       }
 
+      const lastGoogleEmail = sessionStorage.getItem('lastGoogleEmail')
+      if (lastGoogleEmail) {
+        window.google.accounts.id.revoke(lastGoogleEmail, () => {})
+        sessionStorage.removeItem('lastGoogleEmail')
+      }
+      window.google.accounts.id.disableAutoSelect()
+
       window.google.accounts.id.initialize({
         client_id: googleClientId,
-        callback: handleGoogleCredential
+        callback: handleGoogleCredential,
+        auto_select: false
       })
 
       googleButtonRef.current.innerHTML = ''
@@ -126,57 +134,44 @@ export default function Login() {
   }, [googleClientId])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
-      <div className="w-full max-w-md card p-8">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-300 rounded-lg flex items-center justify-center">
-            <ShieldCheckIcon className="w-6 h-6 text-slate-900" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold gradient-text">SecureCI/CD</h1>
-            <p className="text-xs text-slate-400">
-              {isRegister ? 'Create your account' : 'Sign in to continue'}
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#f7f7f7] flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white border border-gray-200 rounded p-7">
+        <div className="mb-6">
+          <h1 className="text-2xl font-normal text-[#303030]">Secure CI/CD</h1>
+          <p className="text-sm text-[#666] mt-1">{isRegister ? 'Create your account' : 'Sign in to continue'}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegister ? (
             <div>
-              <label htmlFor="name" className="block text-sm text-slate-300 mb-1">
-                Name
-              </label>
+              <label htmlFor="name" className="block text-sm text-[#303030] mb-1">Name</label>
               <input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded border border-gray-300 px-3 py-2 text-[#303030] focus:outline-none focus:ring-2 focus:ring-[#1f75cb]"
                 placeholder="Your name"
               />
             </div>
           ) : null}
 
           <div>
-            <label htmlFor="email" className="block text-sm text-slate-300 mb-1">
-              Email
-            </label>
+            <label htmlFor="email" className="block text-sm text-[#303030] mb-1">Email</label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-lg border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded border border-gray-300 px-3 py-2 text-[#303030] focus:outline-none focus:ring-2 focus:ring-[#1f75cb]"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm text-slate-300 mb-1">
-              Password
-            </label>
+            <label htmlFor="password" className="block text-sm text-[#303030] mb-1">Password</label>
             <input
               id="password"
               type="password"
@@ -184,21 +179,25 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full rounded-lg border border-slate-600 bg-slate-700 px-3 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded border border-gray-300 px-3 py-2 text-[#303030] focus:outline-none focus:ring-2 focus:ring-[#1f75cb]"
               placeholder={isRegister ? 'At least 6 characters' : 'Enter your password'}
             />
           </div>
 
-          {error ? <p className="text-sm text-red-400">{error}</p> : null}
+          {error ? <p className="text-sm text-[#be123c]">{error}</p> : null}
 
-          <button type="submit" className="w-full btn-primary disabled:opacity-70" disabled={loading}>
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-[#1f75cb] text-white rounded text-sm font-medium hover:bg-[#1068bf] disabled:opacity-70"
+            disabled={loading}
+          >
             {loading ? 'Please wait...' : isRegister ? 'Create account' : 'Sign in'}
           </button>
         </form>
 
         <button
           type="button"
-          className="w-full mt-4 text-sm text-blue-300 hover:text-blue-200"
+          className="w-full mt-4 text-sm text-[#1f75cb] hover:text-[#1068bf]"
           onClick={() => {
             setMode(isRegister ? 'login' : 'register')
             setError('')
@@ -208,8 +207,8 @@ export default function Login() {
         </button>
 
         {googleClientId ? (
-          <div className="mt-6 pt-6 border-t border-slate-700">
-            <p className="text-sm text-slate-300 text-center mb-3">Or continue with Google</p>
+          <div className="mt-6 pt-5 border-t border-gray-200">
+            <p className="text-sm text-[#666] text-center mb-3">Or continue with Google</p>
             <div className="flex justify-center" ref={googleButtonRef}></div>
           </div>
         ) : null}
