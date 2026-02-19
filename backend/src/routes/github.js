@@ -10,6 +10,9 @@ const router = express.Router();
 const getCallbackUrl = () =>
   process.env.GITHUB_CALLBACK_URL || 'http://localhost:5000/api/auth/github/callback';
 
+const normalizeEmail = (value) => String(value || '').trim().toLowerCase();
+const getOwnerId = (req) => req.user?._id || req.user?.id;
+
 router.get('/auth/github', protect, (req, res) => {
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
@@ -19,16 +22,17 @@ router.get('/auth/github', protect, (req, res) => {
   }
 
   const state = crypto.randomBytes(24).toString('hex');
+  const ownerId = getOwnerId(req);
   req.session.githubOAuth = {
     state,
-    userId: req.user.id,
+    userId: String(ownerId),
     createdAt: Date.now()
   };
 
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: getCallbackUrl(),
-    scope: 'repo',
+    scope: 'repo read:user user:email',
     state
   });
 
@@ -44,6 +48,12 @@ router.get('/auth/github/callback', async (req, res) => {
   }
 
   try {
+    const appUser = await User.findById(oauthSession.userId).select('email');
+    if (!appUser) {
+      delete req.session.githubOAuth;
+      return res.redirect(`${FRONTEND_URL}/projects?github=link_failed`);
+    }
+
     const tokenResponse = await axios.post(
       'https://github.com/login/oauth/access_token',
       {
@@ -80,7 +90,34 @@ router.get('/auth/github/callback', async (req, res) => {
     const githubId = String(profileResponse.data?.id || '');
     if (!githubId) {
       console.error('GitHub profile fetch returned no id');
+      delete req.session.githubOAuth;
       return res.redirect(`${FRONTEND_URL}/projects?github=link_failed`);
+    }
+
+    const emailsResponse = await axios.get('https://api.github.com/user/emails', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/vnd.github+json',
+        'User-Agent': 'secure-cicd-app',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      timeout: 10000
+    });
+
+    const emailList = Array.isArray(emailsResponse.data) ? emailsResponse.data : [];
+    const primaryVerified = emailList.find((entry) => entry?.primary && entry?.verified);
+    const anyVerified = emailList.find((entry) => entry?.verified);
+    const githubVerifiedEmail = normalizeEmail(primaryVerified?.email || anyVerified?.email);
+    const appEmail = normalizeEmail(appUser.email);
+
+    if (!githubVerifiedEmail) {
+      delete req.session.githubOAuth;
+      return res.redirect(`${FRONTEND_URL}/projects?github=email_unverified`);
+    }
+
+    if (githubVerifiedEmail !== appEmail) {
+      delete req.session.githubOAuth;
+      return res.redirect(`${FRONTEND_URL}/projects?github=email_mismatch`);
     }
 
     await User.findByIdAndUpdate(oauthSession.userId, {
@@ -98,7 +135,7 @@ router.get('/auth/github/callback', async (req, res) => {
 });
 
 router.get('/github/status', protect, async (req, res) => {
-  const user = await User.findById(req.user.id).select('githubId githubAccessToken');
+  const user = await User.findById(getOwnerId(req)).select('githubId githubAccessToken');
   res.json({
     success: true,
     data: {
@@ -109,7 +146,7 @@ router.get('/github/status', protect, async (req, res) => {
 });
 
 router.get('/github/repos', protect, async (req, res) => {
-  const user = await User.findById(req.user.id).select('githubAccessToken');
+  const user = await User.findById(getOwnerId(req)).select('githubAccessToken');
 
   if (!user?.githubAccessToken) {
     return res.status(400).json({ success: false, message: 'GitHub not connected' });

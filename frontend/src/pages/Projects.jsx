@@ -11,8 +11,7 @@ import {
   Download,
   Github,
   Plus,
-  Trash2,
-  Pencil
+  Trash2
 } from 'lucide-react'
 import { githubApi, projectsApi } from '../services/api'
 import { useAuthStore } from '../store/auth'
@@ -110,6 +109,14 @@ const Projects = () => {
 
     if (githubState === 'config_missing') {
       setError('GitHub OAuth is not configured on backend. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET.')
+    }
+
+    if (githubState === 'email_mismatch') {
+      setError('GitHub account email does not match your app login email. Please sign in to the matching GitHub account and try again.')
+    }
+
+    if (githubState === 'email_unverified') {
+      setError('No verified email found on your GitHub account. Verify your GitHub email and try again.')
     }
   }, [location.search])
 

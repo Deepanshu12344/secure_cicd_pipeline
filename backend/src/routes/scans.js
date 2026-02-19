@@ -1,118 +1,141 @@
-import express from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import express from 'express'
+import mongoose from 'mongoose'
+import { protect } from '../middleware/authMiddleware.js'
+import Scan from '../models/Scan.js'
+import Project from '../models/Project.js'
 
-const router = express.Router();
+const router = express.Router()
+const getOwnerId = (req) => req.user?._id || req.user?.id
 
-// Mock data storage
-const scans = new Map();
+const toResponse = (scanDoc) => ({
+  id: String(scanDoc._id),
+  ownerId: String(scanDoc.ownerId),
+  projectId: String(scanDoc.projectId),
+  repositoryUrl: scanDoc.repositoryUrl,
+  scanType: scanDoc.scanType || 'full',
+  branch: scanDoc.branch || 'main',
+  status: scanDoc.status || 'queued',
+  progress: Number(scanDoc.progress || 0),
+  startedAt: scanDoc.startedAt || null,
+  completedAt: scanDoc.completedAt || null,
+  findings: Array.isArray(scanDoc.findings) ? scanDoc.findings : [],
+  createdAt: scanDoc.createdAt,
+  updatedAt: scanDoc.updatedAt
+})
 
-// Get all scans
-router.get('/', (req, res) => {
-  const scanArray = Array.from(scans.values());
+const validateOwnedProject = async (ownerId, projectId) => {
+  if (!mongoose.Types.ObjectId.isValid(projectId)) return null
+  return Project.findOne({ _id: projectId, ownerId })
+}
+
+router.get('/', protect, async (req, res) => {
+  const filter = { ownerId: getOwnerId(req) }
+  if (req.query.projectId && mongoose.Types.ObjectId.isValid(req.query.projectId)) {
+    filter.projectId = req.query.projectId
+  }
+
+  const scanDocs = await Scan.find(filter).sort({ createdAt: -1 })
   res.json({
     success: true,
-    count: scanArray.length,
-    data: scanArray
-  });
-});
+    count: scanDocs.length,
+    data: scanDocs.map(toResponse)
+  })
+})
 
-// Create new scan
-router.post('/', (req, res) => {
-  const { projectId, repositoryUrl, scanType, branch } = req.body;
-  
+router.post('/', protect, async (req, res) => {
+  const ownerId = getOwnerId(req)
+  const { projectId, repositoryUrl, scanType, branch } = req.body
+
   if (!projectId || !repositoryUrl) {
     return res.status(400).json({
       success: false,
       error: 'projectId and repositoryUrl are required'
-    });
+    })
   }
 
-  const scan = {
-    id: uuidv4(),
+  const project = await validateOwnedProject(ownerId, projectId)
+  if (!project) {
+    return res.status(404).json({
+      success: false,
+      error: 'Project not found'
+    })
+  }
+
+  const scan = await Scan.create({
+    ownerId,
     projectId,
-    repositoryUrl,
+    repositoryUrl: String(repositoryUrl).trim(),
     scanType: scanType || 'full',
     branch: branch || 'main',
     status: 'queued',
     progress: 0,
-    createdAt: new Date(),
-    startedAt: null,
-    completedAt: null,
     findings: []
-  };
-
-  scans.set(scan.id, scan);
+  })
 
   res.status(201).json({
     success: true,
-    data: scan
-  });
-});
+    data: toResponse(scan)
+  })
+})
 
-// Get scan by ID
-router.get('/:id', (req, res) => {
-  const scan = scans.get(req.params.id);
-  
-  if (!scan) {
-    return res.status(404).json({
-      success: false,
-      error: 'Scan not found'
-    });
+router.get('/:id', protect, async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Scan not found' })
   }
 
-  res.json({
-    success: true,
-    data: scan
-  });
-});
-
-// Update scan status
-router.patch('/:id', (req, res) => {
-  const scan = scans.get(req.params.id);
-  
+  const scan = await Scan.findOne({ _id: req.params.id, ownerId: getOwnerId(req) })
   if (!scan) {
-    return res.status(404).json({
-      success: false,
-      error: 'Scan not found'
-    });
+    return res.status(404).json({ success: false, error: 'Scan not found' })
   }
 
-  const { status, progress, findings } = req.body;
-  
-  if (status) scan.status = status;
-  if (progress !== undefined) scan.progress = progress;
-  if (findings) scan.findings = findings;
-  
+  res.json({ success: true, data: toResponse(scan) })
+})
+
+router.patch('/:id', protect, async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Scan not found' })
+  }
+
+  const scan = await Scan.findOne({ _id: req.params.id, ownerId: getOwnerId(req) })
+  if (!scan) {
+    return res.status(404).json({ success: false, error: 'Scan not found' })
+  }
+
+  const { status, progress, findings } = req.body
+
+  if (status) scan.status = status
+  if (progress !== undefined) scan.progress = Number(progress)
+  if (findings !== undefined) scan.findings = Array.isArray(findings) ? findings : scan.findings
+
   if (status === 'running' && !scan.startedAt) {
-    scan.startedAt = new Date();
+    scan.startedAt = new Date()
   }
   if (status === 'completed') {
-    scan.completedAt = new Date();
+    scan.completedAt = new Date()
   }
 
-  scans.set(req.params.id, scan);
+  await scan.save()
 
   res.json({
     success: true,
-    data: scan
-  });
-});
+    data: toResponse(scan)
+  })
+})
 
-// Delete scan
-router.delete('/:id', (req, res) => {
-  if (!scans.has(req.params.id)) {
-    return res.status(404).json({
-      success: false,
-      error: 'Scan not found'
-    });
+router.delete('/:id', protect, async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Scan not found' })
   }
 
-  scans.delete(req.params.id);
+  const deleted = await Scan.findOneAndDelete({ _id: req.params.id, ownerId: getOwnerId(req) })
+  if (!deleted) {
+    return res.status(404).json({ success: false, error: 'Scan not found' })
+  }
 
   res.json({
     success: true,
     message: 'Scan deleted successfully'
-  });
-});
+  })
+})
 
-export default router;
+export default router
