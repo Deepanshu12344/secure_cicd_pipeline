@@ -63,6 +63,9 @@ const extractReportNamesFromOutput = (output) => {
 const buildAnalysisSummary = (jsonData) => {
   const aggregate = jsonData?.aggregate_metrics || {}
   const criticalIssues = Array.isArray(jsonData?.critical_issues) ? jsonData.critical_issues : []
+  const skillsGap = jsonData?.skills_gap_analysis || {}
+  const skillLevels = skillsGap?.skill_levels && typeof skillsGap.skill_levels === 'object' ? skillsGap.skill_levels : {}
+  const identifiedGaps = Array.isArray(skillsGap?.identified_gaps) ? skillsGap.identified_gaps : []
   const severityCounts = { High: 0, Medium: 0, Low: 0 }
   const categoryCounts = {}
 
@@ -85,6 +88,18 @@ const buildAnalysisSummary = (jsonData) => {
       efficiency: Number(aggregate?.efficiency || 0),
       maintainability: Number(aggregate?.maintainability || 0),
       documentation: Number(aggregate?.documentation || 0)
+    },
+    skillsGap: {
+      overallProficiency: Number(skillsGap?.overall_proficiency || 0),
+      skillLevels: Object.entries(skillLevels).reduce((acc, [name, score]) => {
+        acc[String(name)] = Number(score || 0)
+        return acc
+      }, {}),
+      identifiedGaps: identifiedGaps.map((gap) => ({
+        skill: String(gap?.skill || ''),
+        score: Number(gap?.score || 0),
+        severity: String(gap?.severity || 'Medium')
+      }))
     },
     severityCounts,
     categoryCounts
@@ -119,6 +134,34 @@ const toResponse = (scanDoc) => ({
   createdAt: scanDoc.createdAt,
   updatedAt: scanDoc.updatedAt
 })
+
+const hasSkillsGapData = (summary) => {
+  const skillLevels = summary?.skillsGap?.skillLevels
+  return Boolean(skillLevels && typeof skillLevels === 'object' && Object.keys(skillLevels).length > 0)
+}
+
+const hydrateSummaryFromJsonIfNeeded = async (scanDoc) => {
+  if (!scanDoc) return scanDoc
+  const currentSummary = scanDoc.analysisSummary
+
+  if (hasSkillsGapData(currentSummary)) return scanDoc
+
+  const jsonPath = scanDoc.reportFiles?.jsonPath
+  if (!jsonPath || !fs.existsSync(jsonPath)) return scanDoc
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
+    scanDoc.analysisSummary = buildAnalysisSummary(parsed)
+    if (!Array.isArray(scanDoc.findings) || scanDoc.findings.length === 0) {
+      scanDoc.findings = (Array.isArray(parsed.critical_issues) ? parsed.critical_issues : []).slice(0, 50)
+    }
+    await scanDoc.save()
+  } catch {
+    // Keep existing summary if parsing fails.
+  }
+
+  return scanDoc
+}
 
 const validateOwnedProject = async (ownerId, projectId) => {
   if (!mongoose.Types.ObjectId.isValid(projectId)) return null
@@ -281,10 +324,11 @@ router.get('/', protect, async (req, res) => {
   }
 
   const scanDocs = await Scan.find(filter).populate('projectId', 'name fullName repositoryUrl').sort({ createdAt: -1 })
+  const hydrated = await Promise.all(scanDocs.map((scanDoc) => hydrateSummaryFromJsonIfNeeded(scanDoc)))
   res.json({
     success: true,
-    count: scanDocs.length,
-    data: scanDocs.map(toResponse)
+    count: hydrated.length,
+    data: hydrated.map(toResponse)
   })
 })
 
@@ -348,6 +392,7 @@ router.get('/:id', protect, async (req, res) => {
     return res.status(404).json({ success: false, error: 'Scan not found' })
   }
 
+  await hydrateSummaryFromJsonIfNeeded(scan)
   res.json({ success: true, data: toResponse(scan) })
 })
 

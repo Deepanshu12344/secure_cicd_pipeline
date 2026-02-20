@@ -1,6 +1,14 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  ResponsiveContainer
+} from 'recharts'
 import { projectsApi, scansApi } from '../services/api'
 
 const statusClass = (status) => {
@@ -33,6 +41,7 @@ export default function Scans() {
   const [startingScan, setStartingScan] = useState(false)
   const [downloadingScanId, setDownloadingScanId] = useState('')
   const [expandedScanId, setExpandedScanId] = useState('')
+  const [skillsFallbackByScan, setSkillsFallbackByScan] = useState({})
 
   const loadData = useCallback(async (showLoader = false) => {
     if (showLoader) setLoading(true)
@@ -75,6 +84,55 @@ export default function Scans() {
       setExpandedScanId(scans[0].id)
     }
   }, [scans, expandedScanId])
+
+  useEffect(() => {
+    const scan = scans.find((item) => item.id === expandedScanId)
+    if (!scan) return
+    if (!scan.reportAvailable) return
+
+    const existing = scan.analysisSummary?.skillsGap?.skillLevels || {}
+    if (Object.keys(existing).length > 0) return
+    if (skillsFallbackByScan[scan.id] !== undefined) return
+
+    let isCancelled = false
+    const loadSkillsFromJsonReport = async () => {
+      try {
+        const response = await scansApi.downloadReport(scan.id, 'json')
+        const text = await new Blob([response.data]).text()
+        const parsed = JSON.parse(text)
+        const skillLevels = parsed?.skills_gap_analysis?.skill_levels || {}
+        const overallProficiency = Number(parsed?.skills_gap_analysis?.overall_proficiency || 0)
+
+        if (!isCancelled) {
+          setSkillsFallbackByScan((prev) => ({
+            ...prev,
+            [scan.id]: {
+              skillLevels:
+                skillLevels && typeof skillLevels === 'object'
+                  ? Object.entries(skillLevels).reduce((acc, [name, score]) => {
+                      acc[String(name)] = Number(score || 0)
+                      return acc
+                    }, {})
+                  : {},
+              overallProficiency
+            }
+          }))
+        }
+      } catch {
+        if (!isCancelled) {
+          setSkillsFallbackByScan((prev) => ({
+            ...prev,
+            [scan.id]: null
+          }))
+        }
+      }
+    }
+
+    loadSkillsFromJsonReport()
+    return () => {
+      isCancelled = true
+    }
+  }, [expandedScanId, scans, skillsFallbackByScan])
 
   const filteredProjects = useMemo(() => {
     const query = projectQuery.trim().toLowerCase()
@@ -221,6 +279,16 @@ export default function Scans() {
                 const progress = Number(scan.progress || 0)
                 const summary = scan.analysisSummary
                 const metrics = summary?.metrics || {}
+                const skillsGap = summary?.skillsGap || {}
+                const fallbackSkills = skillsFallbackByScan[scan.id]
+                const skillLevels =
+                  Object.keys(skillsGap?.skillLevels || {}).length > 0
+                    ? skillsGap.skillLevels
+                    : fallbackSkills?.skillLevels || {}
+                const radarData = Object.entries(skillLevels).map(([skill, score]) => ({
+                  skill,
+                  score: Math.max(0, Math.min(100, Number(score || 0)))
+                }))
                 const severities = summary?.severityCounts || {}
                 const categories = summary?.categoryCounts || {}
                 const hasAnalytics = String(scan.status).toLowerCase() === 'completed' && summary
@@ -317,6 +385,50 @@ export default function Scans() {
                                     </div>
                                   ))}
                                 </div>
+                              </div>
+
+                              <div className="border border-gray-200 rounded p-4 bg-white md:col-span-3">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="text-xs text-[#666]">Skills radar</div>
+                                  <div className="text-xs text-[#666]">
+                                    Overall proficiency:{' '}
+                                    {Math.round(
+                                      Number(
+                                        Object.keys(skillsGap?.skillLevels || {}).length > 0
+                                          ? skillsGap?.overallProficiency || 0
+                                          : fallbackSkills?.overallProficiency || 0
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                                {radarData.length > 0 ? (
+                                  <div className="h-80">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                      <RadarChart data={radarData} outerRadius="70%">
+                                        <PolarGrid stroke="#d4d4d4" />
+                                        <PolarAngleAxis
+                                          dataKey="skill"
+                                          tick={{ fill: '#666', fontSize: 11 }}
+                                          tickLine={false}
+                                        />
+                                        <PolarRadiusAxis
+                                          angle={90}
+                                          domain={[0, 100]}
+                                          tick={{ fill: '#999', fontSize: 10 }}
+                                          tickCount={6}
+                                        />
+                                        <Radar
+                                          dataKey="score"
+                                          stroke="#1f75cb"
+                                          fill="#1f75cb"
+                                          fillOpacity={0.25}
+                                        />
+                                      </RadarChart>
+                                    </ResponsiveContainer>
+                                  </div>
+                                ) : (
+                                  <div className="text-xs text-[#999]">No skills data available for this scan.</div>
+                                )}
                               </div>
 
                               <div className="border border-gray-200 rounded p-4 bg-white md:col-span-3">
