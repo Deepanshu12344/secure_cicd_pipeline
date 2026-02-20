@@ -2,12 +2,20 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
   PolarAngleAxis,
   PolarGrid,
   PolarRadiusAxis,
   Radar,
   RadarChart,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
 } from 'recharts'
 import { projectsApi, scansApi } from '../services/api'
 
@@ -289,6 +297,12 @@ export default function Scans() {
                   skill,
                   score: Math.max(0, Math.min(100, Number(score || 0)))
                 }))
+                const barChartData = [...radarData]
+                  .sort((a, b) => b.score - a.score)
+                  .map((entry) => ({
+                    ...entry,
+                    shortSkill: entry.skill.length > 18 ? `${entry.skill.slice(0, 18)}...` : entry.skill
+                  }))
                 const severities = summary?.severityCounts || {}
                 const categories = summary?.categoryCounts || {}
                 const hasAnalytics = String(scan.status).toLowerCase() === 'completed' && summary
@@ -387,7 +401,7 @@ export default function Scans() {
                                 </div>
                               </div>
 
-                              <div className="border border-gray-200 rounded p-4 bg-white md:col-span-3">
+                              <div className="border border-gray-200 rounded p-4 bg-white md:col-span-2">
                                 <div className="flex items-center justify-between mb-2">
                                   <div className="text-xs text-[#666]">Skills radar</div>
                                   <div className="text-xs text-[#666]">
@@ -402,7 +416,7 @@ export default function Scans() {
                                   </div>
                                 </div>
                                 {radarData.length > 0 ? (
-                                  <div className="h-80">
+                                  <div className="h-64">
                                     <ResponsiveContainer width="100%" height="100%">
                                       <RadarChart data={radarData} outerRadius="70%">
                                         <PolarGrid stroke="#d4d4d4" />
@@ -424,6 +438,45 @@ export default function Scans() {
                                           fillOpacity={0.25}
                                         />
                                       </RadarChart>
+                                    </ResponsiveContainer>
+                                  </div>
+                                ) : (
+                                  <div className="text-xs text-[#999]">No skills data available for this scan.</div>
+                                )}
+                              </div>
+
+                              <div className="border border-gray-200 rounded p-4 bg-white md:col-span-1">
+                                <div className="text-xs text-[#666] mb-2">Skills bar chart</div>
+                                {barChartData.length > 0 ? (
+                                  <div className="h-64">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                      <BarChart
+                                        data={barChartData}
+                                        layout="vertical"
+                                        margin={{ top: 6, right: 12, left: 8, bottom: 6 }}
+                                      >
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#ececec" />
+                                        <XAxis type="number" domain={[0, 100]} tick={{ fill: '#666', fontSize: 10 }} />
+                                        <YAxis
+                                          type="category"
+                                          dataKey="shortSkill"
+                                          width={110}
+                                          tick={{ fill: '#666', fontSize: 10 }}
+                                        />
+                                        <Tooltip
+                                          formatter={(value, name, item) => [value, item?.payload?.skill || name]}
+                                          contentStyle={{ border: '1px solid #e5e7eb', borderRadius: 6 }}
+                                        />
+                                        <Legend />
+                                        <Bar dataKey="score" name="Skill score" radius={[0, 4, 4, 0]}>
+                                          {barChartData.map((item) => (
+                                            <Cell
+                                              key={`${scan.id}-${item.skill}`}
+                                              fill={item.score >= 75 ? '#059669' : item.score >= 60 ? '#f59e0b' : '#dc2626'}
+                                            />
+                                          ))}
+                                        </Bar>
+                                      </BarChart>
                                     </ResponsiveContainer>
                                   </div>
                                 ) : (
