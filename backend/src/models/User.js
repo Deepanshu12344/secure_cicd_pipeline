@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
     githubAccessToken: {
       type: String,
       default: null
+    },
+    profilePhotoUrl: {
+      type: String,
+      default: null
     }
   },
   {

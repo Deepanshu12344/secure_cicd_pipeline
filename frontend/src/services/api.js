@@ -66,6 +66,10 @@ export const authApi = {
   login: (data) => apiClient.post('/auth/login', data),
   register: (data) => apiClient.post('/auth/register', data),
   me: () => apiClient.get('/auth/me'),
+  uploadProfilePhoto: (formData) =>
+    apiClient.post('/auth/profile-photo', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }),
   getGoogleClientId: () => apiClient.get('/auth/google/client-id'),
   googleLogin: (data) => apiClient.post('/auth/google', data),
   logout: () => apiClient.post('/auth/logout')

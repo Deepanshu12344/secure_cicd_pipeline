@@ -236,12 +236,12 @@ export default function Scans() {
   }
 
   if (loading) {
-    return <div className="bg-white min-h-[calc(100vh-48px)] p-6 text-[#666]">Loading scans...</div>
+    return <div className="bg-white min-h-[calc(100vh-48px)] p-4 sm:p-6 text-[#666]">Loading scans...</div>
   }
 
   return (
     <div className="bg-white min-h-[calc(100vh-48px)]">
-      <div className="border-b border-gray-200 bg-white px-6 py-3">
+      <div className="border-b border-gray-200 bg-white px-4 sm:px-6 py-3">
         <div className="flex items-center gap-2 text-sm text-[#6e49cb]">
           <Link to="/" className="hover:underline">Your work</Link>
           <span className="text-gray-400">/</span>
@@ -249,12 +249,12 @@ export default function Scans() {
         </div>
       </div>
 
-      <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-normal text-[#303030]">Scans</h1>
         <button
           onClick={() => setModalOpen(true)}
-          className="px-4 py-2 text-sm border border-[#d4d4d4] rounded bg-white text-[#303030] hover:bg-[#f8f8f8]"
+          className="w-full sm:w-auto px-4 py-2 text-sm border border-[#d4d4d4] rounded bg-white text-[#303030] hover:bg-[#f8f8f8]"
         >
           Run Analyzer Scan
         </button>
@@ -264,7 +264,8 @@ export default function Scans() {
       {error ? <div className="mb-4 px-4 py-3 text-sm bg-[#fff1f2] border border-[#fecdd3] text-[#be123c] rounded">{error}</div> : null}
 
       <div className="border border-gray-200 rounded overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[760px]">
           <thead className="bg-[#f8f8f8] border-b border-gray-200">
             <tr>
               <th className="px-6 py-3 text-left text-sm font-medium text-[#303030]">Scan ID</th>
@@ -323,7 +324,7 @@ export default function Scans() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <div className="w-24 bg-gray-200 rounded-full h-2">
                             <div
                               className="bg-[#1f75cb] h-2 rounded-full"
@@ -377,7 +378,7 @@ export default function Scans() {
 
                     {isExpanded ? (
                       <tr className="bg-[#fcfcfc]">
-                        <td colSpan={6} className="px-6 py-5">
+                        <td colSpan={6} className="px-3 sm:px-6 py-5">
                           {hasAnalytics ? (
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <div className="border border-gray-200 rounded p-4 bg-white">
@@ -416,7 +417,7 @@ export default function Scans() {
                                   </div>
                                 </div>
                                 {radarData.length > 0 ? (
-                                  <div className="h-64">
+                                  <div className="h-56 sm:h-64">
                                     <ResponsiveContainer width="100%" height="100%">
                                       <RadarChart data={radarData} outerRadius="70%">
                                         <PolarGrid stroke="#d4d4d4" />
@@ -448,7 +449,7 @@ export default function Scans() {
                               <div className="border border-gray-200 rounded p-4 bg-white md:col-span-1">
                                 <div className="text-xs text-[#666] mb-2">Skills bar chart</div>
                                 {barChartData.length > 0 ? (
-                                  <div className="h-64">
+                                  <div className="h-56 sm:h-64">
                                     <ResponsiveContainer width="100%" height="100%">
                                       <BarChart
                                         data={barChartData}
@@ -546,11 +547,12 @@ export default function Scans() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {modalOpen ? (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-white rounded border border-gray-300 shadow-lg">
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-3 sm:p-4">
+          <div className="w-full max-w-2xl bg-white rounded border border-gray-300 shadow-lg max-h-[92vh] overflow-hidden flex flex-col">
             <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
               <h2 className="text-lg text-[#303030]">Run Analyzer Scan</h2>
               <button className="text-sm text-[#666] hover:text-[#303030]" onClick={() => setModalOpen(false)}>
@@ -558,7 +560,7 @@ export default function Scans() {
               </button>
             </div>
 
-            <div className="p-5">
+            <div className="p-4 sm:p-5 overflow-y-auto">
               <label className="block text-sm text-[#303030] mb-2">Search imported project</label>
               <input
                 type="text"
@@ -589,16 +591,16 @@ export default function Scans() {
               </div>
             </div>
 
-            <div className="px-5 py-4 border-t border-gray-200 flex items-center justify-end gap-2">
+            <div className="px-4 sm:px-5 py-4 border-t border-gray-200 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2">
               <button
-                className="px-4 py-2 text-sm border border-gray-300 rounded bg-white text-[#303030] hover:bg-[#f8f8f8]"
+                className="w-full sm:w-auto px-4 py-2 text-sm border border-gray-300 rounded bg-white text-[#303030] hover:bg-[#f8f8f8]"
                 onClick={() => setModalOpen(false)}
                 disabled={startingScan}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 text-sm border border-[#1f75cb] rounded bg-[#1f75cb] text-white disabled:opacity-60"
+                className="w-full sm:w-auto px-4 py-2 text-sm border border-[#1f75cb] rounded bg-[#1f75cb] text-white disabled:opacity-60"
                 onClick={runAnalyzerScan}
                 disabled={!selectedProjectId || startingScan}
               >

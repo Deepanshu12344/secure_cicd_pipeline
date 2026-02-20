@@ -1,7 +1,7 @@
-import { AlertCircle, CheckCircle2, Clock3, FolderGit2, Settings } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { AlertCircle, Camera, CheckCircle2, Clock3, FolderGit2, Settings } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { projectsApi, scansApi } from '../services/api'
+import { authApi, projectsApi, scansApi } from '../services/api'
 import { useAuthStore } from '../store/auth'
 
 const formatRelative = (value) => {
@@ -19,13 +19,57 @@ const formatRelative = (value) => {
 
 const Home = () => {
   const user = useAuthStore((state) => state.user)
+  const setUser = useAuthStore((state) => state.setUser)
   const userName = user?.name || 'Developer'
+  const fileInputRef = useRef(null)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [photoError, setPhotoError] = useState('')
 
   const [projects, setProjects] = useState([])
   const [scans, setScans] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [quickTab, setQuickTab] = useState('recent')
+  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+  const backendBase = apiBase.replace(/\/api\/?$/, '')
+  const profilePhotoSrc = user?.profilePhotoUrl
+    ? user.profilePhotoUrl.startsWith('http')
+      ? user.profilePhotoUrl
+      : `${backendBase}${user.profilePhotoUrl}`
+    : null
+
+  const handleProfilePhotoChange = async (event) => {
+    const selected = event.target.files?.[0]
+    event.target.value = ''
+    if (!selected) return
+
+    if (!String(selected.type || '').startsWith('image/')) {
+      setPhotoError('Please select an image file.')
+      return
+    }
+
+    if (selected.size > 5 * 1024 * 1024) {
+      setPhotoError('Image must be 5MB or smaller.')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('photo', selected)
+
+    try {
+      setUploadingPhoto(true)
+      setPhotoError('')
+      const response = await authApi.uploadProfilePhoto(formData)
+      const updatedUser = response.data?.data?.user
+      if (updatedUser) {
+        setUser(updatedUser)
+      }
+    } catch (err) {
+      setPhotoError(err.response?.data?.error || 'Failed to upload profile photo')
+    } finally {
+      setUploadingPhoto(false)
+    }
+  }
 
   const loadData = useCallback(async (showLoader = false) => {
     if (showLoader) setLoading(true)
@@ -173,19 +217,43 @@ const Home = () => {
           <div className="flex-1">
             <div className="mb-6">
               <div className="flex items-start gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-12 h-12 text-white" viewBox="0 0 48 48">
-                    <defs>
-                      <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                        <circle cx="4" cy="4" r="1.5" fill="white" />
-                      </pattern>
-                    </defs>
-                    <rect width="48" height="48" fill="url(#dots)" />
-                  </svg>
+                <div className="relative w-16 h-16 flex-shrink-0">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleProfilePhotoChange}
+                  />
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center overflow-hidden">
+                  {profilePhotoSrc ? (
+                    <img src={profilePhotoSrc} alt={`${userName} profile`} className="w-full h-full object-cover" />
+                  ) : (
+                    <svg className="w-12 h-12 text-white" viewBox="0 0 48 48">
+                      <defs>
+                        <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                          <circle cx="4" cy="4" r="1.5" fill="white" />
+                        </pattern>
+                      </defs>
+                      <rect width="48" height="48" fill="url(#dots)" />
+                    </svg>
+                  )}
+                </div>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingPhoto}
+                    className="absolute -right-1 -bottom-1 w-7 h-7 rounded-full border border-white bg-[#1f75cb] text-white flex items-center justify-center hover:bg-[#195f9f] disabled:opacity-60"
+                    title={uploadingPhoto ? 'Uploading...' : 'Upload photo'}
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                  </button>
                 </div>
                 <div>
                   <div className="text-xs text-[#6e49cb] font-medium mb-1">Today's highlights</div>
                   <h1 className="text-3xl font-normal text-[#303030]">Hi, {userName}</h1>
+                  {uploadingPhoto ? <p className="text-xs text-[#666] mt-2">Uploading photo...</p> : null}
+                  {photoError ? <p className="text-xs text-[#be123c] mt-2">{photoError}</p> : null}
                 </div>
               </div>
             </div>

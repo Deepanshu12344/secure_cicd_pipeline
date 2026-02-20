@@ -2,7 +2,11 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+import multer from 'multer';
 import { OAuth2Client } from 'google-auth-library';
+import { fileURLToPath } from 'url';
 import '../config/env.js';
 import User from '../models/User.js';
 
@@ -10,12 +14,41 @@ const router = express.Router();
 const googleClient = new OAuth2Client();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 const JWT_EXPIRE = process.env.JWT_EXPIRE || '7d';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.resolve(__dirname, '../../uploads/profile-photos');
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const profilePhotoStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname || '').toLowerCase() || '.jpg';
+    const safeExt = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext) ? ext : '.jpg';
+    cb(null, `profile-${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`);
+  }
+});
+
+const profilePhotoUpload = multer({
+  storage: profilePhotoStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!String(file.mimetype || '').startsWith('image/')) {
+      cb(new Error('Only image uploads are allowed'));
+      return;
+    }
+    cb(null, true);
+  }
+});
 
 const sanitizeUser = (user) => ({
   id: String(user._id),
   email: user.email,
   name: user.name,
-  role: user.role
+  role: user.role,
+  profilePhotoUrl: user.profilePhotoUrl || null
 });
 
 const createToken = (user) =>
@@ -290,6 +323,52 @@ router.get('/me', authenticateToken, (req, res) => {
     }
   });
 });
+
+router.post(
+  '/profile-photo',
+  authenticateToken,
+  (req, res, next) => {
+    profilePhotoUpload.single('photo')(req, res, (err) => {
+      if (!err) {
+        next();
+        return;
+      }
+
+      const message = err.code === 'LIMIT_FILE_SIZE' ? 'Image must be 5MB or smaller' : err.message;
+      res.status(400).json({
+        success: false,
+        error: message || 'Invalid file upload'
+      });
+    });
+  },
+  asyncHandler(async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: 'Photo file is required'
+      });
+    }
+
+    const previousPhotoUrl = req.user.profilePhotoUrl;
+    const nextPhotoUrl = `/uploads/profile-photos/${req.file.filename}`;
+    req.user.profilePhotoUrl = nextPhotoUrl;
+    await req.user.save();
+
+    if (previousPhotoUrl && previousPhotoUrl.startsWith('/uploads/profile-photos/')) {
+      const previousFilePath = path.resolve(__dirname, `../..${previousPhotoUrl}`);
+      if (previousFilePath !== req.file.path && fs.existsSync(previousFilePath)) {
+        fs.unlink(previousFilePath, () => {});
+      }
+    }
+
+    return res.json({
+      success: true,
+      data: {
+        user: sanitizeUser(req.user)
+      }
+    });
+  })
+);
 
 router.post('/logout', (req, res) => {
   if (req.session) {
