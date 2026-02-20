@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { risksApi } from '../services/api'
 
 const severityClass = (severity) => {
@@ -49,7 +50,16 @@ export default function Risks() {
   }
 
   return (
-    <div className="bg-white min-h-[calc(100vh-48px)] p-6">
+    <div className="bg-white min-h-[calc(100vh-48px)]">
+      <div className="border-b border-gray-200 bg-white px-6 py-3">
+        <div className="flex items-center gap-2 text-sm text-[#6e49cb]">
+          <Link to="/" className="hover:underline">Your work</Link>
+          <span className="text-gray-400">/</span>
+          <span className="text-[#303030]">Risks</span>
+        </div>
+      </div>
+
+      <div className="p-6">
       <h1 className="text-2xl font-normal text-[#303030] mb-6">Identified Risks</h1>
 
       {error ? <div className="mb-4 px-4 py-3 text-sm bg-[#fff1f2] border border-[#fecdd3] text-[#be123c] rounded">{error}</div> : null}
@@ -87,6 +97,7 @@ export default function Risks() {
             )}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   )

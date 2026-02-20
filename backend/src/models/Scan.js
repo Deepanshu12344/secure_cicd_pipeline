@@ -46,6 +46,24 @@ const scanSchema = new mongoose.Schema(
     findings: {
       type: [mongoose.Schema.Types.Mixed],
       default: []
+    },
+    analysisSummary: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
+    },
+    reportFiles: {
+      pdfFile: { type: String, default: null },
+      pdfPath: { type: String, default: null },
+      jsonFile: { type: String, default: null },
+      jsonPath: { type: String, default: null }
+    },
+    errorMessage: {
+      type: String,
+      default: ''
+    },
+    analyzerLogTail: {
+      type: String,
+      default: ''
     }
   },
   {

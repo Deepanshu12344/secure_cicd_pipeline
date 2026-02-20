@@ -1,8 +1,160 @@
-import { GitMerge, AlertCircle, Settings } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { AlertCircle, CheckCircle2, Clock3, FolderGit2, Settings } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { projectsApi, scansApi } from '../services/api'
+import { useAuthStore } from '../store/auth'
+
+const formatRelative = (value) => {
+  if (!value) return 'just now'
+  const date = new Date(value)
+  const diff = Date.now() - date.getTime()
+  const minutes = Math.floor(diff / (1000 * 60))
+  if (minutes < 1) return 'just now'
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`
+  const days = Math.floor(hours / 24)
+  return `${days} day${days === 1 ? '' : 's'} ago`
+}
 
 const Home = () => {
-  const userName = 'Deepanshu Sharma';
+  const user = useAuthStore((state) => state.user)
+  const userName = user?.name || 'Developer'
+
+  const [projects, setProjects] = useState([])
+  const [scans, setScans] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [quickTab, setQuickTab] = useState('recent')
+
+  const loadData = useCallback(async (showLoader = false) => {
+    if (showLoader) setLoading(true)
+    setError('')
+    try {
+      const [projectsRes, scansRes] = await Promise.all([projectsApi.getAll(), scansApi.getAll()])
+      setProjects(projectsRes.data?.data || [])
+      setScans(scansRes.data?.data || [])
+    } catch (err) {
+      setError(err.response?.data?.error || err.response?.data?.message || 'Failed to load home data')
+    } finally {
+      if (showLoader) setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadData(true)
+  }, [loadData])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      loadData(false)
+    }, 30000)
+
+    return () => clearInterval(timer)
+  }, [loadData])
+
+  const projectCount = projects.length
+  const runningScans = scans.filter((scan) => String(scan.status).toLowerCase() === 'running')
+  const failedScans = scans.filter((scan) => String(scan.status).toLowerCase() === 'failed')
+  const completedScans = scans.filter((scan) => String(scan.status).toLowerCase() === 'completed')
+
+  const attentionItems = useMemo(() => {
+    const items = []
+
+    failedScans.slice(0, 4).forEach((scan) => {
+      items.push({
+        id: `failed-${scan.id}`,
+        type: 'failed_scan',
+        title: `Failed scan: ${scan.projectFullName || scan.projectName || scan.projectId}`,
+        subtitle: scan.errorMessage || 'Scan failed and needs rerun.',
+        when: scan.updatedAt,
+        link: '/scans'
+      })
+    })
+
+    runningScans.slice(0, 2).forEach((scan) => {
+      items.push({
+        id: `running-${scan.id}`,
+        type: 'running_scan',
+        title: `Scan in progress: ${scan.projectFullName || scan.projectName || scan.projectId}`,
+        subtitle: `Current progress: ${Number(scan.progress || 0)}%`,
+        when: scan.updatedAt,
+        link: '/scans'
+      })
+    })
+
+    projects
+      .filter((project) => Number(project.riskScore || 0) >= 70)
+      .slice(0, 3)
+      .forEach((project) => {
+        items.push({
+          id: `risk-${project.id}`,
+          type: 'high_risk',
+          title: `High risk project: ${project.fullName || project.name}`,
+          subtitle: `Risk score: ${Number(project.riskScore || 0)}`,
+          when: project.updatedAt,
+          link: '/projects'
+        })
+      })
+
+    return items
+      .sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime())
+      .slice(0, 6)
+  }, [failedScans, runningScans, projects])
+
+  const latestUpdates = useMemo(() => {
+    const updates = []
+
+    scans.slice(0, 8).forEach((scan) => {
+      updates.push({
+        id: `scan-${scan.id}`,
+        title: `Scan ${scan.status}: ${scan.projectFullName || scan.projectName || scan.projectId}`,
+        subtitle: `Type: ${scan.scanType || 'full'} ? Progress: ${Number(scan.progress || 0)}%`,
+        when: scan.updatedAt,
+        link: '/scans'
+      })
+    })
+
+    projects.slice(0, 8).forEach((project) => {
+      updates.push({
+        id: `project-${project.id}`,
+        title: `Project updated: ${project.fullName || project.name}`,
+        subtitle: `Language: ${project.language || 'unknown'} ? Risk: ${Number(project.riskScore || 0)}`,
+        when: project.updatedAt,
+        link: `/projects/${project.id}`
+      })
+    })
+
+    return updates
+      .sort((a, b) => new Date(b.when || 0).getTime() - new Date(a.when || 0).getTime())
+      .slice(0, 8)
+  }, [projects, scans])
+
+  const quickAccessItems = useMemo(() => {
+    if (quickTab === 'projects') {
+      return projects.slice(0, 6).map((project) => ({
+        id: project.id,
+        title: project.fullName || project.name,
+        subtitle: `Risk ${Number(project.riskScore || 0)}`,
+        link: `/projects/${project.id}`
+      }))
+    }
+
+    const recent = scans
+      .slice(0, 10)
+      .map((scan) => ({
+        id: scan.id,
+        title: scan.projectFullName || scan.projectName || scan.projectId,
+        subtitle: `Scan ${scan.status} ? ${formatRelative(scan.updatedAt)}`,
+        link: '/scans'
+      }))
+
+    return recent.slice(0, 6)
+  }, [projects, scans, quickTab])
+
+  if (loading) {
+    return <div className="bg-white min-h-[calc(100vh-48px)] p-6 text-[#666]">Loading home...</div>
+  }
 
   return (
     <div className="bg-[#fbfbfb] min-h-[calc(100vh-48px)]">
@@ -15,6 +167,8 @@ const Home = () => {
       </div>
 
       <div className="max-w-[1400px] mx-auto px-6 py-6">
+        {error ? <div className="mb-4 px-4 py-3 text-sm bg-[#fff1f2] border border-[#fecdd3] text-[#be123c] rounded">{error}</div> : null}
+
         <div className="flex gap-6">
           <div className="flex-1">
             <div className="mb-6">
@@ -39,111 +193,89 @@ const Home = () => {
             <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="bg-white border border-gray-200 rounded p-4 hover:border-gray-300 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-[#303030]">Merge requests</span>
-                  <GitMerge className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm text-[#303030]">Projects</span>
+                  <FolderGit2 className="w-4 h-4 text-gray-500" />
                 </div>
-                <div className="text-3xl font-normal text-[#303030] mb-1">0</div>
-                <div className="text-xs text-[#666] flex items-center gap-1">
-                  Waiting for your review
-                  <span className="text-[#666]">Just now</span>
-                </div>
+                <div className="text-3xl font-normal text-[#303030] mb-1">{projectCount}</div>
+                <div className="text-xs text-[#666]">Imported and tracked repositories</div>
               </div>
 
               <div className="bg-white border border-gray-200 rounded p-4 hover:border-gray-300 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-[#303030]">Merge requests</span>
-                  <GitMerge className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm text-[#303030]">Running scans</span>
+                  <Clock3 className="w-4 h-4 text-gray-500" />
                 </div>
-                <div className="text-3xl font-normal text-[#303030] mb-1">0</div>
-                <div className="text-xs text-[#666] flex items-center gap-1">
-                  Assigned to you
-                  <span className="text-[#666]">Just now</span>
-                </div>
+                <div className="text-3xl font-normal text-[#303030] mb-1">{runningScans.length}</div>
+                <div className="text-xs text-[#666]">Currently in progress</div>
               </div>
 
               <div className="bg-white border border-gray-200 rounded p-4 hover:border-gray-300 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-[#303030]">Issues</span>
+                  <span className="text-sm text-[#303030]">Failed scans</span>
                   <AlertCircle className="w-4 h-4 text-gray-500" />
                 </div>
-                <div className="text-3xl font-normal text-[#303030] mb-1">0</div>
-                <div className="text-xs text-[#666] flex items-center gap-1">
-                  Assigned to you
-                  <span className="text-[#666]">Just now</span>
-                </div>
+                <div className="text-3xl font-normal text-[#303030] mb-1">{failedScans.length}</div>
+                <div className="text-xs text-[#666]">Need rerun or review</div>
               </div>
 
               <div className="bg-white border border-gray-200 rounded p-4 hover:border-gray-300 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-[#303030]">Issues</span>
-                  <AlertCircle className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm text-[#303030]">Completed scans</span>
+                  <CheckCircle2 className="w-4 h-4 text-gray-500" />
                 </div>
-                <div className="text-3xl font-normal text-[#303030] mb-1">0</div>
-                <div className="text-xs text-[#666] flex items-center gap-1">
-                  Authored by you
-                  <span className="text-[#666]">Just now</span>
-                </div>
+                <div className="text-3xl font-normal text-[#303030] mb-1">{completedScans.length}</div>
+                <div className="text-xs text-[#666]">Reports available to download</div>
               </div>
             </div>
 
             <div className="bg-white border border-gray-200 rounded p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-medium text-[#303030]">Items that need your attention</h2>
-                <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#303030] border border-gray-300 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors">
-                  Everything
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+                <Link to="/scans" className="text-sm text-[#1f75cb] hover:underline">Open scans</Link>
               </div>
 
-              <div className="flex items-start gap-4 py-4">
-                <div className="w-12 h-12 rounded-full bg-[#91d4a8] flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-[#108548]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+              {attentionItems.length === 0 ? (
+                <div className="flex items-start gap-4 py-4">
+                  <div className="w-12 h-12 rounded-full bg-[#91d4a8] flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-6 h-6 text-[#108548]" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-[#303030]"><span className="font-semibold">Good job!</span> All your critical items are clear.</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-[#303030]">
-                    <span className="font-semibold">Good job!</span> All your to-do items are done.
-                  </p>
+              ) : (
+                <div className="space-y-2">
+                  {attentionItems.map((item) => (
+                    <Link key={item.id} to={item.link} className="block border border-gray-200 rounded px-3 py-2 hover:bg-gray-50">
+                      <div className="text-sm text-[#303030]">{item.title}</div>
+                      <div className="text-xs text-[#666] mt-1">{item.subtitle} ? {formatRelative(item.when)}</div>
+                    </Link>
+                  ))}
                 </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <Link to="/scans" className="text-sm text-[#1f75cb] hover:underline">
-                  View recent scans
-                </Link>
-              </div>
+              )}
             </div>
 
             <div className="bg-white border border-gray-200 rounded p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-medium text-[#303030]">Follow the latest updates</h2>
-                <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#303030] border border-gray-300 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors">
-                  Your activity
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+                <Link to="/projects" className="text-sm text-[#1f75cb] hover:underline">View projects</Link>
               </div>
 
-              <div className="flex items-center gap-3 py-3">
-                <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm text-[#303030]">
-                    Pushed new branch <span className="font-mono text-sm bg-gray-100 px-1 py-0.5 rounded">main</span> at{' '}
-                    <Link to="#" className="text-[#1f75cb] hover:underline">
-                      Deepanshu Sharma / qarwaan
+              {latestUpdates.length === 0 ? (
+                <p className="text-sm text-[#666]">No recent activity yet.</p>
+              ) : (
+                <div className="space-y-2">
+                  {latestUpdates.map((update) => (
+                    <Link key={update.id} to={update.link} className="flex items-center justify-between gap-3 py-2 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 px-2 rounded">
+                      <div className="min-w-0">
+                        <div className="text-sm text-[#303030] truncate">{update.title}</div>
+                        <div className="text-xs text-[#666] truncate mt-0.5">{update.subtitle}</div>
+                      </div>
+                      <div className="text-xs text-[#666] whitespace-nowrap">{formatRelative(update.when)}</div>
                     </Link>
-                  </p>
+                  ))}
                 </div>
-                <div className="text-xs text-[#666]">17 hours ago</div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -157,62 +289,65 @@ const Home = () => {
               </div>
 
               <div className="flex gap-2 mb-4">
-                <button className="flex-1 px-3 py-1.5 text-sm text-[#303030] bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 transition-colors">
+                <button
+                  onClick={() => setQuickTab('recent')}
+                  className={`flex-1 px-3 py-1.5 text-sm border rounded transition-colors ${
+                    quickTab === 'recent'
+                      ? 'text-[#303030] bg-gray-100 border-gray-300'
+                      : 'text-[#303030] border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
                   Recently viewed
                 </button>
-                <button className="flex-1 px-3 py-1.5 text-sm text-[#303030] border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => setQuickTab('projects')}
+                  className={`flex-1 px-3 py-1.5 text-sm border rounded transition-colors ${
+                    quickTab === 'projects'
+                      ? 'text-[#303030] bg-gray-100 border-gray-300'
+                      : 'text-[#303030] border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
                   Projects
                 </button>
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
-                  <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-[#303030]">
-                    M
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-[#303030] truncate">Mortygram - ESC / Mortygram</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
-                  <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-[#303030]">
-                    Q
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-[#303030] truncate">qarwaan - Deepanshu Sharma / qarwaan</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
-                  <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-[#303030]">
-                    S
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-[#303030] truncate">secure_cicd_pipeline - Deepanshu Sharma / se...</div>
-                  </div>
-                </div>
+                {quickAccessItems.length === 0 ? (
+                  <div className="text-sm text-[#666] px-1 py-2">No quick access items.</div>
+                ) : (
+                  quickAccessItems.map((item) => (
+                    <Link key={item.id} to={item.link} className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                      <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-[#303030]">
+                        {(item.title || 'P').slice(0, 1).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-[#303030] truncate">{item.title}</div>
+                        <div className="text-xs text-[#666] truncate">{item.subtitle}</div>
+                      </div>
+                    </Link>
+                  ))
+                )}
               </div>
 
               <div className="mt-4 pt-3 border-t border-gray-200">
-                <p className="text-xs text-[#666]">Displaying frequently visited projects.</p>
+                <p className="text-xs text-[#666]">Data is synced from your latest projects and scans.</p>
               </div>
             </div>
 
             <div className="bg-white border border-gray-200 rounded p-4">
               <h2 className="text-sm font-semibold text-[#303030] mb-2">Share your feedback</h2>
               <p className="text-sm text-[#666] mb-3">
-                Help us improve the new homepage by sharing your thoughts and suggestions.
+                Help us improve this homepage experience with your suggestions.
               </p>
-              <Link to="#" className="text-sm text-[#1f75cb] hover:underline">
-                Leave feedback
+              <Link to="/scans" className="text-sm text-[#1f75cb] hover:underline">
+                Open scans workspace
               </Link>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

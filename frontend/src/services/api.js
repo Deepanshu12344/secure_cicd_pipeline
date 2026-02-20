@@ -33,6 +33,10 @@ export const scansApi = {
   getAll: () => apiClient.get('/scans'),
   getById: (id) => apiClient.get(`/scans/${id}`),
   create: (data) => apiClient.post('/scans', data),
+  run: (id) => apiClient.post(`/scans/${id}/run`),
+  deleteFailed: () => apiClient.delete('/scans/failed'),
+  downloadReport: (id, type = 'pdf') =>
+    apiClient.get(`/scans/${id}/report`, { params: { type }, responseType: 'blob' }),
   update: (id, data) => apiClient.patch(`/scans/${id}`, data),
   delete: (id) => apiClient.delete(`/scans/${id}`)
 }

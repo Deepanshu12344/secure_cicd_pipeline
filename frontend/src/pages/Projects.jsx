@@ -97,6 +97,16 @@ const Projects = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const githubState = params.get('github')
+    const createParam = params.get('create')
+    const searchParam = params.get('q')
+
+    if (createParam === '1') {
+      setShowCreateModal(true)
+    }
+
+    if (searchParam !== null) {
+      setSearchText(searchParam)
+    }
 
     if (githubState === 'connected') {
       setInfo('GitHub connected successfully. You can import repositories now.')
