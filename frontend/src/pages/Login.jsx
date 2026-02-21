@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { Github } from 'lucide-react'
 import { authApi } from '../services/api'
 import { useAuthStore } from '../store/auth'
 
@@ -24,6 +25,62 @@ export default function Login() {
     login(user, token)
     navigate(from, { replace: true })
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const githubStatus = params.get('github')
+    const tokenFromGithub = params.get('token')
+    const nextPath = params.get('next')
+
+    if (!githubStatus && !tokenFromGithub) {
+      return
+    }
+
+    if (!tokenFromGithub) {
+      if (githubStatus === 'config_missing') {
+        setError('GitHub sign in is not configured on the server.')
+      } else if (githubStatus === 'email_unverified') {
+        setError('GitHub account email is not verified. Verify it and try again.')
+      } else if (githubStatus === 'account_conflict') {
+        setError('This GitHub account is already linked to another user.')
+      } else if (githubStatus === 'oauth_expired') {
+        setError('GitHub sign in session expired. Please try again.')
+      } else if (githubStatus === 'oauth_failed') {
+        setError('GitHub sign in failed. Please try again.')
+      }
+      return
+    }
+
+    let mounted = true
+    setError('')
+    setLoading(true)
+
+    authApi
+      .meWithToken(tokenFromGithub)
+      .then((response) => {
+        if (!mounted) {
+          return
+        }
+        login(response.data.data.user, tokenFromGithub)
+        const destination =
+          typeof nextPath === 'string' && nextPath.startsWith('/') ? nextPath : from
+        navigate(destination, { replace: true })
+      })
+      .catch(() => {
+        if (mounted) {
+          setError('GitHub sign in succeeded but session initialization failed.')
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setLoading(false)
+        }
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [location.search, from, login, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -206,12 +263,25 @@ export default function Login() {
           {isRegister ? 'Already have an account? Sign in' : "Don't have an account? Register"}
         </button>
 
-        {googleClientId ? (
-          <div className="mt-6 pt-5 border-t border-gray-200">
-            <p className="text-sm text-[#666] text-center mb-3">Or continue with Google</p>
-            <div className="flex justify-center" ref={googleButtonRef}></div>
-          </div>
-        ) : null}
+        <div className="mt-6 pt-5 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={() => {
+              window.location.href = authApi.getGithubLoginUrl(from)
+            }}
+            className="w-full max-w-[320px] mx-auto h-10 flex items-center justify-center gap-2 px-4 border border-gray-300 rounded text-sm font-medium text-[#24292f] bg-white hover:bg-gray-50 disabled:opacity-70"
+            disabled={loading}
+          >
+            <Github className="w-4 h-4" />
+            <span>Sign in with GitHub</span>
+          </button>
+          {googleClientId ? (
+            <>
+              <p className="text-sm text-[#666] text-center my-3">Or continue with Google</p>
+              <div className="flex justify-center" ref={googleButtonRef}></div>
+            </>
+          ) : null}
+        </div>
       </div>
     </div>
   )

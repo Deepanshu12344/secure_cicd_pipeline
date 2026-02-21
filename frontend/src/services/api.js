@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const apiClient = axios.create({
   baseURL: API_BASE,
@@ -66,6 +66,12 @@ export const authApi = {
   login: (data) => apiClient.post('/auth/login', data),
   register: (data) => apiClient.post('/auth/register', data),
   me: () => apiClient.get('/auth/me'),
+  meWithToken: (token) =>
+    apiClient.get('/auth/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    }),
+  getGithubLoginUrl: (redirectPath = '/') =>
+    `${API_BASE}/auth/github/login?redirect=${encodeURIComponent(redirectPath)}`,
   uploadProfilePhoto: (formData) =>
     apiClient.post('/auth/profile-photo', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
@@ -76,7 +82,7 @@ export const authApi = {
 }
 
 export const githubApi = {
-  getConnectUrl: (token) => `${API_BASE}/auth/github?token=${encodeURIComponent(token)}`,
+  getConnectUrl: (token) => `${API_BASE}/github/connect?token=${encodeURIComponent(token)}`,
   getStatus: () => apiClient.get('/github/status'),
   getRepos: () => apiClient.get('/github/repos')
 }

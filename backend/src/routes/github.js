@@ -8,12 +8,12 @@ import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 const getCallbackUrl = () =>
-  process.env.GITHUB_CALLBACK_URL || 'http://localhost:5000/api/auth/github/callback';
+  process.env.GITHUB_CONNECT_CALLBACK_URL || 'http://localhost:5000/api/github/callback';
 
 const normalizeEmail = (value) => String(value || '').trim().toLowerCase();
 const getOwnerId = (req) => req.user?._id || req.user?.id;
 
-router.get('/auth/github', protect, (req, res) => {
+router.get('/github/connect', protect, (req, res) => {
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
@@ -39,7 +39,7 @@ router.get('/auth/github', protect, (req, res) => {
   return res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
 });
 
-router.get('/auth/github/callback', async (req, res) => {
+router.get('/github/callback', async (req, res) => {
   const { code, state } = req.query;
   const oauthSession = req.session.githubOAuth;
 

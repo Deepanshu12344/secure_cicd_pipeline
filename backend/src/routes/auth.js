@@ -2,12 +2,15 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import crypto from 'crypto';
+import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 import { OAuth2Client } from 'google-auth-library';
 import { fileURLToPath } from 'url';
 import '../config/env.js';
+import { FRONTEND_URL } from '../config/env.js';
 import User from '../models/User.js';
 
 const router = express.Router();
@@ -17,6 +20,10 @@ const JWT_EXPIRE = process.env.JWT_EXPIRE || '7d';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadsDir = path.resolve(__dirname, '../../uploads/profile-photos');
+const getGithubAuthCallbackUrl = () =>
+  process.env.GITHUB_AUTH_CALLBACK_URL ||
+  process.env.GITHUB_CALLBACK_URL ||
+  'http://localhost:5000/api/auth/github/callback';
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -80,6 +87,8 @@ const requireDbConnection = (res) => {
 const asyncHandler = (handler) => (req, res, next) =>
   Promise.resolve(handler(req, res, next)).catch(next);
 
+const normalizeEmail = (value) => String(value || '').trim().toLowerCase();
+
 const authenticateToken = async (req, res, next) => {
   if (requireDbConnection(res)) {
     return;
@@ -141,9 +150,15 @@ router.post('/login', asyncHandler(async (req, res) => {
   }
 
   if (!user.passwordHash) {
+    const providerLabel =
+      user.provider === 'google'
+        ? 'Google'
+        : user.provider === 'github'
+          ? 'GitHub'
+          : 'social sign in';
     return res.status(401).json({
       success: false,
-      error: 'This account uses Google sign in. Please continue with Google.'
+      error: `This account uses ${providerLabel} sign in. Please continue with ${providerLabel}.`
     });
   }
 
@@ -314,6 +329,160 @@ router.get('/google/client-id', (req, res) => {
     }
   });
 });
+
+router.get('/github/login', (req, res) => {
+  if (requireDbConnection(res)) {
+    return;
+  }
+
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+  const redirectTo = typeof req.query.redirect === 'string' ? req.query.redirect : '/';
+
+  if (!clientId || !clientSecret) {
+    return res.redirect(`${FRONTEND_URL}/login?github=config_missing`);
+  }
+
+  const state = crypto.randomBytes(24).toString('hex');
+  req.session.githubAuth = {
+    state,
+    redirectTo,
+    createdAt: Date.now()
+  };
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: getGithubAuthCallbackUrl(),
+    scope: 'read:user user:email',
+    state
+  });
+
+  return res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
+});
+
+router.get('/github/callback', asyncHandler(async (req, res) => {
+  if (requireDbConnection(res)) {
+    return;
+  }
+
+  const { code, state } = req.query;
+  const authSession = req.session.githubAuth;
+  delete req.session.githubAuth;
+
+  if (!code || !state || !authSession?.state || state !== authSession.state) {
+    return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+  }
+  const sessionAgeMs = Date.now() - Number(authSession.createdAt || 0);
+  if (!Number.isFinite(sessionAgeMs) || sessionAgeMs > 10 * 60 * 1000) {
+    return res.redirect(`${FRONTEND_URL}/login?github=oauth_expired`);
+  }
+
+  try {
+    const tokenResponse = await axios.post(
+      'https://github.com/login/oauth/access_token',
+      {
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code,
+        redirect_uri: getGithubAuthCallbackUrl(),
+        state
+      },
+      {
+        headers: {
+          Accept: 'application/json'
+        },
+        timeout: 10000
+      }
+    );
+
+    const accessToken = tokenResponse.data?.access_token;
+    if (!accessToken) {
+      return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+    }
+
+    const [profileResponse, emailsResponse] = await Promise.all([
+      axios.get('https://api.github.com/user', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/vnd.github+json',
+          'User-Agent': 'secure-cicd-app',
+          'X-GitHub-Api-Version': '2022-11-28'
+        },
+        timeout: 10000
+      }),
+      axios.get('https://api.github.com/user/emails', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/vnd.github+json',
+          'User-Agent': 'secure-cicd-app',
+          'X-GitHub-Api-Version': '2022-11-28'
+        },
+        timeout: 10000
+      })
+    ]);
+
+    const githubId = String(profileResponse.data?.id || '');
+    if (!githubId) {
+      return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+    }
+
+    const emailList = Array.isArray(emailsResponse.data) ? emailsResponse.data : [];
+    const primaryVerified = emailList.find((entry) => entry?.primary && entry?.verified);
+    const anyVerified = emailList.find((entry) => entry?.verified);
+    const githubEmail = normalizeEmail(primaryVerified?.email || anyVerified?.email);
+
+    if (!githubEmail) {
+      return res.redirect(`${FRONTEND_URL}/login?github=email_unverified`);
+    }
+
+    const [userByEmail, userByGithubId] = await Promise.all([
+      User.findOne({ email: githubEmail }),
+      User.findOne({ githubId })
+    ]);
+
+    if (userByGithubId && userByEmail && String(userByGithubId._id) !== String(userByEmail._id)) {
+      return res.redirect(`${FRONTEND_URL}/login?github=account_conflict`);
+    }
+
+    let user = userByEmail || userByGithubId;
+
+    if (!user) {
+      const fallbackName =
+        String(profileResponse.data?.name || '').trim() ||
+        String(profileResponse.data?.login || '').trim() ||
+        githubEmail.split('@')[0];
+
+      user = await User.create({
+        email: githubEmail,
+        name: fallbackName,
+        role: 'user',
+        passwordHash: null,
+        provider: 'github',
+        githubId
+      });
+    } else {
+      user.githubId = githubId;
+      if (user.provider !== 'local') {
+        user.provider = 'github';
+      }
+    }
+
+    user.githubAccessToken = accessToken;
+    await user.save();
+
+    const token = createToken(user);
+    const nextPath =
+      typeof authSession.redirectTo === 'string' && authSession.redirectTo.startsWith('/')
+        ? authSession.redirectTo
+        : '/';
+
+    return res.redirect(`${FRONTEND_URL}/login?github=success&token=${encodeURIComponent(token)}&next=${encodeURIComponent(nextPath)}`);
+  } catch (error) {
+    const details = error?.response?.data || error?.message || error;
+    console.error('GitHub auth callback error:', details);
+    return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+  }
+}));
 
 router.get('/me', authenticateToken, (req, res) => {
   return res.json({
