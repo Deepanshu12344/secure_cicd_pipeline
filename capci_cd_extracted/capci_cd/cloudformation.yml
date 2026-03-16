@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  PublicBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+  OpenSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Open SG"
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 22
+          ToPort: 22
+          IpProtocol: tcp
+  PublicRDS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: postgres
+      PubliclyAccessible: true
+  OpenEKS:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: "open-eks"
+      ResourcesVpcConfig:
+        EndpointPublicAccess: true

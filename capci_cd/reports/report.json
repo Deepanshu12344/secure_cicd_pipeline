@@ -1,0 +1,352 @@
+{
+  "pipeline_name": "capci_cd",
+  "scan_timestamp": "2026-02-22T09:05:47.156938+00:00",
+  "overall_risk_score": 45,
+  "overall_severity": "Low",
+  "summary": {
+    "total_issues": 21,
+    "critical_count": 0,
+    "high_count": 13,
+    "medium_count": 6,
+    "low_count": 2
+  },
+  "issues": [
+    {
+      "id": "PERM-001",
+      "title": "Missing explicit permissions block",
+      "threat_type": "Privilege Escalation",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\.github\\workflows\\sample.yml",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 0
+      },
+      "description": "Workflow does not declare explicit GITHUB_TOKEN permissions.",
+      "impact": "Default permissions may be broader than necessary.",
+      "remediation": "Add an explicit `permissions` block with least privilege.",
+      "confidence": "High"
+    },
+    {
+      "id": "ART-002",
+      "title": "Artifact retention not set",
+      "threat_type": "Data Exposure",
+      "severity": "Low",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\.github\\workflows\\sample.yml",
+        "job_name": "security",
+        "step_name": "Upload Security Reports",
+        "line_number": 30
+      },
+      "description": "Artifact retention period not specified.",
+      "impact": "Artifacts may persist longer than required, increasing exposure risk.",
+      "remediation": "Set `retention-days` to the shortest feasible duration.",
+      "confidence": "Medium"
+    },
+    {
+      "id": "DEP-003",
+      "title": "No software composition analysis step detected",
+      "threat_type": "Supply Chain Attack",
+      "severity": "Low",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\.github\\workflows\\sample.yml",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 0
+      },
+      "description": "Workflow does not appear to include dependency or container scanning.",
+      "impact": "Vulnerable dependencies may be introduced without detection.",
+      "remediation": "Add SCA tooling (e.g., dependency review, Trivy, Snyk, or Grype).",
+      "confidence": "Low"
+    },
+    {
+      "id": "AWS-002",
+      "title": "S3 public access block disabled",
+      "threat_type": "Data Exposure",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\cloudformation.yml",
+        "job_name": "",
+        "step_name": "PublicBucket",
+        "line_number": 7
+      },
+      "description": "S3 public access block is disabled.",
+      "impact": "Public access could be enabled unintentionally.",
+      "remediation": "Enable all public access block settings.",
+      "confidence": "High"
+    },
+    {
+      "id": "AWS-004",
+      "title": "Security group open to the world",
+      "threat_type": "Unauthorized Access",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\cloudformation.yml",
+        "job_name": "",
+        "step_name": "OpenSecurityGroup",
+        "line_number": 16
+      },
+      "description": "Security group allows public access to sensitive ports.",
+      "impact": "Increases risk of brute force and exploitation.",
+      "remediation": "Restrict CIDR ranges and limit ports.",
+      "confidence": "High"
+    },
+    {
+      "id": "AWS-005",
+      "title": "RDS instance publicly accessible",
+      "threat_type": "Data Exposure",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\cloudformation.yml",
+        "job_name": "",
+        "step_name": "PublicRDS",
+        "line_number": 25
+      },
+      "description": "RDS instance allows public access.",
+      "impact": "Database could be reached from the internet.",
+      "remediation": "Place RDS in private subnets and disable public access.",
+      "confidence": "High"
+    },
+    {
+      "id": "AWS-006",
+      "title": "EKS public endpoint open",
+      "threat_type": "Unauthorized Access",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\cloudformation.yml",
+        "job_name": "",
+        "step_name": "OpenEKS",
+        "line_number": 31
+      },
+      "description": "EKS API endpoint is publicly accessible without CIDR restriction.",
+      "impact": "Cluster API may be exposed to the internet.",
+      "remediation": "Disable public access or restrict CIDRs to trusted networks.",
+      "confidence": "High"
+    },
+    {
+      "id": "DEP-105",
+      "title": "Dockerfile runs as root by default",
+      "threat_type": "Privilege Escalation",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\docker\\Dockerfile",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 0
+      },
+      "description": "Dockerfile does not set a non-root USER or sets USER to root.",
+      "impact": "If the container is compromised, attackers gain root inside the container.",
+      "remediation": "Add a non-root USER and drop unnecessary privileges.",
+      "confidence": "Medium"
+    },
+    {
+      "id": "DC-001",
+      "title": "Docker Compose image not pinned",
+      "threat_type": "Supply Chain Attack",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\docker-compose.yml",
+        "job_name": "",
+        "step_name": "app",
+        "line_number": 4
+      },
+      "description": "Compose service image uses no tag or `latest`.",
+      "impact": "Unreviewed image updates could be deployed.",
+      "remediation": "Pin images to a specific version or digest.",
+      "confidence": "High"
+    },
+    {
+      "id": "DC-002",
+      "title": "Privileged container in Compose",
+      "threat_type": "Privilege Escalation",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\docker-compose.yml",
+        "job_name": "",
+        "step_name": "app",
+        "line_number": 5
+      },
+      "description": "Compose service runs with privileged mode.",
+      "impact": "Privileged containers can access host resources.",
+      "remediation": "Disable privileged mode.",
+      "confidence": "High"
+    },
+    {
+      "id": "DC-003",
+      "title": "Docker socket exposed in Compose",
+      "threat_type": "Privilege Escalation",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\docker-compose.yml",
+        "job_name": "",
+        "step_name": "app",
+        "line_number": 9
+      },
+      "description": "Compose service mounts the Docker socket.",
+      "impact": "Compromise could lead to host takeover via Docker daemon.",
+      "remediation": "Avoid mounting the Docker socket.",
+      "confidence": "High"
+    },
+    {
+      "id": "DC-004",
+      "title": "SSH exposed in Compose",
+      "threat_type": "Unauthorized Access",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\docker-compose.yml",
+        "job_name": "",
+        "step_name": "app",
+        "line_number": 7
+      },
+      "description": "Compose service exposes SSH to all interfaces.",
+      "impact": "SSH exposure increases brute-force and exploit risk.",
+      "remediation": "Restrict exposure or use a bastion with strict rules.",
+      "confidence": "Medium"
+    },
+    {
+      "id": "AWS-101",
+      "title": "S3 bucket public ACL (Terraform)",
+      "threat_type": "Data Exposure",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\infra\\main.tf",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 3
+      },
+      "description": "Terraform defines an S3 bucket with a public ACL.",
+      "impact": "S3 data could be publicly exposed.",
+      "remediation": "Use private ACLs and enable public access block.",
+      "confidence": "High"
+    },
+    {
+      "id": "AWS-104",
+      "title": "Security group open to the world (Terraform)",
+      "threat_type": "Unauthorized Access",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\infra\\main.tf",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 13
+      },
+      "description": "Security group rule allows 0.0.0.0/0 to sensitive ports.",
+      "impact": "Increases risk of brute-force and exploitation.",
+      "remediation": "Restrict CIDR ranges and ports.",
+      "confidence": "High"
+    },
+    {
+      "id": "AWS-105",
+      "title": "RDS instance publicly accessible (Terraform)",
+      "threat_type": "Data Exposure",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\infra\\main.tf",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 21
+      },
+      "description": "Terraform sets RDS publicly accessible.",
+      "impact": "Database may be reachable from the internet.",
+      "remediation": "Disable public access and place RDS in private subnets.",
+      "confidence": "High"
+    },
+    {
+      "id": "AWS-106",
+      "title": "EKS public endpoint open (Terraform)",
+      "threat_type": "Unauthorized Access",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\infra\\main.tf",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 28
+      },
+      "description": "EKS API endpoint is publicly accessible without CIDR restriction.",
+      "impact": "Cluster API may be exposed to the internet.",
+      "remediation": "Disable public access or restrict public_access_cidrs.",
+      "confidence": "High"
+    },
+    {
+      "id": "K8S-001",
+      "title": "hostNetwork enabled",
+      "threat_type": "Privilege Escalation",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\k8s\\deployment.yml",
+        "job_name": "",
+        "step_name": "Deployment/insecure-app",
+        "line_number": 12
+      },
+      "description": "Pod is configured with hostNetwork.",
+      "impact": "Pod shares the host network namespace, increasing attack surface.",
+      "remediation": "Disable hostNetwork unless required and apply strict network policies.",
+      "confidence": "High"
+    },
+    {
+      "id": "K8S-004",
+      "title": "Container image not pinned",
+      "threat_type": "Supply Chain Attack",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\k8s\\deployment.yml",
+        "job_name": "",
+        "step_name": "Deployment/insecure-app",
+        "line_number": 15
+      },
+      "description": "Container image uses no tag or `latest` tag.",
+      "impact": "Unreviewed image changes could be deployed.",
+      "remediation": "Pin images to a specific version or digest.",
+      "confidence": "High"
+    },
+    {
+      "id": "K8S-005",
+      "title": "Privileged container",
+      "threat_type": "Privilege Escalation",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\k8s\\deployment.yml",
+        "job_name": "",
+        "step_name": "Deployment/insecure-app",
+        "line_number": 17
+      },
+      "description": "Container is running in privileged mode.",
+      "impact": "Privileged containers can access host resources.",
+      "remediation": "Disable privileged mode and use least privileges.",
+      "confidence": "High"
+    },
+    {
+      "id": "K8S-006",
+      "title": "Privilege escalation allowed",
+      "threat_type": "Privilege Escalation",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\k8s\\deployment.yml",
+        "job_name": "",
+        "step_name": "Deployment/insecure-app",
+        "line_number": 18
+      },
+      "description": "Container allows privilege escalation.",
+      "impact": "Compromised processes can gain elevated privileges.",
+      "remediation": "Set `allowPrivilegeEscalation: false`.",
+      "confidence": "High"
+    },
+    {
+      "id": "K8S-007",
+      "title": "Container runs as root",
+      "threat_type": "Privilege Escalation",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\capci_cd\\k8s\\deployment.yml",
+        "job_name": "",
+        "step_name": "Deployment/insecure-app",
+        "line_number": 19
+      },
+      "description": "Container is configured to run as root or not non-root.",
+      "impact": "Root containers increase blast radius if compromised.",
+      "remediation": "Run as non-root and set `runAsNonRoot: true`.",
+      "confidence": "Medium"
+    }
+  ],
+  "external_findings": []
+}

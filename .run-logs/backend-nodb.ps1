@@ -1,0 +1,2 @@
+Set-Location 'C:\Users\deepa\Downloads\BtechCapstone\BtechCapstone\backend'
+node -e ""process.env.MONGODB_URI='';process.env.MONGO_URI='';process.env.FRONTEND_URL='http://localhost:3000';import('./src/index.js');"" *>> 'C:\Users\deepa\Downloads\BtechCapstone\BtechCapstone\.run-logs\backend-nodb.log'

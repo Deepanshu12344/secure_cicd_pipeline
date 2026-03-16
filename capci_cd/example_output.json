@@ -1,0 +1,95 @@
+{
+  "pipeline_name": "capci_cd",
+  "scan_timestamp": "2026-02-21T00:00:00+00:00",
+  "overall_risk_score": 68,
+  "overall_severity": "High",
+  "summary": {
+    "total_issues": 5,
+    "critical_count": 0,
+    "high_count": 3,
+    "medium_count": 2,
+    "low_count": 0
+  },
+  "issues": [
+    {
+      "id": "SEC-002",
+      "title": "Plaintext secret-like environment variable",
+      "threat_type": "Secret Exposure",
+      "severity": "High",
+      "location": {
+        "file_path": ".github/workflows/sample.yml",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 0
+      },
+      "description": "An environment variable name suggests a secret and is set to a plaintext value.",
+      "impact": "Secrets may be exposed in logs, artifacts, or workflow history.",
+      "remediation": "Use GitHub Secrets and reference via `${{ secrets.NAME }}`.",
+      "confidence": "Medium"
+    },
+    {
+      "id": "AWS-104",
+      "title": "Security group open to the world (Terraform)",
+      "threat_type": "Unauthorized Access",
+      "severity": "High",
+      "location": {
+        "file_path": "infra/main.tf",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 0
+      },
+      "description": "Security group rule allows 0.0.0.0/0 to sensitive ports.",
+      "impact": "Increases risk of brute-force and exploitation.",
+      "remediation": "Restrict CIDR ranges and ports.",
+      "confidence": "High"
+    },
+    {
+      "id": "K8S-005",
+      "title": "Privileged container",
+      "threat_type": "Privilege Escalation",
+      "severity": "High",
+      "location": {
+        "file_path": "k8s/deployment.yml",
+        "job_name": "",
+        "step_name": "Deployment/insecure-app",
+        "line_number": 0
+      },
+      "description": "Container is running in privileged mode.",
+      "impact": "Privileged containers can access host resources.",
+      "remediation": "Disable privileged mode and use least privileges.",
+      "confidence": "High"
+    },
+    {
+      "id": "DC-003",
+      "title": "Docker socket exposed in Compose",
+      "threat_type": "Privilege Escalation",
+      "severity": "High",
+      "location": {
+        "file_path": "docker-compose.yml",
+        "job_name": "",
+        "step_name": "app",
+        "line_number": 0
+      },
+      "description": "Compose service mounts the Docker socket.",
+      "impact": "Compromise could lead to host takeover via Docker daemon.",
+      "remediation": "Avoid mounting the Docker socket.",
+      "confidence": "High"
+    },
+    {
+      "id": "AWS-005",
+      "title": "RDS instance publicly accessible",
+      "threat_type": "Data Exposure",
+      "severity": "Medium",
+      "location": {
+        "file_path": "cloudformation.yml",
+        "job_name": "",
+        "step_name": "PublicRDS",
+        "line_number": 0
+      },
+      "description": "RDS instance allows public access.",
+      "impact": "Database could be reached from the internet.",
+      "remediation": "Place RDS in private subnets and disable public access.",
+      "confidence": "High"
+    }
+  ]
+}

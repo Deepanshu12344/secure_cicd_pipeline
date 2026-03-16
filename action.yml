@@ -1,0 +1,166 @@
+name: "Secure Pipeline Action"
+description: "Runs the capci_cd security pipeline against the checked-out repository"
+
+inputs:
+  python-version:
+    required: false
+    default: "3.9"
+
+  target-path:
+    required: false
+    default: "."
+
+  dashboard-url:
+    required: false
+    default: ""
+
+  dashboard-project-id:
+    required: false
+    default: ""
+
+  dashboard-api-key:
+    required: false
+    default: ""
+
+  risk-threshold:
+    required: false
+    default: "80"
+
+  fail-on-critical:
+    required: false
+    default: "true"
+
+  install-external-tools:
+    required: false
+    default: "false"
+
+outputs:
+  report-json-path:
+    value: ${{ steps.export.outputs.report_json_path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        set -e
+        pip install -r "${{ github.action_path }}/capci_cd/requirements.txt"
+
+    - name: Install external scanners
+      if: ${{ inputs.install-external-tools == 'true' }}
+      shell: bash
+      run: |
+        set -e
+        pip install pip-audit semgrep
+
+    - name: Run pipeline
+      id: run_pipeline
+      shell: bash
+      working-directory: ${{ inputs.target-path }}
+      env:
+        CICD_RISK_THRESHOLD: ${{ inputs.risk-threshold }}
+        CICD_FAIL_ON_CRITICAL: ${{ inputs.fail-on-critical }}
+      run: |
+        set +e
+        python "${{ github.action_path }}/capci_cd/run_secure_pipeline.py"
+        echo "pipeline_exit_code=$?" >> "$GITHUB_OUTPUT"
+        exit 0
+
+    - name: Copy report
+      id: export
+      shell: bash
+      run: |
+        set -e
+        mkdir -p "${{ github.workspace }}/security-reports"
+
+        cp "${{ github.action_path }}/capci_cd/reports/report.json" \
+           "${{ github.workspace }}/security-reports/report.json"
+
+        echo "report_json_path=${{ github.workspace }}/security-reports/report.json" >> "$GITHUB_OUTPUT"
+
+    - name: Submit report to dashboard
+      if: ${{ inputs.dashboard-url != '' && inputs.dashboard-api-key != '' }}
+      continue-on-error: true
+      shell: bash
+      env:
+        DASHBOARD_URL: ${{ inputs.dashboard-url }}
+        DASHBOARD_PROJECT_ID: ${{ inputs.dashboard-project-id }}
+        DASHBOARD_API_KEY: ${{ inputs.dashboard-api-key }}
+        REPORT_PATH: ${{ steps.export.outputs.report_json_path }}
+      run: |
+        set -e
+        python - <<'PY'
+        import json
+        import os
+        import urllib.request
+
+        report_path = os.environ["REPORT_PATH"]
+        with open(report_path, "r", encoding="utf-8") as handle:
+            report = json.load(handle)
+
+        server_url = os.getenv("GITHUB_SERVER_URL", "https://github.com")
+        repo = os.getenv("GITHUB_REPOSITORY", "")
+        run_id = os.getenv("GITHUB_RUN_ID", "")
+        payload = {
+            "projectId": os.getenv("DASHBOARD_PROJECT_ID") or None,
+            "repositoryUrl": f"{server_url}/{repo}" if repo else "",
+            "repositoryFullName": repo,
+            "branch": os.getenv("GITHUB_REF_NAME", ""),
+            "commitSha": os.getenv("GITHUB_SHA", ""),
+            "workflowRunUrl": f"{server_url}/{repo}/actions/runs/{run_id}" if repo and run_id else "",
+            "reportFileName": os.path.basename(report_path),
+            "report": report,
+        }
+
+        url = os.environ["DASHBOARD_URL"].rstrip("/") + "/api/scans/ci-ingest"
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={
+                "Content-Type": "application/json",
+                "x-ci-api-key": os.environ["DASHBOARD_API_KEY"],
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                print(resp.read().decode("utf-8"))
+        except Exception as exc:
+            print(f"Dashboard ingest failed: {exc}")
+        PY
+
+    - name: Enforce gate
+      shell: bash
+      run: |
+        set -e
+
+        REPORT="${{ steps.export.outputs.report_json_path }}"
+        EXIT_CODE="${{ steps.run_pipeline.outputs.pipeline_exit_code }}"
+        THRESHOLD="${{ inputs.risk-threshold }}"
+        FAIL_CRIT="${{ inputs.fail-on-critical }}"
+
+        SCORE=$(python -c "import json; print(json.load(open('$REPORT')).get('overall_risk_score', 0))")
+        CRITICAL=$(python -c "import json; print(json.load(open('$REPORT')).get('summary', {}).get('critical_count', 0))")
+
+        echo "Score: $SCORE"
+        echo "Critical: $CRITICAL"
+
+        if [ "$FAIL_CRIT" = "true" ] && [ "$CRITICAL" -gt 0 ]; then
+          echo "Critical vulnerabilities found."
+          exit 1
+        fi
+
+        if [ "$SCORE" -ge "$THRESHOLD" ]; then
+          echo "Risk score exceeded threshold."
+          exit 1
+        fi
+
+        if [ "$EXIT_CODE" -ne 0 ]; then
+          exit "$EXIT_CODE"
+        fi

@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+ROOT="$(git rev-parse --show-toplevel)"
+if [ -z "$ROOT" ]; then
+  echo "Unable to find repo root. Skipping CI/CD scan."
+  exit 1
+fi
+
+cd "$ROOT"
+
+: "${CICD_RISK_THRESHOLD:=80}"
+: "${CICD_FAIL_ON_CRITICAL:=true}"
+
+if ! command -v python >/dev/null 2>&1; then
+  echo "python not found in PATH. Install Python to run security gate."
+  exit 1
+fi
+
+echo "Running CI/CD + repo security scan..."
+CICD_RISK_THRESHOLD="$CICD_RISK_THRESHOLD" \
+CICD_FAIL_ON_CRITICAL="$CICD_FAIL_ON_CRITICAL" \
+python capci_cd/run_secure_pipeline.py
+
+echo "Scan passed. Proceeding with commit."

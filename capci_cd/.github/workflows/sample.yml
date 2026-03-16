@@ -1,0 +1,33 @@
+name: Secure CI/CD
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: capci_cd
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Secure Pipeline
+        run: python run_secure_pipeline.py
+
+      - name: Upload Security Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report
+          path: capci_cd/reports/

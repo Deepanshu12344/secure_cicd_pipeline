@@ -1,0 +1,149 @@
+name: CI/CD Secure Docker Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+concurrency:
+  group: secure-cicd-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secure_scan:
+    name: Secure CI/CD Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Secure Pipeline Action
+        uses: ./.github/actions/secure-pipeline
+        with:
+          python-version: '3.11'
+          target-path: '.'
+          dashboard-url: ${{ secrets.DASHBOARD_URL }}
+          dashboard-project-id: ${{ secrets.DASHBOARD_PROJECT_ID }}
+          dashboard-api-key: ${{ secrets.CI_INGEST_API_KEY }}
+          risk-threshold: '80'
+          fail-on-critical: 'true'
+
+      - name: Submit report to faculty backend
+        if: ${{ secrets.FACULTY_API_URL != '' && secrets.CI_INGEST_API_KEY != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REPORT_PATH="security-reports/report.json"
+          if [ ! -f "$REPORT_PATH" ]; then
+            echo "Report file not found at $REPORT_PATH"
+            exit 1
+          fi
+
+          RISK_SCORE=$(jq '.overall_risk_score // 0' "$REPORT_PATH")
+          SUMMARY=$(jq -c '.summary // {}' "$REPORT_PATH")
+
+          curl -sS -X POST "${{ secrets.FACULTY_API_URL }}/api/submit-report-json" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.CI_INGEST_API_KEY }}" \
+            -d "$(jq -n \
+              --arg student_id '${{ github.actor }}' \
+              --arg repo_name '${{ github.repository }}' \
+              --arg commit_hash '${{ github.sha }}' \
+              --argjson risk_score "$RISK_SCORE" \
+              --argjson vulnerability_summary "$SUMMARY" \
+              '{student_id:$student_id, repo_name:$repo_name, commit_hash:$commit_hash, risk_score:$risk_score, vulnerability_summary:$vulnerability_summary}')" \
+            | tee faculty-submit-response.json
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report-${{ github.sha }}
+          path: security-reports/
+          if-no-files-found: warn
+
+  docker_build_and_push:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    needs: secure_scan
+    if: github.event_name == 'push'
+
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: backend
+            context: ./backend
+            dockerfile: ./backend/Dockerfile
+          - service: frontend
+            context: ./frontend
+            dockerfile: ./frontend/Dockerfile
+          - service: ml-engine
+            context: ./ml-engine
+            dockerfile: ./ml-engine/Dockerfile
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify Dockerfile exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "${{ matrix.dockerfile }}"
+
+      - name: Set image repo
+        id: vars
+        shell: bash
+        run: |
+          set -euo pipefail
+          NAMESPACE="${{ secrets.DOCKER_NAMESPACE }}"
+          if [ -z "$NAMESPACE" ]; then
+            NAMESPACE="${{ secrets.DOCKER_USERNAME }}"
+          fi
+
+          if [ -z "$NAMESPACE" ]; then
+            echo "Missing Docker namespace. Set DOCKER_NAMESPACE or DOCKER_USERNAME secret." >&2
+            exit 1
+          fi
+
+          echo "image_repo=${NAMESPACE}/secure-cicd-${{ matrix.service }}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Generate docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.vars.outputs.image_repo }}
+          tags: |
+            type=sha,prefix=,format=short
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
