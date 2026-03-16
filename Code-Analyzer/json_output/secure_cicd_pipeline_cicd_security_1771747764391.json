@@ -1,0 +1,95 @@
+{
+  "pipeline_name": "temp_repo",
+  "scan_timestamp": "2026-02-22T08:09:24.538424+00:00",
+  "overall_risk_score": 47,
+  "overall_severity": "High",
+  "summary": {
+    "total_issues": 5,
+    "critical_count": 0,
+    "high_count": 1,
+    "medium_count": 4,
+    "low_count": 0
+  },
+  "issues": [
+    {
+      "id": "SEC-001",
+      "title": "Possible hardcoded secret detected",
+      "threat_type": "Secret Exposure",
+      "severity": "High",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\Code-Analyzer\\temp_repo\\.github\\workflows\\main.yml",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 79
+      },
+      "description": "The workflow appears to contain a hardcoded credential-like value.",
+      "impact": "Secrets stored in source control can be exposed and reused by attackers.",
+      "remediation": "Move secrets to GitHub Secrets or a secret manager and reference them securely.",
+      "confidence": "Medium"
+    },
+    {
+      "id": "PERM-001",
+      "title": "Missing explicit permissions block",
+      "threat_type": "Privilege Escalation",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\Code-Analyzer\\temp_repo\\.github\\workflows\\main.yml",
+        "job_name": "",
+        "step_name": "",
+        "line_number": 0
+      },
+      "description": "Workflow does not declare explicit GITHUB_TOKEN permissions.",
+      "impact": "Default permissions may be broader than necessary.",
+      "remediation": "Add an explicit `permissions` block with least privilege.",
+      "confidence": "High"
+    },
+    {
+      "id": "3P-002",
+      "title": "Action not pinned to commit SHA",
+      "threat_type": "Supply Chain Attack",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\Code-Analyzer\\temp_repo\\.github\\workflows\\main.yml",
+        "job_name": "security",
+        "step_name": "Run Snyk security scan",
+        "line_number": 77
+      },
+      "description": "Third-party action is pinned to a version tag instead of a commit SHA.",
+      "impact": "Tags can be moved, enabling malicious updates.",
+      "remediation": "Pin actions to a full commit SHA and review updates.",
+      "confidence": "High"
+    },
+    {
+      "id": "3P-002",
+      "title": "Action not pinned to commit SHA",
+      "threat_type": "Supply Chain Attack",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\Code-Analyzer\\temp_repo\\.github\\workflows\\main.yml",
+        "job_name": "security",
+        "step_name": "SonarCloud Scan",
+        "line_number": 82
+      },
+      "description": "Third-party action is pinned to a version tag instead of a commit SHA.",
+      "impact": "Tags can be moved, enabling malicious updates.",
+      "remediation": "Pin actions to a full commit SHA and review updates.",
+      "confidence": "High"
+    },
+    {
+      "id": "DC-001",
+      "title": "Docker Compose image not pinned",
+      "threat_type": "Supply Chain Attack",
+      "severity": "Medium",
+      "location": {
+        "file_path": "C:\\Users\\deepa\\Downloads\\BtechCapstone\\BtechCapstone\\Code-Analyzer\\temp_repo\\docker-compose.yml",
+        "job_name": "",
+        "step_name": "mongo",
+        "line_number": 51
+      },
+      "description": "Compose service image uses no tag or `latest`.",
+      "impact": "Unreviewed image updates could be deployed.",
+      "remediation": "Pin images to a specific version or digest.",
+      "confidence": "High"
+    }
+  ]
+}

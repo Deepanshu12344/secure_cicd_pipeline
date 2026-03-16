@@ -1,0 +1,452 @@
+{
+  "repository": "Eversure-Final",
+  "analysis_date": "2026-02-20T05:13:03.996692",
+  "total_files_analyzed": 2,
+  "aggregate_metrics": {
+    "overall_score": 75.0,
+    "accuracy": 90.0,
+    "complexity": 85.0,
+    "efficiency": 88.0,
+    "maintainability": 90.0,
+    "documentation": 20.0
+  },
+  "file_analyses": [
+    {
+      "filePurpose": "Heuristic analysis of eslint.config.js. API-powered semantic analysis was not used.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME density and basic structural signals.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from control-flow keyword density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from branching/loop density and potential readability hotspots.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from line length and structural readability.",
+        "details": [
+          "Total lines: 29"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment line ratio.",
+        "details": [
+          "Comment lines: 0/29"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Structured heuristic scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality trend signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic pass did not find significant structural problems.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Add concise doc comments for key functions and modules",
+          "location": "File level",
+          "current": "Limited explanatory comments",
+          "recommended": "Add intent-focused comments near complex logic",
+          "benefit": "Speeds up onboarding and reduces maintenance cost.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation coverage",
+          "location": "File level",
+          "description": "Low amount of inline or block comments detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "eslint.config.js",
+      "extension": ".js",
+      "lines_of_code": 29
+    },
+    {
+      "filePurpose": "Heuristic analysis of postcss.config.js. API-powered semantic analysis was not used.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME density and basic structural signals.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from control-flow keyword density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from branching/loop density and potential readability hotspots.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from line length and structural readability.",
+        "details": [
+          "Total lines: 7"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment line ratio.",
+        "details": [
+          "Comment lines: 0/7"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Structured heuristic scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality trend signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic pass did not find significant structural problems.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Add concise doc comments for key functions and modules",
+          "location": "File level",
+          "current": "Limited explanatory comments",
+          "recommended": "Add intent-focused comments near complex logic",
+          "benefit": "Speeds up onboarding and reduces maintenance cost.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation coverage",
+          "location": "File level",
+          "description": "Low amount of inline or block comments detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "postcss.config.js",
+      "extension": ".js",
+      "lines_of_code": 7
+    }
+  ],
+  "repository_strengths": [
+    {
+      "point": "Structured heuristic scan completed",
+      "file": "eslint.config.js",
+      "location": "File level",
+      "impact": "Provides baseline quality trend signals."
+    },
+    {
+      "point": "Structured heuristic scan completed",
+      "file": "postcss.config.js",
+      "location": "File level",
+      "impact": "Provides baseline quality trend signals."
+    }
+  ],
+  "critical_issues": [
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "eslint.config.js",
+      "location": "File level",
+      "reason": "Quality issue in eslint.config.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "postcss.config.js",
+      "location": "File level",
+      "reason": "Quality issue in postcss.config.js",
+      "code": ""
+    }
+  ],
+  "improvement_suggestions": {
+    "CodeQuality": [
+      {
+        "suggestion": "Add concise doc comments for key functions and modules",
+        "file": "eslint.config.js",
+        "location": "File level",
+        "current": "Limited explanatory comments",
+        "recommended": "Add intent-focused comments near complex logic",
+        "benefit": "Speeds up onboarding and reduces maintenance cost."
+      },
+      {
+        "suggestion": "Add concise doc comments for key functions and modules",
+        "file": "postcss.config.js",
+        "location": "File level",
+        "current": "Limited explanatory comments",
+        "recommended": "Add intent-focused comments near complex logic",
+        "benefit": "Speeds up onboarding and reduces maintenance cost."
+      }
+    ]
+  },
+  "immediate_fixes": [],
+  "skills_gap_analysis": {
+    "overall_proficiency": 58.3,
+    "skill_levels": {
+      "Code Architecture": 90.0,
+      "Documentation": 20.0,
+      "Performance Optimization": 88.0,
+      "Security Practices": 50,
+      "Testing & QA": 50,
+      "Code Quality": 85.0,
+      "Database Design": 50,
+      "API Design": 50,
+      "Frontend Development": 50,
+      "Backend Development": 50
+    },
+    "identified_gaps": [
+      {
+        "skill": "Documentation",
+        "score": 20.0,
+        "severity": "Critical"
+      },
+      {
+        "skill": "Security Practices",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Testing & QA",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Database Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "API Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Frontend Development",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Backend Development",
+        "score": 50,
+        "severity": "High"
+      }
+    ],
+    "recommendations": [
+      {
+        "gap": "Documentation",
+        "severity": "Critical",
+        "issue": "Documentation needs improvement (score: 20/100)",
+        "recommendation": "Focus on improving Documentation",
+        "resources": [
+          "Documentation best practices",
+          "Learning materials on Documentation",
+          "Industry standards for Documentation"
+        ],
+        "effort": "High (6-8 weeks)"
+      },
+      {
+        "gap": "Security Practices",
+        "severity": "High",
+        "issue": "Security Practices needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Security Practices",
+        "resources": [
+          "Security Practices best practices",
+          "Learning materials on Security Practices",
+          "Industry standards for Security Practices"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Testing & QA",
+        "severity": "High",
+        "issue": "Testing & QA needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Testing & QA",
+        "resources": [
+          "Testing & QA best practices",
+          "Learning materials on Testing & QA",
+          "Industry standards for Testing & QA"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Database Design",
+        "severity": "High",
+        "issue": "Database Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Database Design",
+        "resources": [
+          "Database Design best practices",
+          "Learning materials on Database Design",
+          "Industry standards for Database Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "API Design",
+        "severity": "High",
+        "issue": "API Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving API Design",
+        "resources": [
+          "API Design best practices",
+          "Learning materials on API Design",
+          "Industry standards for API Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Frontend Development",
+        "severity": "High",
+        "issue": "Frontend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Frontend Development",
+        "resources": [
+          "Frontend Development best practices",
+          "Learning materials on Frontend Development",
+          "Industry standards for Frontend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Backend Development",
+        "severity": "High",
+        "issue": "Backend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Backend Development",
+        "resources": [
+          "Backend Development best practices",
+          "Learning materials on Backend Development",
+          "Industry standards for Backend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      }
+    ],
+    "learning_path": [
+      {
+        "order": 1,
+        "topic": "Master Documentation",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Documentation score is 20/100",
+        "subtopics": [
+          "Core concepts of Documentation",
+          "Best practices in Documentation",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 2,
+        "topic": "Master Security Practices",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Security Practices score is 50/100",
+        "subtopics": [
+          "Core concepts of Security Practices",
+          "Best practices in Security Practices",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 3,
+        "topic": "Master Testing & QA",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Testing & QA score is 50/100",
+        "subtopics": [
+          "Core concepts of Testing & QA",
+          "Best practices in Testing & QA",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 4,
+        "topic": "Master Database Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Database Design score is 50/100",
+        "subtopics": [
+          "Core concepts of Database Design",
+          "Best practices in Database Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 5,
+        "topic": "Master API Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: API Design score is 50/100",
+        "subtopics": [
+          "Core concepts of API Design",
+          "Best practices in API Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 6,
+        "topic": "Master Frontend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Frontend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Frontend Development",
+          "Best practices in Frontend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 7,
+        "topic": "Master Backend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Backend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Backend Development",
+          "Best practices in Backend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      }
+    ]
+  }
+}

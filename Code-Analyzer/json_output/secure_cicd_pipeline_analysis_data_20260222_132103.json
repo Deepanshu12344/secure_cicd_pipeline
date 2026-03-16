@@ -1,0 +1,4285 @@
+{
+  "repository": "secure_cicd_pipeline",
+  "analysis_date": "2026-02-22T13:21:06.628270",
+  "total_files_analyzed": 43,
+  "aggregate_metrics": {
+    "overall_score": 72.5,
+    "accuracy": 90.0,
+    "complexity": 79.3,
+    "efficiency": 83.7,
+    "maintainability": 88.5,
+    "documentation": 20.0
+  },
+  "file_analyses": [
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\config\\env.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 12"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/12"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\config\\env.js",
+      "extension": ".js",
+      "lines_of_code": 12
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\config\\passport.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 80,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 1"
+        ]
+      },
+      "efficiency": {
+        "score": 85,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 36"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/36"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\config\\passport.js",
+      "extension": ".js",
+      "lines_of_code": 36
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\index.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 81,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 3"
+        ]
+      },
+      "efficiency": {
+        "score": 85,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 114"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/114"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\index.js",
+      "extension": ".js",
+      "lines_of_code": 114
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\middleware\\authMiddleware.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 63,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 6"
+        ]
+      },
+      "efficiency": {
+        "score": 71,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 48"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/48"
+        ]
+      },
+      "overallScore": 67,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\middleware\\authMiddleware.js",
+      "extension": ".js",
+      "lines_of_code": 48
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\models\\Pipeline.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 48"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/48"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\models\\Pipeline.js",
+      "extension": ".js",
+      "lines_of_code": 48
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\models\\Project.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 84"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/84"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\models\\Project.js",
+      "extension": ".js",
+      "lines_of_code": 84
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\models\\Risk.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 67"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/67"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\models\\Risk.js",
+      "extension": ".js",
+      "lines_of_code": 67
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\models\\Scan.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 79"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/79"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\models\\Scan.js",
+      "extension": ".js",
+      "lines_of_code": 79
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\models\\User.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 56"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/56"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\models\\User.js",
+      "extension": ".js",
+      "lines_of_code": 56
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\routes\\auth.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 74,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 37"
+        ]
+      },
+      "efficiency": {
+        "score": 79,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 562"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/562"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\routes\\auth.js",
+      "extension": ".js",
+      "lines_of_code": 562
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\routes\\dashboard.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 68"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 4/68"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\routes\\dashboard.js",
+      "extension": ".js",
+      "lines_of_code": 68
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\routes\\github.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 78,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 8"
+        ]
+      },
+      "efficiency": {
+        "score": 83,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 195"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/195"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\routes\\github.js",
+      "extension": ".js",
+      "lines_of_code": 195
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\routes\\pipelines.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 68,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 14"
+        ]
+      },
+      "efficiency": {
+        "score": 75,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 145"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/145"
+        ]
+      },
+      "overallScore": 69,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\routes\\pipelines.js",
+      "extension": ".js",
+      "lines_of_code": 145
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\routes\\projects.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 75,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 15"
+        ]
+      },
+      "efficiency": {
+        "score": 80,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 251"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/251"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\routes\\projects.js",
+      "extension": ".js",
+      "lines_of_code": 251
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\routes\\risks.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 66,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 15"
+        ]
+      },
+      "efficiency": {
+        "score": 73,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 138"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/138"
+        ]
+      },
+      "overallScore": 68,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\routes\\risks.js",
+      "extension": ".js",
+      "lines_of_code": 138
+    },
+    {
+      "filePurpose": "Heuristic analysis of backend\\src\\routes\\scans.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 71,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 42"
+        ]
+      },
+      "efficiency": {
+        "score": 77,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 524"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/524"
+        ]
+      },
+      "overallScore": 70,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "backend\\src\\routes\\scans.js",
+      "extension": ".js",
+      "lines_of_code": 524
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\postcss.config.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 7"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/7"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\postcss.config.js",
+      "extension": ".js",
+      "lines_of_code": 7
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\App.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 77,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 4"
+        ]
+      },
+      "efficiency": {
+        "score": 82,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 88"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/88"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\App.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 88
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\components\\Layout.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 81,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 24"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/24"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\components\\Layout.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 24
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\components\\Navbar.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 77,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 3"
+        ]
+      },
+      "efficiency": {
+        "score": 82,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 64"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 2/64"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\components\\Navbar.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 64
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\components\\ProtectedRoute.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 70,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 2"
+        ]
+      },
+      "efficiency": {
+        "score": 76,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 23"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/23"
+        ]
+      },
+      "overallScore": 69,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\components\\ProtectedRoute.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 23
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\components\\PublicRoute.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 69,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 2"
+        ]
+      },
+      "efficiency": {
+        "score": 76,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 22"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/22"
+        ]
+      },
+      "overallScore": 69,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\components\\PublicRoute.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 22
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\components\\Sidebar.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 6"
+        ]
+      },
+      "maintainability": {
+        "score": 76,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 92"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/92"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\components\\Sidebar.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 92
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\components\\TopNav.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 75,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 13"
+        ]
+      },
+      "efficiency": {
+        "score": 80,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 3"
+        ]
+      },
+      "maintainability": {
+        "score": 88,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 222"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/222"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\components\\TopNav.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 222
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\main.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 11"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/11"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\main.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 11
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\ComingSoon.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 83,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 31"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/31"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\ComingSoon.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 31
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\Dashboard.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 86,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 94"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/94"
+        ]
+      },
+      "overallScore": 74,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\Dashboard.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 94
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\Home.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 80,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 12"
+        ]
+      },
+      "efficiency": {
+        "score": 85,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 8"
+        ]
+      },
+      "maintainability": {
+        "score": 86,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 422"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/422"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\Home.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 422
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\Login.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 75,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 17"
+        ]
+      },
+      "efficiency": {
+        "score": 80,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 5"
+        ]
+      },
+      "maintainability": {
+        "score": 87,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 289"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/289"
+        ]
+      },
+      "overallScore": 70,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\Login.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 289
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\Pipelines.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 78,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 5"
+        ]
+      },
+      "efficiency": {
+        "score": 83,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 87,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 119"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/119"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\Pipelines.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 119
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\ProjectDetail.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 77,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 6"
+        ]
+      },
+      "efficiency": {
+        "score": 82,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 89,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 135"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/135"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\ProjectDetail.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 135
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\Projects.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 80,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 15"
+        ]
+      },
+      "efficiency": {
+        "score": 84,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 17"
+        ]
+      },
+      "maintainability": {
+        "score": 83,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 490"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/490"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\Projects.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 490
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\Risks.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 73,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 7"
+        ]
+      },
+      "efficiency": {
+        "score": 79,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 86,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 105"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/105"
+        ]
+      },
+      "overallScore": 70,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\Risks.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 105
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\pages\\Scans.jsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 79,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 24"
+        ]
+      },
+      "efficiency": {
+        "score": 83,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 22"
+        ]
+      },
+      "maintainability": {
+        "score": 83,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 622"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/622"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\pages\\Scans.jsx",
+      "extension": ".jsx",
+      "lines_of_code": 622
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\services\\api.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 84,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 1"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 91"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/91"
+        ]
+      },
+      "overallScore": 74,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\services\\api.js",
+      "extension": ".js",
+      "lines_of_code": 91
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\store\\auth.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 82,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 1"
+        ]
+      },
+      "efficiency": {
+        "score": 86,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 52"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/52"
+        ]
+      },
+      "overallScore": 74,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\store\\auth.js",
+      "extension": ".js",
+      "lines_of_code": 52
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\tailwind.config.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 27"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/27"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\tailwind.config.js",
+      "extension": ".js",
+      "lines_of_code": 27
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\vite.config.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 16"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/16"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\vite.config.js",
+      "extension": ".js",
+      "lines_of_code": 16
+    },
+    {
+      "filePurpose": "Heuristic analysis of ml-engine\\src\\app.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 72,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 13"
+        ]
+      },
+      "efficiency": {
+        "score": 78,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 173"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 4/173"
+        ]
+      },
+      "overallScore": 70,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "ml-engine\\src\\app.py",
+      "extension": ".py",
+      "lines_of_code": 173
+    },
+    {
+      "filePurpose": "Heuristic analysis of vscode-extension\\src\\extension.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 77,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 7"
+        ]
+      },
+      "efficiency": {
+        "score": 82,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 149"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 4/149"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "vscode-extension\\src\\extension.js",
+      "extension": ".js",
+      "lines_of_code": 149
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\index.html.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 14"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/14"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\index.html",
+      "extension": ".html",
+      "lines_of_code": 14
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\App.css.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 4"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/4"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\App.css",
+      "extension": ".css",
+      "lines_of_code": 4
+    },
+    {
+      "filePurpose": "Heuristic analysis of frontend\\src\\index.css.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 8"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/8"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "frontend\\src\\index.css",
+      "extension": ".css",
+      "lines_of_code": 8
+    }
+  ],
+  "repository_strengths": [
+    {
+      "point": "Fallback scan completed",
+      "file": "backend\\src\\config\\env.js",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "backend\\src\\config\\passport.js",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "backend\\src\\index.js",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "backend\\src\\middleware\\authMiddleware.js",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    }
+  ],
+  "critical_issues": [
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\config\\env.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\config\\env.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\config\\passport.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\config\\passport.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\index.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\index.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\middleware\\authMiddleware.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\middleware\\authMiddleware.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\models\\Pipeline.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\models\\Pipeline.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\models\\Project.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\models\\Project.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\models\\Risk.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\models\\Risk.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\models\\Scan.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\models\\Scan.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\models\\User.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\models\\User.js",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\auth.js",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\auth.js",
+      "location": "Multiple lines",
+      "reason": "Quality issue in backend\\src\\routes\\auth.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\auth.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\routes\\auth.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\dashboard.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\routes\\dashboard.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\github.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\routes\\github.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\pipelines.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\routes\\pipelines.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\projects.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\routes\\projects.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\risks.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\routes\\risks.js",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\scans.js",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\scans.js",
+      "location": "Multiple lines",
+      "reason": "Quality issue in backend\\src\\routes\\scans.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "backend\\src\\routes\\scans.js",
+      "location": "File level",
+      "reason": "Quality issue in backend\\src\\routes\\scans.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\index.html",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\index.html",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\postcss.config.js",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\postcss.config.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\App.css",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\App.css",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\App.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\App.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\Layout.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\Layout.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\components\\Layout.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\Layout.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\components\\Layout.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\Navbar.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\components\\Navbar.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\ProtectedRoute.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\components\\ProtectedRoute.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\PublicRoute.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\components\\PublicRoute.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\Sidebar.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\Sidebar.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\components\\Sidebar.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\Sidebar.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\components\\Sidebar.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\TopNav.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\TopNav.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\components\\TopNav.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\components\\TopNav.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\components\\TopNav.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\index.css",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\index.css",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\main.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\main.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\ComingSoon.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\ComingSoon.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\ComingSoon.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\ComingSoon.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\ComingSoon.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Dashboard.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Dashboard.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\Dashboard.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Dashboard.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\Dashboard.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Home.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Home.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\Home.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Home.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\Home.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Login.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Login.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\Login.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Login.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\Login.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Pipelines.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Pipelines.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\Pipelines.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Pipelines.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\Pipelines.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\ProjectDetail.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\ProjectDetail.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\ProjectDetail.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\ProjectDetail.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\ProjectDetail.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Projects.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Projects.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\Projects.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Projects.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\Projects.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Risks.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Risks.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\Risks.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Risks.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\Risks.jsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Scans.jsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Scans.jsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in frontend\\src\\pages\\Scans.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\pages\\Scans.jsx",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\pages\\Scans.jsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\services\\api.js",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\services\\api.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\src\\store\\auth.js",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\src\\store\\auth.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\tailwind.config.js",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\tailwind.config.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "frontend\\vite.config.js",
+      "location": "File level",
+      "reason": "Quality issue in frontend\\vite.config.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "ml-engine\\src\\app.py",
+      "location": "File level",
+      "reason": "Quality issue in ml-engine\\src\\app.py",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "vscode-extension\\src\\extension.js",
+      "location": "File level",
+      "reason": "Quality issue in vscode-extension\\src\\extension.js",
+      "code": ""
+    }
+  ],
+  "improvement_suggestions": {
+    "CodeQuality": [
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "backend\\src\\routes\\auth.js",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "backend\\src\\routes\\scans.js",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\components\\Layout.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\components\\Sidebar.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\components\\TopNav.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\ComingSoon.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\Dashboard.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\Home.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\Login.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\Pipelines.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\ProjectDetail.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\Projects.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\Risks.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "frontend\\src\\pages\\Scans.jsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      }
+    ]
+  },
+  "immediate_fixes": [],
+  "skills_gap_analysis": {
+    "overall_proficiency": 57.1,
+    "skill_levels": {
+      "Code Architecture": 88.48837209302332,
+      "Documentation": 20.00000000000002,
+      "Performance Optimization": 83.65116279069771,
+      "Security Practices": 50,
+      "Testing & QA": 50,
+      "Code Quality": 79.32558139534886,
+      "Database Design": 50,
+      "API Design": 50,
+      "Frontend Development": 50,
+      "Backend Development": 50
+    },
+    "identified_gaps": [
+      {
+        "skill": "Documentation",
+        "score": 20.0,
+        "severity": "Critical"
+      },
+      {
+        "skill": "Security Practices",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Testing & QA",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Database Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "API Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Frontend Development",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Backend Development",
+        "score": 50,
+        "severity": "High"
+      }
+    ],
+    "recommendations": [
+      {
+        "gap": "Documentation",
+        "severity": "Critical",
+        "issue": "Documentation needs improvement (score: 20/100)",
+        "recommendation": "Focus on improving Documentation",
+        "resources": [
+          "Documentation best practices",
+          "Learning materials on Documentation",
+          "Industry standards for Documentation"
+        ],
+        "effort": "High (6-8 weeks)"
+      },
+      {
+        "gap": "Security Practices",
+        "severity": "High",
+        "issue": "Security Practices needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Security Practices",
+        "resources": [
+          "Security Practices best practices",
+          "Learning materials on Security Practices",
+          "Industry standards for Security Practices"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Testing & QA",
+        "severity": "High",
+        "issue": "Testing & QA needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Testing & QA",
+        "resources": [
+          "Testing & QA best practices",
+          "Learning materials on Testing & QA",
+          "Industry standards for Testing & QA"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Database Design",
+        "severity": "High",
+        "issue": "Database Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Database Design",
+        "resources": [
+          "Database Design best practices",
+          "Learning materials on Database Design",
+          "Industry standards for Database Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "API Design",
+        "severity": "High",
+        "issue": "API Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving API Design",
+        "resources": [
+          "API Design best practices",
+          "Learning materials on API Design",
+          "Industry standards for API Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Frontend Development",
+        "severity": "High",
+        "issue": "Frontend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Frontend Development",
+        "resources": [
+          "Frontend Development best practices",
+          "Learning materials on Frontend Development",
+          "Industry standards for Frontend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Backend Development",
+        "severity": "High",
+        "issue": "Backend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Backend Development",
+        "resources": [
+          "Backend Development best practices",
+          "Learning materials on Backend Development",
+          "Industry standards for Backend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      }
+    ],
+    "learning_path": [
+      {
+        "order": 1,
+        "topic": "Master Documentation",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Documentation score is 20/100",
+        "subtopics": [
+          "Core concepts of Documentation",
+          "Best practices in Documentation",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 2,
+        "topic": "Master Security Practices",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Security Practices score is 50/100",
+        "subtopics": [
+          "Core concepts of Security Practices",
+          "Best practices in Security Practices",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 3,
+        "topic": "Master Testing & QA",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Testing & QA score is 50/100",
+        "subtopics": [
+          "Core concepts of Testing & QA",
+          "Best practices in Testing & QA",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 4,
+        "topic": "Master Database Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Database Design score is 50/100",
+        "subtopics": [
+          "Core concepts of Database Design",
+          "Best practices in Database Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 5,
+        "topic": "Master API Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: API Design score is 50/100",
+        "subtopics": [
+          "Core concepts of API Design",
+          "Best practices in API Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 6,
+        "topic": "Master Frontend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Frontend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Frontend Development",
+          "Best practices in Frontend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 7,
+        "topic": "Master Backend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Backend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Backend Development",
+          "Best practices in Backend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      }
+    ]
+  }
+}

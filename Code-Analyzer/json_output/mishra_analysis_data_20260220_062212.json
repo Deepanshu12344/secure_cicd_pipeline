@@ -1,0 +1,1075 @@
+{
+  "repository": "mishra",
+  "analysis_date": "2026-02-20T06:22:17.249787",
+  "total_files_analyzed": 8,
+  "aggregate_metrics": {
+    "overall_score": 72.9,
+    "accuracy": 90.0,
+    "complexity": 69.5,
+    "efficiency": 76.4,
+    "maintainability": 88.5,
+    "documentation": 40.5
+  },
+  "file_analyses": [
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\app.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 68,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 62"
+        ]
+      },
+      "efficiency": {
+        "score": 75,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 10"
+        ]
+      },
+      "maintainability": {
+        "score": 87,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 631"
+        ]
+      },
+      "documentation": {
+        "score": 89,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 403/631"
+        ]
+      },
+      "overallScore": 82,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\app.py",
+      "extension": ".py",
+      "lines_of_code": 631
+    },
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\app_old.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 62,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 19"
+        ]
+      },
+      "efficiency": {
+        "score": 70,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 4"
+        ]
+      },
+      "maintainability": {
+        "score": 84,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 144"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 18/144"
+        ]
+      },
+      "overallScore": 65,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\app_old.py",
+      "extension": ".py",
+      "lines_of_code": 144
+    },
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\custom_doc_api.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 70,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 24"
+        ]
+      },
+      "efficiency": {
+        "score": 77,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 89,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 281"
+        ]
+      },
+      "documentation": {
+        "score": 82,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 165/281"
+        ]
+      },
+      "overallScore": 82,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\custom_doc_api.py",
+      "extension": ".py",
+      "lines_of_code": 281
+    },
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\custom_doc_app.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 67,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 11"
+        ]
+      },
+      "efficiency": {
+        "score": 74,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 88,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 105"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 9/105"
+        ]
+      },
+      "overallScore": 68,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\custom_doc_app.py",
+      "extension": ".py",
+      "lines_of_code": 105
+    },
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\open_source_models\\Falcon_app.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 70,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 9"
+        ]
+      },
+      "efficiency": {
+        "score": 77,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 107"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 8/107"
+        ]
+      },
+      "overallScore": 69,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\open_source_models\\Falcon_app.py",
+      "extension": ".py",
+      "lines_of_code": 107
+    },
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\open_source_models\\bloom_app.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 70,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 8"
+        ]
+      },
+      "efficiency": {
+        "score": 77,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 96"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 8/96"
+        ]
+      },
+      "overallScore": 69,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\open_source_models\\bloom_app.py",
+      "extension": ".py",
+      "lines_of_code": 96
+    },
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\open_source_models\\llama_app.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 70,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 9"
+        ]
+      },
+      "efficiency": {
+        "score": 77,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 107"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 8/107"
+        ]
+      },
+      "overallScore": 69,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\open_source_models\\llama_app.py",
+      "extension": ".py",
+      "lines_of_code": 107
+    },
+    {
+      "filePurpose": "Heuristic analysis of Test_Ai\\vectorize_documents.py.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 79,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 3"
+        ]
+      },
+      "efficiency": {
+        "score": 84,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 86"
+        ]
+      },
+      "documentation": {
+        "score": 53,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 33/86"
+        ]
+      },
+      "overallScore": 79,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "Test_Ai\\vectorize_documents.py",
+      "extension": ".py",
+      "lines_of_code": 86
+    }
+  ],
+  "repository_strengths": [
+    {
+      "point": "Fallback scan completed",
+      "file": "Test_Ai\\app.py",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "Test_Ai\\app_old.py",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "Test_Ai\\custom_doc_api.py",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "Test_Ai\\custom_doc_app.py",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    }
+  ],
+  "critical_issues": [
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\app.py",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\app.py",
+      "location": "Multiple lines",
+      "reason": "Quality issue in Test_Ai\\app.py",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\app_old.py",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\app_old.py",
+      "location": "Multiple lines",
+      "reason": "Quality issue in Test_Ai\\app_old.py",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\app_old.py",
+      "location": "File level",
+      "reason": "Quality issue in Test_Ai\\app_old.py",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\custom_doc_api.py",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\custom_doc_api.py",
+      "location": "Multiple lines",
+      "reason": "Quality issue in Test_Ai\\custom_doc_api.py",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\custom_doc_app.py",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\custom_doc_app.py",
+      "location": "Multiple lines",
+      "reason": "Quality issue in Test_Ai\\custom_doc_app.py",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\custom_doc_app.py",
+      "location": "File level",
+      "reason": "Quality issue in Test_Ai\\custom_doc_app.py",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\open_source_models\\Falcon_app.py",
+      "location": "File level",
+      "reason": "Quality issue in Test_Ai\\open_source_models\\Falcon_app.py",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\open_source_models\\bloom_app.py",
+      "location": "File level",
+      "reason": "Quality issue in Test_Ai\\open_source_models\\bloom_app.py",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\open_source_models\\llama_app.py",
+      "location": "File level",
+      "reason": "Quality issue in Test_Ai\\open_source_models\\llama_app.py",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "Test_Ai\\vectorize_documents.py",
+      "location": "File level",
+      "reason": "Quality issue in Test_Ai\\vectorize_documents.py",
+      "code": ""
+    }
+  ],
+  "improvement_suggestions": {
+    "CodeQuality": [
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "Test_Ai\\app.py",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "Test_Ai\\app_old.py",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "Test_Ai\\custom_doc_api.py",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "Test_Ai\\custom_doc_app.py",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      }
+    ]
+  },
+  "immediate_fixes": [],
+  "skills_gap_analysis": {
+    "overall_proficiency": 57.5,
+    "skill_levels": {
+      "Code Architecture": 88.5,
+      "Documentation": 40.5,
+      "Performance Optimization": 76.375,
+      "Security Practices": 50,
+      "Testing & QA": 50,
+      "Code Quality": 69.5,
+      "Database Design": 50,
+      "API Design": 50,
+      "Frontend Development": 50,
+      "Backend Development": 50
+    },
+    "identified_gaps": [
+      {
+        "skill": "Documentation",
+        "score": 40.5,
+        "severity": "High"
+      },
+      {
+        "skill": "Security Practices",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Testing & QA",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Database Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "API Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Frontend Development",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Backend Development",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Code Quality",
+        "score": 69.5,
+        "severity": "Medium"
+      }
+    ],
+    "recommendations": [
+      {
+        "gap": "Documentation",
+        "severity": "High",
+        "issue": "Documentation needs improvement (score: 40/100)",
+        "recommendation": "Focus on improving Documentation",
+        "resources": [
+          "Documentation best practices",
+          "Learning materials on Documentation",
+          "Industry standards for Documentation"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Security Practices",
+        "severity": "High",
+        "issue": "Security Practices needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Security Practices",
+        "resources": [
+          "Security Practices best practices",
+          "Learning materials on Security Practices",
+          "Industry standards for Security Practices"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Testing & QA",
+        "severity": "High",
+        "issue": "Testing & QA needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Testing & QA",
+        "resources": [
+          "Testing & QA best practices",
+          "Learning materials on Testing & QA",
+          "Industry standards for Testing & QA"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Database Design",
+        "severity": "High",
+        "issue": "Database Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Database Design",
+        "resources": [
+          "Database Design best practices",
+          "Learning materials on Database Design",
+          "Industry standards for Database Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "API Design",
+        "severity": "High",
+        "issue": "API Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving API Design",
+        "resources": [
+          "API Design best practices",
+          "Learning materials on API Design",
+          "Industry standards for API Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Frontend Development",
+        "severity": "High",
+        "issue": "Frontend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Frontend Development",
+        "resources": [
+          "Frontend Development best practices",
+          "Learning materials on Frontend Development",
+          "Industry standards for Frontend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Backend Development",
+        "severity": "High",
+        "issue": "Backend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Backend Development",
+        "resources": [
+          "Backend Development best practices",
+          "Learning materials on Backend Development",
+          "Industry standards for Backend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Code Quality",
+        "severity": "Medium",
+        "issue": "Code Quality needs improvement (score: 70/100)",
+        "recommendation": "Focus on improving Code Quality",
+        "resources": [
+          "Code Quality best practices",
+          "Learning materials on Code Quality",
+          "Industry standards for Code Quality"
+        ],
+        "effort": "Low (2-4 weeks)"
+      }
+    ],
+    "learning_path": [
+      {
+        "order": 1,
+        "topic": "Master Documentation",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Documentation score is 40/100",
+        "subtopics": [
+          "Core concepts of Documentation",
+          "Best practices in Documentation",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 2,
+        "topic": "Master Security Practices",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Security Practices score is 50/100",
+        "subtopics": [
+          "Core concepts of Security Practices",
+          "Best practices in Security Practices",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 3,
+        "topic": "Master Testing & QA",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Testing & QA score is 50/100",
+        "subtopics": [
+          "Core concepts of Testing & QA",
+          "Best practices in Testing & QA",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 4,
+        "topic": "Master Database Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Database Design score is 50/100",
+        "subtopics": [
+          "Core concepts of Database Design",
+          "Best practices in Database Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 5,
+        "topic": "Master API Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: API Design score is 50/100",
+        "subtopics": [
+          "Core concepts of API Design",
+          "Best practices in API Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 6,
+        "topic": "Master Frontend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Frontend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Frontend Development",
+          "Best practices in Frontend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 7,
+        "topic": "Master Backend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Backend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Backend Development",
+          "Best practices in Backend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 8,
+        "topic": "Master Code Quality",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Code Quality score is 70/100",
+        "subtopics": [
+          "Core concepts of Code Quality",
+          "Best practices in Code Quality",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,1738 @@
+{
+  "repository": "supercars",
+  "analysis_date": "2026-02-21T01:53:50.081290",
+  "total_files_analyzed": 18,
+  "aggregate_metrics": {
+    "overall_score": 74.8,
+    "accuracy": 90.0,
+    "complexity": 84.7,
+    "efficiency": 87.8,
+    "maintainability": 89.9,
+    "documentation": 20.0
+  },
+  "file_analyses": [
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\about\\page.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 7"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/7"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\about\\page.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 7
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\BrowseType.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 24"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/24"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\BrowseType.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 24
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\Custombtn.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 23"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/23"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\Custombtn.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 23
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\Footer.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 39"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/39"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\Footer.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 39
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\Hero.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 21"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/21"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\Hero.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 21
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\MostSearched.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 88,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 77"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/77"
+        ]
+      },
+      "overallScore": 74,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\MostSearched.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 77
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\Navbar.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 30"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/30"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\Navbar.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 30
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\QACard.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 36"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/36"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\QACard.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 36
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\components\\WhyChoose.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 45"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/45"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\components\\WhyChoose.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 45
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\constants\\browsertypes.ts.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 11"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/11"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\constants\\browsertypes.ts",
+      "extension": ".ts",
+      "lines_of_code": 11
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\constants\\footerLinks.ts.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 30"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/30"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\constants\\footerLinks.ts",
+      "extension": ".ts",
+      "lines_of_code": 30
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\constants\\mostsearched.ts.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 51"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/51"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\constants\\mostsearched.ts",
+      "extension": ".ts",
+      "lines_of_code": 51
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\constants\\qaCards.ts.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 80,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 1"
+        ]
+      },
+      "efficiency": {
+        "score": 84,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 35"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/35"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\constants\\qaCards.ts",
+      "extension": ".ts",
+      "lines_of_code": 35
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\layout.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 42"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/42"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\layout.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 42
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\page.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 22"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/22"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\page.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 22
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\rent\\page.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 7"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/7"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\rent\\page.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 7
+    },
+    {
+      "filePurpose": "Heuristic analysis of tailwind.config.ts.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 20"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/20"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "tailwind.config.ts",
+      "extension": ".ts",
+      "lines_of_code": 20
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\app\\globals.css.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 46"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/46"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\app\\globals.css",
+      "extension": ".css",
+      "lines_of_code": 46
+    }
+  ],
+  "repository_strengths": [
+    {
+      "point": "Fallback scan completed",
+      "file": "src\\app\\about\\page.tsx",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "src\\app\\components\\BrowseType.tsx",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "src\\app\\components\\Custombtn.tsx",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "src\\app\\components\\Footer.tsx",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    }
+  ],
+  "critical_issues": [
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\about\\page.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\about\\page.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\BrowseType.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\BrowseType.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\Custombtn.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\Custombtn.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\Footer.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\Footer.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\Hero.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\Hero.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\MostSearched.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\MostSearched.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\app\\components\\MostSearched.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\MostSearched.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\MostSearched.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\Navbar.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\Navbar.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\QACard.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\QACard.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\components\\WhyChoose.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\components\\WhyChoose.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\constants\\browsertypes.ts",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\constants\\browsertypes.ts",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\constants\\footerLinks.ts",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\constants\\footerLinks.ts",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\constants\\mostsearched.ts",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\constants\\mostsearched.ts",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\constants\\qaCards.ts",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\constants\\qaCards.ts",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\globals.css",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\globals.css",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\layout.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\layout.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\page.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\page.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\app\\rent\\page.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\app\\rent\\page.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "tailwind.config.ts",
+      "location": "File level",
+      "reason": "Quality issue in tailwind.config.ts",
+      "code": ""
+    }
+  ],
+  "improvement_suggestions": {
+    "CodeQuality": [
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\app\\components\\MostSearched.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      }
+    ]
+  },
+  "immediate_fixes": [],
+  "skills_gap_analysis": {
+    "overall_proficiency": 58.2,
+    "skill_levels": {
+      "Code Architecture": 89.88888888888889,
+      "Documentation": 19.999999999999996,
+      "Performance Optimization": 87.77777777777776,
+      "Security Practices": 50,
+      "Testing & QA": 50,
+      "Code Quality": 84.72222222222224,
+      "Database Design": 50,
+      "API Design": 50,
+      "Frontend Development": 50,
+      "Backend Development": 50
+    },
+    "identified_gaps": [
+      {
+        "skill": "Documentation",
+        "score": 20.0,
+        "severity": "Critical"
+      },
+      {
+        "skill": "Security Practices",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Testing & QA",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Database Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "API Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Frontend Development",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Backend Development",
+        "score": 50,
+        "severity": "High"
+      }
+    ],
+    "recommendations": [
+      {
+        "gap": "Documentation",
+        "severity": "Critical",
+        "issue": "Documentation needs improvement (score: 20/100)",
+        "recommendation": "Focus on improving Documentation",
+        "resources": [
+          "Documentation best practices",
+          "Learning materials on Documentation",
+          "Industry standards for Documentation"
+        ],
+        "effort": "High (6-8 weeks)"
+      },
+      {
+        "gap": "Security Practices",
+        "severity": "High",
+        "issue": "Security Practices needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Security Practices",
+        "resources": [
+          "Security Practices best practices",
+          "Learning materials on Security Practices",
+          "Industry standards for Security Practices"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Testing & QA",
+        "severity": "High",
+        "issue": "Testing & QA needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Testing & QA",
+        "resources": [
+          "Testing & QA best practices",
+          "Learning materials on Testing & QA",
+          "Industry standards for Testing & QA"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Database Design",
+        "severity": "High",
+        "issue": "Database Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Database Design",
+        "resources": [
+          "Database Design best practices",
+          "Learning materials on Database Design",
+          "Industry standards for Database Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "API Design",
+        "severity": "High",
+        "issue": "API Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving API Design",
+        "resources": [
+          "API Design best practices",
+          "Learning materials on API Design",
+          "Industry standards for API Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Frontend Development",
+        "severity": "High",
+        "issue": "Frontend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Frontend Development",
+        "resources": [
+          "Frontend Development best practices",
+          "Learning materials on Frontend Development",
+          "Industry standards for Frontend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Backend Development",
+        "severity": "High",
+        "issue": "Backend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Backend Development",
+        "resources": [
+          "Backend Development best practices",
+          "Learning materials on Backend Development",
+          "Industry standards for Backend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      }
+    ],
+    "learning_path": [
+      {
+        "order": 1,
+        "topic": "Master Documentation",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Documentation score is 20/100",
+        "subtopics": [
+          "Core concepts of Documentation",
+          "Best practices in Documentation",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 2,
+        "topic": "Master Security Practices",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Security Practices score is 50/100",
+        "subtopics": [
+          "Core concepts of Security Practices",
+          "Best practices in Security Practices",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 3,
+        "topic": "Master Testing & QA",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Testing & QA score is 50/100",
+        "subtopics": [
+          "Core concepts of Testing & QA",
+          "Best practices in Testing & QA",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 4,
+        "topic": "Master Database Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Database Design score is 50/100",
+        "subtopics": [
+          "Core concepts of Database Design",
+          "Best practices in Database Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 5,
+        "topic": "Master API Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: API Design score is 50/100",
+        "subtopics": [
+          "Core concepts of API Design",
+          "Best practices in API Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 6,
+        "topic": "Master Frontend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Frontend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Frontend Development",
+          "Best practices in Frontend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 7,
+        "topic": "Master Backend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Backend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Backend Development",
+          "Best practices in Backend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      }
+    ]
+  }
+}

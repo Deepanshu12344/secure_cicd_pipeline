@@ -1,0 +1,4656 @@
+{
+  "repository": "Eversure-Final",
+  "analysis_date": "2026-02-20T12:04:34.815638",
+  "total_files_analyzed": 41,
+  "aggregate_metrics": {
+    "overall_score": 73.8,
+    "accuracy": 90.0,
+    "complexity": 81.8,
+    "efficiency": 85.6,
+    "maintainability": 83.2,
+    "documentation": 27.2
+  },
+  "file_analyses": [
+    {
+      "filePurpose": "Heuristic analysis of eslint.config.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 29"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/29"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "eslint.config.js",
+      "extension": ".js",
+      "lines_of_code": 29
+    },
+    {
+      "filePurpose": "Heuristic analysis of postcss.config.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 7"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/7"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "postcss.config.js",
+      "extension": ".js",
+      "lines_of_code": 7
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\App.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 54"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/54"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\App.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 54
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\AnimatedCounter.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 68,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 7"
+        ]
+      },
+      "efficiency": {
+        "score": 75,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 72"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/72"
+        ]
+      },
+      "overallScore": 69,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\AnimatedCounter.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 72
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\Carousel.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 82,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 4"
+        ]
+      },
+      "efficiency": {
+        "score": 86,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 8"
+        ]
+      },
+      "maintainability": {
+        "score": 82,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 206"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 4/206"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\Carousel.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 206
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\Counter.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 84,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 2"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 7"
+        ]
+      },
+      "maintainability": {
+        "score": 82,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 183"
+        ]
+      },
+      "documentation": {
+        "score": 54,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 71/183"
+        ]
+      },
+      "overallScore": 79,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\Counter.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 183
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\DownloadTab.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 78,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 18"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/18"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\DownloadTab.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 18
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\EventRibbon.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 75,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 23"
+        ]
+      },
+      "efficiency": {
+        "score": 80,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 386"
+        ]
+      },
+      "documentation": {
+        "score": 55,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 152/386"
+        ]
+      },
+      "overallScore": 78,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [],
+      "file": "src\\components\\EventRibbon.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 386
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\FloatingCareerButton.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 3"
+        ]
+      },
+      "maintainability": {
+        "score": 71,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 34"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/34"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\FloatingCareerButton.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 34
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\Footer.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 87,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 127"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/127"
+        ]
+      },
+      "overallScore": 74,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\Footer.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 127
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\Header.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 79,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 16"
+        ]
+      },
+      "efficiency": {
+        "score": 83,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 12"
+        ]
+      },
+      "maintainability": {
+        "score": 85,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 444"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 12/444"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\Header.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 444
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\LocationMap.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 85,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 81"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 4/81"
+        ]
+      },
+      "overallScore": 74,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\LocationMap.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 81
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\QuickFinder.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 82,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 5"
+        ]
+      },
+      "efficiency": {
+        "score": 86,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 6"
+        ]
+      },
+      "maintainability": {
+        "score": 86,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 275"
+        ]
+      },
+      "documentation": {
+        "score": 84,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 166/275"
+        ]
+      },
+      "overallScore": 86,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\QuickFinder.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 275
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\QuickFinderTab.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 79,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 40"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/40"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\QuickFinderTab.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 40
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\ScrollSection.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 74,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 6"
+        ]
+      },
+      "efficiency": {
+        "score": 79,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 91"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/91"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\ScrollSection.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 91
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\ScrollToTop.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 14"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/14"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\ScrollToTop.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 14
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\SustainabilityGoals.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 83,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 1"
+        ]
+      },
+      "efficiency": {
+        "score": 86,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 2"
+        ]
+      },
+      "maintainability": {
+        "score": 84,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 66"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/66"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\SustainabilityGoals.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 66
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\components\\Timeline.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 13"
+        ]
+      },
+      "maintainability": {
+        "score": 72,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 157"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/157"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\components\\Timeline.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 157
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\data\\BlogData.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 71,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 6"
+        ]
+      },
+      "efficiency": {
+        "score": 77,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 12"
+        ]
+      },
+      "maintainability": {
+        "score": 55,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 74"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/74"
+        ]
+      },
+      "overallScore": 63,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\data\\BlogData.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 74
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\data\\Countries.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 246"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/246"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\data\\Countries.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 246
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\data\\EventData.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 18"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/18"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\data\\EventData.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 18
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\data\\ProductsData.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 77,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 99"
+        ]
+      },
+      "efficiency": {
+        "score": 82,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 66"
+        ]
+      },
+      "maintainability": {
+        "score": 84,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 2114"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 7/2114"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\data\\ProductsData.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 2114
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\main.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 11"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/11"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\main.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 11
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\About.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 81,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 26"
+        ]
+      },
+      "efficiency": {
+        "score": 85,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 44"
+        ]
+      },
+      "maintainability": {
+        "score": 81,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 985"
+        ]
+      },
+      "documentation": {
+        "score": 68,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 481/985"
+        ]
+      },
+      "overallScore": 81,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\About.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 985
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Blog.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 83,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 2"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 8"
+        ]
+      },
+      "maintainability": {
+        "score": 79,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 147"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/147"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Blog.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 147
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\BlogDetails.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 82,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 2"
+        ]
+      },
+      "efficiency": {
+        "score": 86,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 3"
+        ]
+      },
+      "maintainability": {
+        "score": 85,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 115"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 2/115"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\BlogDetails.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 115
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\CSR.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 84,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 3"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 10"
+        ]
+      },
+      "maintainability": {
+        "score": 83,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 280"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 3/280"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\CSR.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 280
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Career.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 79,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 16"
+        ]
+      },
+      "efficiency": {
+        "score": 84,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 12"
+        ]
+      },
+      "maintainability": {
+        "score": 85,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 455"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 5/455"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Career.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 455
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Certificate.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 83,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 2"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 6"
+        ]
+      },
+      "maintainability": {
+        "score": 83,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 171"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/171"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Certificate.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 171
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Contact.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 83,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 10"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 22"
+        ]
+      },
+      "maintainability": {
+        "score": 84,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 787"
+        ]
+      },
+      "documentation": {
+        "score": 65,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 371/787"
+        ]
+      },
+      "overallScore": 82,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Contact.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 787
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Event.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 83,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 1"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 88,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 90"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/90"
+        ]
+      },
+      "overallScore": 74,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Event.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 90
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Home.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 83,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 5"
+        ]
+      },
+      "efficiency": {
+        "score": 86,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 23"
+        ]
+      },
+      "maintainability": {
+        "score": 75,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 330"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 3/330"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Home.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 330
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\ProductDetails.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 83,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 7"
+        ]
+      },
+      "efficiency": {
+        "score": 87,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 15"
+        ]
+      },
+      "maintainability": {
+        "score": 84,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 520"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 3/520"
+        ]
+      },
+      "overallScore": 73,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\ProductDetails.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 520
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Products.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 81,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 7"
+        ]
+      },
+      "efficiency": {
+        "score": 85,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 12"
+        ]
+      },
+      "maintainability": {
+        "score": 81,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 284"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 13/284"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Products.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 284
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\pages\\Sustainability.tsx.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 82,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 4"
+        ]
+      },
+      "efficiency": {
+        "score": 86,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 14"
+        ]
+      },
+      "maintainability": {
+        "score": 76,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 212"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 3/212"
+        ]
+      },
+      "overallScore": 71,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\pages\\Sustainability.tsx",
+      "extension": ".tsx",
+      "lines_of_code": 212
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\vite-env.d.ts.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 2"
+        ]
+      },
+      "documentation": {
+        "score": 70,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/2"
+        ]
+      },
+      "overallScore": 85,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [],
+      "file": "src\\vite-env.d.ts",
+      "extension": ".ts",
+      "lines_of_code": 2
+    },
+    {
+      "filePurpose": "Heuristic analysis of tailwind.config.js.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 9"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/9"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "tailwind.config.js",
+      "extension": ".js",
+      "lines_of_code": 9
+    },
+    {
+      "filePurpose": "Heuristic analysis of vite.config.ts.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 0"
+        ]
+      },
+      "maintainability": {
+        "score": 90,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 11"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 1/11"
+        ]
+      },
+      "overallScore": 75,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "No major static issues detected in heuristic mode",
+          "location": "File level",
+          "code": "",
+          "severity": "Low",
+          "reason": "Heuristic checks found no major structural issues.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [],
+      "codeQualityIssues": [
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "vite.config.ts",
+      "extension": ".ts",
+      "lines_of_code": 11
+    },
+    {
+      "filePurpose": "Heuristic analysis of extra.html.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 73,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 7"
+        ]
+      },
+      "efficiency": {
+        "score": 79,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 88,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 105"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 2/105"
+        ]
+      },
+      "overallScore": 70,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "extra.html",
+      "extension": ".html",
+      "lines_of_code": 105
+    },
+    {
+      "filePurpose": "Heuristic analysis of index.html.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 85,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 0"
+        ]
+      },
+      "efficiency": {
+        "score": 88,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 1"
+        ]
+      },
+      "maintainability": {
+        "score": 76,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 15"
+        ]
+      },
+      "documentation": {
+        "score": 20,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 0/15"
+        ]
+      },
+      "overallScore": 72,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "index.html",
+      "extension": ".html",
+      "lines_of_code": 15
+    },
+    {
+      "filePurpose": "Heuristic analysis of src\\index.css.",
+      "accuracy": {
+        "score": 90,
+        "explanation": "Estimated from TODO/FIXME indicators.",
+        "details": [
+          "TODO/FIXME count: 0"
+        ]
+      },
+      "complexity": {
+        "score": 75,
+        "explanation": "Estimated from branching density.",
+        "details": [
+          "Control-flow indicators: 5"
+        ]
+      },
+      "efficiency": {
+        "score": 81,
+        "explanation": "Estimated from structural complexity.",
+        "details": [
+          "Long lines: 11"
+        ]
+      },
+      "maintainability": {
+        "score": 63,
+        "explanation": "Estimated from readability patterns.",
+        "details": [
+          "Total lines: 89"
+        ]
+      },
+      "documentation": {
+        "score": 40,
+        "explanation": "Estimated from comment ratio.",
+        "details": [
+          "Comment lines: 26/89"
+        ]
+      },
+      "overallScore": 70,
+      "strengths": [
+        {
+          "point": "Fallback scan completed",
+          "location": "File level",
+          "impact": "Provides baseline quality signals."
+        }
+      ],
+      "weaknesses": [
+        {
+          "issue": "Very long lines reduce readability",
+          "location": "Multiple lines",
+          "code": "Lines over 120 characters detected",
+          "severity": "Medium",
+          "reason": "Long lines are harder to review and maintain.",
+          "category": "CodeQuality"
+        }
+      ],
+      "suggestions": [
+        {
+          "suggestion": "Wrap long lines and split complex expressions",
+          "location": "Multiple lines",
+          "current": "Long inline statements",
+          "recommended": "Extract sub-expressions and keep lines short",
+          "benefit": "Improves maintainability and review speed.",
+          "category": "CodeQuality"
+        }
+      ],
+      "codeQualityIssues": [
+        {
+          "type": "Readability",
+          "location": "Multiple lines",
+          "description": "Lines exceed 120 characters.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        },
+        {
+          "type": "Documentation",
+          "location": "File level",
+          "description": "Low comment density detected.",
+          "priority": "Medium",
+          "category": "CodeQuality"
+        }
+      ],
+      "file": "src\\index.css",
+      "extension": ".css",
+      "lines_of_code": 89
+    }
+  ],
+  "repository_strengths": [
+    {
+      "point": "Fallback scan completed",
+      "file": "eslint.config.js",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "postcss.config.js",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "src\\App.tsx",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    },
+    {
+      "point": "Fallback scan completed",
+      "file": "src\\components\\AnimatedCounter.tsx",
+      "location": "File level",
+      "impact": "Provides baseline quality signals."
+    }
+  ],
+  "critical_issues": [
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "eslint.config.js",
+      "location": "File level",
+      "reason": "Quality issue in eslint.config.js",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "extra.html",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "extra.html",
+      "location": "Multiple lines",
+      "reason": "Quality issue in extra.html",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "extra.html",
+      "location": "File level",
+      "reason": "Quality issue in extra.html",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "index.html",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "index.html",
+      "location": "Multiple lines",
+      "reason": "Quality issue in index.html",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "index.html",
+      "location": "File level",
+      "reason": "Quality issue in index.html",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "postcss.config.js",
+      "location": "File level",
+      "reason": "Quality issue in postcss.config.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\App.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\App.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\AnimatedCounter.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\AnimatedCounter.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Carousel.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Carousel.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\Carousel.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Carousel.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\Carousel.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Counter.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Counter.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\Counter.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Counter.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\Counter.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\DownloadTab.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\DownloadTab.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\DownloadTab.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\DownloadTab.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\DownloadTab.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\FloatingCareerButton.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\FloatingCareerButton.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\FloatingCareerButton.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\FloatingCareerButton.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\FloatingCareerButton.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Footer.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Footer.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\Footer.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Footer.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\Footer.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Header.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Header.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\Header.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Header.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\Header.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\LocationMap.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\LocationMap.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\LocationMap.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\LocationMap.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\LocationMap.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\QuickFinder.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\QuickFinder.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\QuickFinder.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\QuickFinderTab.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\QuickFinderTab.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\QuickFinderTab.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\QuickFinderTab.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\QuickFinderTab.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\ScrollSection.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\ScrollSection.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\ScrollToTop.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\ScrollToTop.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\SustainabilityGoals.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\SustainabilityGoals.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\SustainabilityGoals.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\SustainabilityGoals.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\SustainabilityGoals.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Timeline.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Timeline.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\components\\Timeline.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\components\\Timeline.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\components\\Timeline.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\BlogData.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\BlogData.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\data\\BlogData.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\BlogData.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\data\\BlogData.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\Countries.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\data\\Countries.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\EventData.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\data\\EventData.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\ProductsData.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\ProductsData.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\data\\ProductsData.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\data\\ProductsData.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\data\\ProductsData.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\index.css",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\index.css",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\index.css",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\index.css",
+      "location": "File level",
+      "reason": "Quality issue in src\\index.css",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\main.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\main.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\About.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\About.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\About.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Blog.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Blog.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Blog.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Blog.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\Blog.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\BlogDetails.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\BlogDetails.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\BlogDetails.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\BlogDetails.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\BlogDetails.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\CSR.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\CSR.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\CSR.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\CSR.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\CSR.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Career.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Career.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Career.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Career.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\Career.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Certificate.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Certificate.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Certificate.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Certificate.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\Certificate.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Contact.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Contact.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Contact.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Event.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Event.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Event.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Event.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\Event.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Home.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Home.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Home.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Home.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\Home.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\ProductDetails.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\ProductDetails.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\ProductDetails.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\ProductDetails.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\ProductDetails.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Products.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Products.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Products.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Products.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\Products.tsx",
+      "code": ""
+    },
+    {
+      "issue": "Very long lines reduce readability",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Sustainability.tsx",
+      "location": "Multiple lines",
+      "reason": "Long lines are harder to review and maintain.",
+      "code": "Lines over 120 characters detected"
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Sustainability.tsx",
+      "location": "Multiple lines",
+      "reason": "Quality issue in src\\pages\\Sustainability.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "src\\pages\\Sustainability.tsx",
+      "location": "File level",
+      "reason": "Quality issue in src\\pages\\Sustainability.tsx",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "tailwind.config.js",
+      "location": "File level",
+      "reason": "Quality issue in tailwind.config.js",
+      "code": ""
+    },
+    {
+      "issue": "CodeQuality",
+      "severity": "Medium",
+      "category": "CodeQuality",
+      "category_label": "Complexity & Maintainability",
+      "file": "vite.config.ts",
+      "location": "File level",
+      "reason": "Quality issue in vite.config.ts",
+      "code": ""
+    }
+  ],
+  "improvement_suggestions": {
+    "CodeQuality": [
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\Carousel.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\Counter.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\DownloadTab.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\FloatingCareerButton.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\Footer.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\Header.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\LocationMap.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\QuickFinder.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\QuickFinderTab.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\SustainabilityGoals.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\components\\Timeline.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\data\\BlogData.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\data\\ProductsData.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\About.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Blog.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\BlogDetails.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\CSR.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Career.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Certificate.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Contact.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Event.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Home.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\ProductDetails.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Products.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\pages\\Sustainability.tsx",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "extra.html",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "index.html",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      },
+      {
+        "suggestion": "Wrap long lines and split complex expressions",
+        "file": "src\\index.css",
+        "location": "Multiple lines",
+        "current": "Long inline statements",
+        "recommended": "Extract sub-expressions and keep lines short",
+        "benefit": "Improves maintainability and review speed."
+      }
+    ]
+  },
+  "immediate_fixes": [],
+  "skills_gap_analysis": {
+    "overall_proficiency": 57.8,
+    "skill_levels": {
+      "Code Architecture": 83.1951219512195,
+      "Documentation": 27.219512195121965,
+      "Performance Optimization": 85.6341463414634,
+      "Security Practices": 50,
+      "Testing & QA": 50,
+      "Code Quality": 81.82926829268293,
+      "Database Design": 50,
+      "API Design": 50,
+      "Frontend Development": 50,
+      "Backend Development": 50
+    },
+    "identified_gaps": [
+      {
+        "skill": "Documentation",
+        "score": 27.2,
+        "severity": "Critical"
+      },
+      {
+        "skill": "Security Practices",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Testing & QA",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Database Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "API Design",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Frontend Development",
+        "score": 50,
+        "severity": "High"
+      },
+      {
+        "skill": "Backend Development",
+        "score": 50,
+        "severity": "High"
+      }
+    ],
+    "recommendations": [
+      {
+        "gap": "Documentation",
+        "severity": "Critical",
+        "issue": "Documentation needs improvement (score: 27/100)",
+        "recommendation": "Focus on improving Documentation",
+        "resources": [
+          "Documentation best practices",
+          "Learning materials on Documentation",
+          "Industry standards for Documentation"
+        ],
+        "effort": "High (6-8 weeks)"
+      },
+      {
+        "gap": "Security Practices",
+        "severity": "High",
+        "issue": "Security Practices needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Security Practices",
+        "resources": [
+          "Security Practices best practices",
+          "Learning materials on Security Practices",
+          "Industry standards for Security Practices"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Testing & QA",
+        "severity": "High",
+        "issue": "Testing & QA needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Testing & QA",
+        "resources": [
+          "Testing & QA best practices",
+          "Learning materials on Testing & QA",
+          "Industry standards for Testing & QA"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Database Design",
+        "severity": "High",
+        "issue": "Database Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Database Design",
+        "resources": [
+          "Database Design best practices",
+          "Learning materials on Database Design",
+          "Industry standards for Database Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "API Design",
+        "severity": "High",
+        "issue": "API Design needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving API Design",
+        "resources": [
+          "API Design best practices",
+          "Learning materials on API Design",
+          "Industry standards for API Design"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Frontend Development",
+        "severity": "High",
+        "issue": "Frontend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Frontend Development",
+        "resources": [
+          "Frontend Development best practices",
+          "Learning materials on Frontend Development",
+          "Industry standards for Frontend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      },
+      {
+        "gap": "Backend Development",
+        "severity": "High",
+        "issue": "Backend Development needs improvement (score: 50/100)",
+        "recommendation": "Focus on improving Backend Development",
+        "resources": [
+          "Backend Development best practices",
+          "Learning materials on Backend Development",
+          "Industry standards for Backend Development"
+        ],
+        "effort": "Medium (4-6 weeks)"
+      }
+    ],
+    "learning_path": [
+      {
+        "order": 1,
+        "topic": "Master Documentation",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Documentation score is 27/100",
+        "subtopics": [
+          "Core concepts of Documentation",
+          "Best practices in Documentation",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 2,
+        "topic": "Master Security Practices",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Security Practices score is 50/100",
+        "subtopics": [
+          "Core concepts of Security Practices",
+          "Best practices in Security Practices",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 3,
+        "topic": "Master Testing & QA",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Testing & QA score is 50/100",
+        "subtopics": [
+          "Core concepts of Testing & QA",
+          "Best practices in Testing & QA",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 4,
+        "topic": "Master Database Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Database Design score is 50/100",
+        "subtopics": [
+          "Core concepts of Database Design",
+          "Best practices in Database Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 5,
+        "topic": "Master API Design",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: API Design score is 50/100",
+        "subtopics": [
+          "Core concepts of API Design",
+          "Best practices in API Design",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 6,
+        "topic": "Master Frontend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Frontend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Frontend Development",
+          "Best practices in Frontend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      },
+      {
+        "order": 7,
+        "topic": "Master Backend Development",
+        "duration": "3-4 weeks",
+        "rationale": "Gap identified: Backend Development score is 50/100",
+        "subtopics": [
+          "Core concepts of Backend Development",
+          "Best practices in Backend Development",
+          "Real-world patterns",
+          "Tools and frameworks"
+        ]
+      }
+    ]
+  }
+}

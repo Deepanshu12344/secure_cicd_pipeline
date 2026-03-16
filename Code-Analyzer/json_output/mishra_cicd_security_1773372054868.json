@@ -1,0 +1,14 @@
+{
+  "pipeline_name": "temp_repo",
+  "scan_timestamp": "2026-03-13T03:20:55.044933+00:00",
+  "overall_risk_score": 0,
+  "overall_severity": "Low",
+  "summary": {
+    "total_issues": 0,
+    "critical_count": 0,
+    "high_count": 0,
+    "medium_count": 0,
+    "low_count": 0
+  },
+  "issues": []
+}
