@@ -264,6 +264,24 @@ const runPythonCommand = ({ cwd, args, allowExitCodes = [0], outputLimit = 12000
     })
   })
 
+const ensureAnalyzerDependencies = async () => {
+  if (!analyzerDir) return
+  const requirementsPath = path.join(analyzerDir, 'requirements.txt')
+  if (!fs.existsSync(requirementsPath)) return
+
+  const markerPath = path.join(analyzerDir, '.deps_installed')
+  if (fs.existsSync(markerPath)) return
+
+  await runPythonCommand({
+    cwd: analyzerDir,
+    args: ['-m', 'pip', 'install', '--disable-pip-version-check', '-r', requirementsPath],
+    allowExitCodes: [0],
+    outputLimit: 200000
+  })
+
+  fs.writeFileSync(markerPath, new Date().toISOString(), 'utf8')
+}
+
 const mapCicdIssuesToUnifiedIssues = (issues) => {
   if (!Array.isArray(issues)) return []
 
@@ -496,6 +514,8 @@ const executeAnalyzerForScan = async (scan) => {
   if (!analyzerDir) {
     throw new Error('Analyzer directory not found. Expected code-analyzer/analyzer.py')
   }
+
+  await ensureAnalyzerDependencies()
 
   const reportsDir = path.join(analyzerDir, 'reports')
   const jsonDir = path.join(analyzerDir, 'json_output')
