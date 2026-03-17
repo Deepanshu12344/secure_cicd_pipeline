@@ -58,6 +58,13 @@ export const dashboardApi = {
   getVulnerabilities: () => apiClient.get('/dashboard/vulnerabilities/types')
 }
 
+export const ciApi = {
+  getSummary: () => apiClient.get('/ci/summary'),
+  getProjects: () => apiClient.get('/ci/projects'),
+  getProjectScans: (repo, limit = 20) => apiClient.get(`/ci/projects/${encodeURIComponent(repo)}/scans`, { params: { limit } }),
+  downloadReport: (scanId) => apiClient.get(`/ci/report/${scanId}`, { responseType: 'blob' })
+}
+
 export const pipelinesApi = {
   getAll: () => apiClient.get('/pipelines'),
   getById: (id) => apiClient.get(`/pipelines/${id}`),

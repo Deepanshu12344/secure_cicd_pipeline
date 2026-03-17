@@ -1,31 +1,58 @@
+import { useEffect, useState } from 'react'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { ciApi } from '../services/api'
 
 export default function Dashboard() {
-  const riskTrendData = [
-    { week: 'Week 1', critical: 2, high: 8, medium: 40, low: 85 },
-    { week: 'Week 2', critical: 3, high: 10, medium: 45, low: 88 },
-    { week: 'Week 3', critical: 2, high: 9, medium: 48, low: 92 },
-    { week: 'Week 4', critical: 1, high: 12, medium: 50, low: 95 },
-    { week: 'Week 5', critical: 3, high: 15, medium: 42, low: 89 },
-  ]
+  const [metrics, setMetrics] = useState({
+    totalProjects: 0,
+    activeScans: 0,
+    criticalRisks: 0,
+    successRate: 100
+  })
+  const [riskTrendData, setRiskTrendData] = useState([])
+  const [vulnTypeData, setVulnTypeData] = useState([])
+  const [projects, setProjects] = useState([])
+  const [error, setError] = useState('')
 
-  const vulnTypeData = [
-    { type: 'SQL Injection', count: 15 },
-    { type: 'XSS', count: 28 },
-    { type: 'Insecure Deps', count: 42 },
-    { type: 'Auth Bypass', count: 8 },
-    { type: 'Data Exposure', count: 12 },
-  ]
+  useEffect(() => {
+    let mounted = true
+    ciApi
+      .getSummary()
+      .then((response) => {
+        if (!mounted) return
+        const data = response.data?.data || {}
+        setMetrics(data.metrics || metrics)
+        setRiskTrendData(Array.isArray(data.riskTrend) ? data.riskTrend : [])
+        setVulnTypeData(Array.isArray(data.vulnTypes) ? data.vulnTypes : [])
+      })
+      .catch(() => {
+        if (mounted) setError('Failed to load dashboard metrics')
+      })
+
+    ciApi
+      .getProjects()
+      .then((response) => {
+        if (mounted) setProjects(Array.isArray(response.data?.data) ? response.data.data : [])
+      })
+      .catch(() => {
+        if (mounted) setError('Failed to load project list')
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   return (
     <div className="space-y-6">
+      {error ? <div className="card p-4 text-red-400">{error}</div> : null}
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Projects', value: '24', color: 'blue' },
-          { label: 'Active Scans', value: '5', color: 'cyan' },
-          { label: 'Critical Risks', value: '3', color: 'red' },
-          { label: 'Success Rate', value: '94.5%', color: 'green' },
+          { label: 'Total Projects', value: metrics.totalProjects, color: 'blue' },
+          { label: 'Active Scans', value: metrics.activeScans, color: 'cyan' },
+          { label: 'Critical Risks', value: metrics.criticalRisks, color: 'red' },
+          { label: 'Success Rate', value: `${metrics.successRate}%`, color: 'green' },
         ].map((metric, i) => (
           <div key={i} className="card p-6">
             <p className="text-slate-400 text-sm mb-2">{metric.label}</p>
@@ -71,21 +98,50 @@ export default function Dashboard() {
       <div className="card p-6">
         <h3 className="text-lg font-semibold mb-4 text-white">Recent Activity</h3>
         <div className="space-y-3">
-          {[
-            { action: 'Scan completed', project: 'Backend API', status: 'success', time: '2 hours ago' },
-            { action: 'Risk identified', project: 'Frontend App', status: 'warning', time: '4 hours ago' },
-            { action: 'Pipeline blocked', project: 'Mobile App', status: 'error', time: '1 day ago' },
-          ].map((activity, i) => (
-            <div key={i} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
-              <div>
-                <p className="text-white font-medium">{activity.action}</p>
-                <p className="text-sm text-slate-400">{activity.project}</p>
+          {projects.length === 0 ? (
+            <p className="text-sm text-slate-400">No scans ingested yet.</p>
+          ) : (
+            projects.slice(0, 5).map((project) => (
+              <div key={project.repository} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                <div>
+                  <p className="text-white font-medium">Scan completed</p>
+                  <p className="text-sm text-slate-400">{project.repository}</p>
+                </div>
+                <span className={`badge badge-${project.riskScore >= 80 ? 'high' : project.riskScore >= 50 ? 'medium' : 'low'}`}>
+                  Risk {project.riskScore}
+                </span>
               </div>
-              <span className={`badge badge-${activity.status === 'success' ? 'low' : activity.status === 'warning' ? 'medium' : 'high'}`}>
-                {activity.time}
-              </span>
-            </div>
-          ))}
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Projects */}
+      <div className="card p-6">
+        <h3 className="text-lg font-semibold mb-4 text-white">Projects</h3>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm text-slate-300">
+            <thead>
+              <tr className="text-left text-slate-400 border-b border-slate-700">
+                <th className="py-2">Repository</th>
+                <th className="py-2">Risk Score</th>
+                <th className="py-2">Critical</th>
+                <th className="py-2">Last Scan</th>
+                <th className="py-2">Total Scans</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map((project) => (
+                <tr key={project.repository} className="border-b border-slate-800/60">
+                  <td className="py-2">{project.repository}</td>
+                  <td className="py-2">{project.riskScore}</td>
+                  <td className="py-2">{project.critical}</td>
+                  <td className="py-2">{project.lastScanAt ? new Date(project.lastScanAt).toLocaleString() : '-'}</td>
+                  <td className="py-2">{project.totalScans}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

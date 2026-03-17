@@ -2,12 +2,14 @@ import express from 'express'
 import mongoose from 'mongoose'
 import fs from 'fs'
 import path from 'path'
+import multer from 'multer'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import { protect } from '../middleware/authMiddleware.js'
 import Scan from '../models/Scan.js'
 import Project from '../models/Project.js'
 import Risk from '../models/Risk.js'
+import User from '../models/User.js'
 
 const router = express.Router()
 const getOwnerId = (req) => req.user?._id || req.user?.id
@@ -15,12 +17,29 @@ const getOwnerId = (req) => req.user?._id || req.user?.id
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const workspaceRoot = path.resolve(__dirname, '../../..')
+const ciReportsDir = path.resolve(__dirname, '../../uploads/ci-reports')
 const analyzerDir = ['code-analyzer', 'Code-Analyzer']
   .map((dir) => path.join(workspaceRoot, dir))
   .find((dir) => fs.existsSync(path.join(dir, 'analyzer.py')))
 const cicdScannerDir = ['capci_cd', 'capci_cd_extracted']
   .map((dir) => path.join(workspaceRoot, dir))
   .find((dir) => fs.existsSync(path.join(dir, 'scanner.py')))
+
+const ciReportStorage = multer.diskStorage({
+  destination: (req, _file, cb) => {
+    const repo = String(req.body.repository || req.body.repositoryFullName || '').replace(/[^a-zA-Z0-9._-]+/g, '_')
+    const dest = path.join(ciReportsDir, repo || 'unknown')
+    fs.mkdirSync(dest, { recursive: true })
+    cb(null, dest)
+  },
+  filename: (_req, file, cb) => {
+    const timestamp = Date.now()
+    const base = path.basename(file.originalname || 'scan-report.json').replace(/[^a-zA-Z0-9._-]+/g, '_')
+    cb(null, `${timestamp}-${base}`)
+  }
+})
+
+const ciReportUpload = multer({ storage: ciReportStorage })
 
 const runningScans = new Set()
 
@@ -91,6 +110,22 @@ const resolveCiIngestProject = async ({ projectId, repositoryUrl, repositoryFull
     project: null,
     reason: 'Project not found for repository. Import the repository or provide DASHBOARD_PROJECT_ID'
   }
+}
+
+const resolveCiIngestOwner = async () => {
+  const ownerId = String(process.env.CI_INGEST_OWNER_ID || '').trim()
+  if (ownerId && mongoose.Types.ObjectId.isValid(ownerId)) {
+    const user = await User.findById(ownerId)
+    if (user) return user
+  }
+
+  const ownerEmail = String(process.env.CI_INGEST_OWNER_EMAIL || '').trim().toLowerCase()
+  if (ownerEmail) {
+    const user = await User.findOne({ email: ownerEmail })
+    if (user) return user
+  }
+
+  return User.findOne()
 }
 
 const listFilesByExtension = (dirPath, extension) => {
@@ -815,7 +850,11 @@ router.get('/:id/report', protect, async (req, res) => {
   }
 
   const resolvedPath = path.resolve(filePath)
-  if (!analyzerDir || !resolvedPath.startsWith(path.resolve(analyzerDir)) || !fs.existsSync(resolvedPath)) {
+  const analyzerRoot = analyzerDir ? path.resolve(analyzerDir) : null
+  const ciRoot = path.resolve(ciReportsDir)
+  const isUnderAnalyzer = analyzerRoot && resolvedPath.startsWith(analyzerRoot)
+  const isUnderCiReports = resolvedPath.startsWith(ciRoot)
+  if ((!isUnderAnalyzer && !isUnderCiReports) || !fs.existsSync(resolvedPath)) {
     return res.status(404).json({
       success: false,
       error: 'Report file not found'
@@ -875,91 +914,132 @@ router.delete('/:id', protect, async (req, res) => {
   })
 })
 
-router.post('/ci-ingest', async (req, res) => {
+router.post('/ci-ingest', ciReportUpload.fields([
+  { name: 'report', maxCount: 1 },
+  { name: 'reportPdf', maxCount: 1 }
+]), async (req, res) => {
   const expectedApiKey = String(process.env.CI_INGEST_API_KEY || '').trim()
-  if (!expectedApiKey) {
-    return res.status(503).json({
-      success: false,
-      error: 'CI ingestion is disabled. Set CI_INGEST_API_KEY on the backend.'
-    })
+  if (expectedApiKey) {
+    const providedApiKey = String(req.headers['x-ci-api-key'] || '').trim()
+    if (!providedApiKey || providedApiKey !== expectedApiKey) {
+      return res.status(401).json({
+        success: false,
+        error: 'Unauthorized CI ingest request'
+      })
+    }
   }
 
-  const providedApiKey = String(req.headers['x-ci-api-key'] || '').trim()
-  if (!providedApiKey || providedApiKey !== expectedApiKey) {
-    return res.status(401).json({
-      success: false,
-      error: 'Unauthorized CI ingest request'
-    })
-  }
+  const body = req.body || {}
+  const repositoryFullName =
+    String(body.repositoryFullName || body.repository || '').trim() || String(body.repository || '').trim()
+  const repositoryUrl =
+    String(body.repositoryUrl || '').trim() ||
+    (repositoryFullName ? `https://github.com/${repositoryFullName}` : '')
 
-  const { projectId, repositoryUrl, repositoryFullName, branch, commitSha, workflowRunUrl, reportFileName } =
-    req.body || {}
+  const reportFile = req.files?.report?.[0]
+  const reportPdfFile = req.files?.reportPdf?.[0]
   const report =
-    req.body?.report && typeof req.body.report === 'object'
-      ? req.body.report
-      : (() => {
+    reportFile && fs.existsSync(reportFile.path)
+      ? (() => {
           try {
-            return JSON.parse(String(req.body?.report || '{}'))
+            return JSON.parse(fs.readFileSync(reportFile.path, 'utf8'))
           } catch {
             return null
           }
         })()
+      : body?.report && typeof body.report === 'object'
+        ? body.report
+        : (() => {
+            try {
+              return JSON.parse(String(body?.report || '{}'))
+            } catch {
+              return null
+            }
+          })()
 
   if (!report || typeof report !== 'object') {
     return res.status(400).json({ success: false, error: 'report JSON payload is required' })
   }
 
+  const normalizedReport = {
+    ...report,
+    overall_risk_score: report?.overall_risk_score ?? report?.riskScore ?? 0,
+    summary: report?.summary || {
+      total_issues: Array.isArray(report?.vulnerabilities) ? report.vulnerabilities.length : 0,
+      critical_count: report?.critical || 0,
+      high_count: report?.high || 0,
+      medium_count: report?.medium || 0,
+      low_count: report?.low || 0
+    },
+    issues: report?.issues || report?.vulnerabilities || []
+  }
+
   const projectResolution = await resolveCiIngestProject({
-    projectId,
+    projectId: body.projectId,
     repositoryUrl,
     repositoryFullName
   })
-  const project = projectResolution.project
+  let project = projectResolution.project
   if (!project) {
-    const reasonText = String(projectResolution.reason || '')
-    const status = reasonText.includes('required') ? 400 : projectId ? 404 : 409
-    return res.status(status).json({ success: false, error: projectResolution.reason || 'Project not found' })
+    const owner = await resolveCiIngestOwner()
+    if (!owner) {
+      return res.status(409).json({
+        success: false,
+        error: 'No user available to own CI projects. Create a user or set CI_INGEST_OWNER_EMAIL.'
+      })
+    }
+
+    const repoName = repositoryFullName.split('/').pop() || 'repository'
+    project = await Project.create({
+      ownerId: owner._id,
+      name: repoName,
+      fullName: repositoryFullName || repoName,
+      repositoryUrl: repositoryUrl || repositoryFullName || repoName,
+      repositoryType: 'github',
+      status: 'active',
+      riskScore: Number(normalizedReport?.overall_risk_score || 0)
+    })
   }
 
   const startedAt = new Date()
-  const findings = mapCicdIssuesToUnifiedIssues(report?.issues).slice(0, 50)
+  const findings = mapCicdIssuesToUnifiedIssues(normalizedReport?.issues).slice(0, 50)
   const scan = await Scan.create({
     ownerId: project.ownerId,
     projectId: project._id,
     repositoryUrl: String(repositoryUrl || project.repositoryUrl || '').trim(),
     scanType: 'cicd',
-    branch: String(branch || 'main').trim() || 'main',
+    branch: String(body.branch || 'main').trim() || 'main',
     status: 'completed',
     progress: 100,
     startedAt,
     completedAt: new Date(),
     findings,
-    analysisSummary: buildCicdOnlySummary(report),
+    analysisSummary: buildCicdOnlySummary(normalizedReport),
     reportFiles: {
-      pdfFile: null,
-      pdfPath: null,
-      jsonFile: String(reportFileName || 'report.json'),
-      jsonPath: null,
-      cicdPdfFile: null,
-      cicdPdfPath: null,
-      cicdJsonFile: String(reportFileName || 'report.json'),
-      cicdJsonPath: null,
+      pdfFile: reportPdfFile ? path.basename(reportPdfFile.path) : null,
+      pdfPath: reportPdfFile ? reportPdfFile.path : null,
+      jsonFile: reportFile ? path.basename(reportFile.path) : String(body.reportFileName || 'report.json'),
+      jsonPath: reportFile ? reportFile.path : null,
+      cicdPdfFile: reportPdfFile ? path.basename(reportPdfFile.path) : null,
+      cicdPdfPath: reportPdfFile ? reportPdfFile.path : null,
+      cicdJsonFile: reportFile ? path.basename(reportFile.path) : String(body.reportFileName || 'report.json'),
+      cicdJsonPath: reportFile ? reportFile.path : null,
       combinedJsonFile: null,
       combinedJsonPath: null,
       combinedPdfFile: null,
       combinedPdfPath: null
     },
-    analyzerLogTail: `CI ingest commit=${String(commitSha || '')} run=${String(workflowRunUrl || '')}`.trim()
+    analyzerLogTail: `CI ingest commit=${String(body.commit || body.commitSha || '')} run=${String(body.runId || body.workflowRunUrl || '')}`.trim()
   })
 
   await syncRisksForScan({
     scanDoc: scan,
     projectId: project._id,
-    mergedIssues: mapCicdIssuesToUnifiedIssues(report?.issues)
+    mergedIssues: mapCicdIssuesToUnifiedIssues(normalizedReport?.issues)
   })
 
   project.lastScan = new Date()
-  project.riskScore = Number(report?.overall_risk_score || 0)
+  project.riskScore = Number(normalizedReport?.overall_risk_score || 0)
   await project.save()
 
   res.status(201).json({

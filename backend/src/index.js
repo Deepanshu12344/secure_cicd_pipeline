@@ -14,6 +14,7 @@ import pipelineRoutes from './routes/pipelines.js';
 import dashboardRoutes from './routes/dashboard.js';
 import githubRoutes from './routes/github.js';
 import facultyRoutes from './routes/faculty.js';
+import ciRoutes from './routes/ci.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -52,6 +53,7 @@ app.use('/api/scans', scanRoutes);
 app.use('/api/risks', riskRoutes);
 app.use('/api/pipelines', pipelineRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/ci', ciRoutes);
 app.use('/api', githubRoutes);
 app.use('/api', facultyRoutes);
 
