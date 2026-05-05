@@ -30,7 +30,7 @@ export const projectsApi = {
 }
 
 export const scansApi = {
-  getAll: () => apiClient.get('/scans'),
+  getAll: (params) => apiClient.get('/scans', { params }),
   getById: (id) => apiClient.get(`/scans/${id}`),
   create: (data) => apiClient.post('/scans', data),
   run: (id) => apiClient.post(`/scans/${id}/run`),
@@ -44,7 +44,10 @@ export const scansApi = {
 export const risksApi = {
   getAll: (params) => apiClient.get('/risks', { params }),
   getById: (id) => apiClient.get(`/risks/${id}`),
+  getDetail: (id) => apiClient.get(`/risks/${id}/details`),
+  getProjectDetail: (projectId) => apiClient.get(`/risks/project/${projectId}/details`),
   create: (data) => apiClient.post('/risks', data),
+  syncFromScan: (data) => apiClient.post('/risks/sync-from-scan', data),
   update: (id, data) => apiClient.patch(`/risks/${id}`, data)
 }
 
@@ -58,7 +61,11 @@ export const dashboardApi = {
 export const pipelinesApi = {
   getAll: () => apiClient.get('/pipelines'),
   getById: (id) => apiClient.get(`/pipelines/${id}`),
+  getReportContent: (id) => apiClient.get(`/pipelines/${id}/report-content`),
   create: (data) => apiClient.post('/pipelines', data),
+  runScan: (id, data = {}) => apiClient.post(`/pipelines/${id}/scan`, data),
+  downloadReport: (id, type = 'pdf') =>
+    apiClient.get(`/pipelines/${id}/report`, { params: { type }, responseType: 'blob' }),
   update: (id, data) => apiClient.patch(`/pipelines/${id}`, data)
 }
 

@@ -1,0 +1,59 @@
+1. Team Work
+A: The project is split into clear roles: Backend/API, Frontend/UI, ML/AI Engine, DevSecOps/CI-CD, and Documentation/QA. This keeps ownership clear and lets each stream move in parallel.
+
+2. Input and Output
+A: Inputs: repository URL or code files, dependency manifests (requirements.txt/package.json/pom.xml), CI/CD configs (GitHub Actions YAML), and infra files (Dockerfile). Outputs: risk score, severity summary, findings list, JSON report, PDF report, and dashboard metrics.
+
+3. Folder Structure Images for PPT (with steps)
+A: Use FILES.md as the source. Steps: 1) Open a terminal at repo root. 2) Run `tree /F /A` and capture output. 3) Take a screenshot of the tree or copy into a slide. 4) Highlight backend/, frontend/, ml-engine/, vscode-extension/, docs/. 5) Add a short caption for each.
+
+4. Dashboard & Report Screenshots for PPT
+A: Dashboard: open http://localhost:3000, go to Dashboard page, take a full-page screenshot. Report: use the latest PDF in reports/ (e.g., reports/social_combined_security_report_1775375805790.pdf) and screenshot the summary + findings sections.
+
+5. Security Templates and Coding Practices Checked
+A: Templates/rules include: hardcoded secrets, AWS keys, private keys, SQL injection (dynamic SQL), command injection (os.system/subprocess/eval/exec), dependency risks (unpinned, direct VCS/URL, known vulnerable versions), CI/CD misconfig (unpinned actions, pull_request_target, broad permissions), infra risks (latest image tag, root container), framework checks (Flask validation/CSRF, Django csrf_exempt, FastAPI response_model), frontend XSS risk (dangerouslySetInnerHTML), and accessibility/UX checks.
+
+6. Implicit vs Explicit Issues
+A: Explicit issues are deterministic pattern/AST matches (secrets, SQL injection, command injection, unpinned actions, root containers). Implicit issues are heuristic or LLM-derived signals (complexity, maintainability, documentation, frontend UX signals) and aggregated risk trends.
+
+7. Project Scope
+A: Scope covers static code analysis, dependency and CI/CD risk checks, ML/LLM-assisted scoring, dashboard visualization, and VS Code inline feedback. It does not include runtime penetration testing, dynamic application security testing, or full IDE coverage beyond VS Code (yet).
+
+8. Library Names (Exact)
+A: Backend: axios, bcryptjs, cors, dotenv, express, express-session, express-validator, google-auth-library, jsonwebtoken, mongoose, multer, passport, passport-github2, uuid. Frontend: @headlessui/react, @heroicons/react, axios, clsx, date-fns, lucide-react, react, react-dom, react-router-dom, recharts, zustand, tailwindcss, vite. ML: flask, flask-cors, numpy, pandas, scikit-learn, tensorflow, requests, python-dotenv, pytest, werkzeug.
+
+9. 4 Main Points (Most Important)
+A: (1) Security scanning automation, (2) ML/LLM-based risk scoring, (3) CI/CD pipeline integration with decision gates, (4) Developer experience via dashboard + VS Code extension.
+
+10. Vulnerabilities (List)
+A: Secret exposure, SQL injection, command injection, dependency vulnerabilities, unpinned dependencies, direct VCS/URL dependencies, unsafe install scripts, unpinned CI actions, unsafe CI triggers, broad CI permissions, root containers, floating image tags, raw HTML rendering (XSS risk), CSRF disabled, missing response models (FastAPI). Coding issues are also tracked via maintainability/complexity/documentation metrics.
+
+11. CodeChef vs This Project (5 Points)
+A: (1) CodeChef is for competitive programming; this project is DevSecOps security automation. (2) CodeChef doesn’t integrate CI/CD; this project is built for pipelines. (3) CodeChef doesn’t score risk; this project produces risk scores and severity. (4) CodeChef doesn’t scan dependencies/configs; this project does. (5) CodeChef has no IDE extension; this project has VS Code integration.
+
+12. Why Only VS Code (for now)
+A: VS Code has the largest extension ecosystem and a stable API, so it’s the fastest way to prove value. The design is IDE-agnostic and can be extended to IntelliJ/PyCharm later.
+
+13. Handling Different Languages
+A: File discovery supports multiple extensions; language selection drives which rules run. Current deep checks are strongest for Python and web stacks; Java is checked via pom.xml dependency rules; C/C++ currently receive generic secret/CI/infra checks. Additional AST rules per language are planned.
+
+14. Language-Specific Rules (Current)
+A: Python: AST checks for tainted SQL, dangerous execution, Flask/Django/FastAPI patterns. Java: dependency version checks in pom.xml (e.g., log4j-core). JS/TS: dependency checks, frontend XSS patterns, accessibility/UX signals. C/C++: generic secret/CI/infra checks only (no AST rules yet).
+
+15. Prompts Used (Inbuilt vs Custom)
+A: Inbuilt (LLM): file-level analysis prompt in main_analyzer.py; contextual file analysis prompt in Code-Analyzer/analyzer.py; recommendation/learning-path prompt in Code-Analyzer/analyzer.py. Custom (local): rule-based templates for secrets, injections, CI/CD, infra, and dependency checks.
+
+16. Risk Score Parameters
+A: Current scoring uses five metrics: accuracy, complexity, efficiency, maintainability, documentation (0-100). Severity penalties from findings reduce accuracy. Overall score = average of the five metrics. For pipeline risk, a separate 0-10 risk formula is documented in ARCHITECTURE.md.
+
+17. Timeline Diagram (High-Level)
+A: Weeks 1-2: requirements + architecture. Weeks 3-4: backend/frontend scaffolding. Weeks 5-6: ML/LLM analyzer + rules. Weeks 7-8: dashboard + VS Code extension. Weeks 9-10: integration + reports + PPT.
+
+18. Architecture Diagram (LLM in Depth)
+A: Code files -> chunking -> local rule scan -> LLM prompt per chunk -> JSON parse -> merge -> scoring -> JSON/PDF report -> dashboard. LLM model: claude-sonnet-4-20250514.
+
+19. Clubbing Prompts
+A: Large files are chunked (max 800 lines with overlap). Each chunk is analyzed by the LLM; results are merged/averaged to produce final per-file scores. This “prompt clubbing” improves coverage without token overflow.
+
+20. Sample JSON Output
+A: See json_output/social_cicd_security_1775375805046.json. It includes pipeline_name, scan_timestamp, overall_risk_score, severity summary, and issues list with remediation.

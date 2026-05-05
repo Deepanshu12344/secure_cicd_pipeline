@@ -55,7 +55,13 @@ const scanSchema = new mongoose.Schema(
       pdfFile: { type: String, default: null },
       pdfPath: { type: String, default: null },
       jsonFile: { type: String, default: null },
-      jsonPath: { type: String, default: null }
+      jsonPath: { type: String, default: null },
+      cicdPdfFile: { type: String, default: null },
+      cicdPdfPath: { type: String, default: null },
+      cicdJsonFile: { type: String, default: null },
+      cicdJsonPath: { type: String, default: null },
+      combinedJsonFile: { type: String, default: null },
+      combinedJsonPath: { type: String, default: null }
     },
     errorMessage: {
       type: String,

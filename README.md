@@ -345,3 +345,24 @@ For issues and questions:
 
 **Last Updated**: February 2026
 **Version**: 1.0.0
+
+## GitHub Actions CI/CD
+
+This repository includes `.github/workflows/main.yml` that runs on every commit push and pull request:
+
+1. Runs the secure CI/CD scan (`.github/actions/secure-pipeline`).
+2. Fails immediately if critical findings are detected or risk score is over threshold.
+3. Uploads security report artifacts.
+4. On push events, builds and pushes Docker images for:
+   - `backend`
+   - `frontend`
+   - `ml-engine`
+
+Required GitHub repository secrets:
+
+- `DOCKER_USERNAME`
+- `DOCKER_PASSWORD`
+- `DOCKER_NAMESPACE` (optional; defaults to `DOCKER_USERNAME`)
+- `DASHBOARD_URL` (example: `https://your-dashboard.example.com`)
+- `CI_INGEST_API_KEY` (must match backend `CI_INGEST_API_KEY`)
+- `DASHBOARD_PROJECT_ID` (recommended; if omitted, backend auto-matches by repository URL/full name)

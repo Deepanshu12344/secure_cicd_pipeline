@@ -7,7 +7,7 @@ import Home from './pages/Home'
 import Projects from './pages/Projects'
 import Scans from './pages/Scans'
 import Risks from './pages/Risks'
-import Pipelines from './pages/Pipelines'
+import RiskDetail from './pages/RiskDetail'
 import ProjectDetail from './pages/ProjectDetail'
 import Login from './pages/Login'
 import { useAuthStore } from './store/auth'
@@ -75,7 +75,7 @@ function App() {
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/scans" element={<Scans />} />
           <Route path="/risks" element={<Risks />} />
-          <Route path="/pipelines" element={<Pipelines />} />
+          <Route path="/risks/:id" element={<RiskDetail />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

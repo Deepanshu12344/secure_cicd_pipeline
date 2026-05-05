@@ -30,6 +30,35 @@ const pipelineSchema = new mongoose.Schema(
     enabled: {
       type: Boolean,
       default: true
+    },
+    lastScanStatus: {
+      type: String,
+      enum: ['never', 'running', 'completed', 'failed'],
+      default: 'never'
+    },
+    lastScanStartedAt: {
+      type: Date,
+      default: null
+    },
+    lastScanCompletedAt: {
+      type: Date,
+      default: null
+    },
+    lastScanError: {
+      type: String,
+      default: ''
+    },
+    lastScanSummary: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
+    },
+    lastScanIssues: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: []
+    },
+    lastScanReportFiles: {
+      jsonPath: { type: String, default: null },
+      pdfPath: { type: String, default: null }
     }
   },
   {

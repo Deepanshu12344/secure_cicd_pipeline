@@ -67,6 +67,11 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
+const SHOULD_SKIP_MONGO =
+  String(process.env.SKIP_MONGO || '').trim() === '1' ||
+  String(process.env.SKIP_MONGO || '').trim().toLowerCase() === 'true' ||
+  String(process.env.MONGODB_URI || '').trim().toLowerCase() === 'disabled' ||
+  String(process.env.MONGO_URI || '').trim().toLowerCase() === 'disabled';
 
 const ensureUserIndexes = async () => {
   const usersCollection = mongoose.connection.collection('users');
@@ -90,7 +95,9 @@ const ensureUserIndexes = async () => {
 
 const startServer = async () => {
   try {
-    if (!MONGODB_URI) {
+    if (SHOULD_SKIP_MONGO) {
+      console.warn('MongoDB connection skipped (SKIP_MONGO=1 or MONGODB_URI=disabled).');
+    } else if (!MONGODB_URI) {
       console.warn('MongoDB URI not set. Add MONGODB_URI in backend/.env for auth persistence.');
     } else {
       await mongoose.connect(MONGODB_URI);

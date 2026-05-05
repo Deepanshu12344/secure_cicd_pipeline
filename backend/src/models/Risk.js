@@ -52,6 +52,23 @@ const riskSchema = new mongoose.Schema(
     notes: {
       type: String,
       default: ''
+    },
+    source: {
+      type: String,
+      default: 'manual',
+      index: true
+    },
+    sourceIssueId: {
+      type: String,
+      default: null
+    },
+    threatType: {
+      type: String,
+      default: ''
+    },
+    remediation: {
+      type: String,
+      default: ''
     }
   },
   {

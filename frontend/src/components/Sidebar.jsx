@@ -4,7 +4,6 @@ import {
   FolderGit2,
   ScanLine,
   TriangleAlert,
-  Workflow,
   HelpCircle,
   Bell,
   ChevronLeft,
@@ -18,8 +17,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
     { icon: Home, label: 'Home', path: '/' },
     { icon: FolderGit2, label: 'Projects', path: '/projects' },
     { icon: ScanLine, label: 'Scans', path: '/scans' },
-    { icon: TriangleAlert, label: 'Risks', path: '/risks' },
-    { icon: Workflow, label: 'Pipelines', path: '/pipelines' }
+    { icon: TriangleAlert, label: 'Risks', path: '/risks' }
   ]
 
   const isActive = (path) => location.pathname === path

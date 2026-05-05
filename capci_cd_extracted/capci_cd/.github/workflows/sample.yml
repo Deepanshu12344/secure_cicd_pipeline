@@ -1,0 +1,27 @@
+name: Example CI
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    permissions: write-all
+    env:
+      API_TOKEN: "plaintext-token"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build image
+        run: docker build -f docker/Dockerfile .
+      - name: Run setup script
+        run: bash scripts/setup.sh
+      - name: Insecure install
+        run: curl -sSL https://example.com/install.sh | sh
+      - name: Upload env
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-files
+          path: .env

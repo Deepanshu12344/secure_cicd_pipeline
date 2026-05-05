@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import { protect } from '../middleware/authMiddleware.js'
 import Scan from '../models/Scan.js'
 import Project from '../models/Project.js'
+import Risk from '../models/Risk.js'
 
 const router = express.Router()
 const getOwnerId = (req) => req.user?._id || req.user?.id
@@ -14,9 +15,29 @@ const getOwnerId = (req) => req.user?._id || req.user?.id
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const workspaceRoot = path.resolve(__dirname, '../../..')
+const rootAnalyzerScript = path.join(workspaceRoot, 'main_analyzer.py')
+const rootAnalyzerRequirements = [
+  path.join(workspaceRoot, 'requirements.txt'),
+  path.join(workspaceRoot, 'Code-Analyzer', 'requirements.txt'),
+  path.join(workspaceRoot, 'code-analyzer', 'requirements.txt')
+].find((reqPath) => fs.existsSync(reqPath))
 const analyzerDir = ['code-analyzer', 'Code-Analyzer']
   .map((dir) => path.join(workspaceRoot, dir))
   .find((dir) => fs.existsSync(path.join(dir, 'analyzer.py')))
+const analyzerScriptPath = fs.existsSync(rootAnalyzerScript)
+  ? rootAnalyzerScript
+  : analyzerDir
+    ? path.join(analyzerDir, 'analyzer.py')
+    : null
+const analyzerBaseDir = fs.existsSync(rootAnalyzerScript) ? workspaceRoot : analyzerDir
+const analyzerRequirementsPath = fs.existsSync(rootAnalyzerScript)
+  ? rootAnalyzerRequirements
+  : analyzerDir
+    ? path.join(analyzerDir, 'requirements.txt')
+    : null
+const cicdScannerDir = ['capci_cd', 'capci_cd_extracted']
+  .map((dir) => path.join(workspaceRoot, dir))
+  .find((dir) => fs.existsSync(path.join(dir, 'scanner.py')))
 
 const runningScans = new Set()
 
@@ -24,6 +45,69 @@ const parseRepositoryName = (repositoryUrl) => {
   const clean = String(repositoryUrl || '').trim().replace(/\/+$/, '')
   const lastPart = clean.split('/').pop() || 'repository'
   return lastPart.replace(/\.git$/i, '') || 'repository'
+}
+
+const escapeRegex = (value) => String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+const normalizeRepositoryIdentifier = (value) => {
+  let normalized = String(value || '').trim().toLowerCase()
+  if (!normalized) return ''
+
+  normalized = normalized.replace(/\.git$/i, '').replace(/\/+$/, '')
+  normalized = normalized.replace(/^git@([^:]+):/, '$1/')
+  normalized = normalized.replace(/^ssh:\/\//, '')
+  normalized = normalized.replace(/^https?:\/\//, '')
+  normalized = normalized.replace(/^www\./, '')
+  normalized = normalized.replace(/^[^/]*github\.com\//, '')
+
+  const parts = normalized.split('/').filter(Boolean)
+  if (parts.length >= 2) {
+    return `${parts[parts.length - 2]}/${parts[parts.length - 1]}`
+  }
+
+  return normalized
+}
+
+const resolveCiIngestProject = async ({ projectId, repositoryUrl, repositoryFullName }) => {
+  if (projectId && mongoose.Types.ObjectId.isValid(projectId)) {
+    return { project: await Project.findById(projectId), reason: '' }
+  }
+
+  const normalizedCandidates = [
+    normalizeRepositoryIdentifier(repositoryFullName),
+    normalizeRepositoryIdentifier(repositoryUrl)
+  ].filter(Boolean)
+
+  if (normalizedCandidates.length === 0) {
+    return {
+      project: null,
+      reason: 'Either a valid projectId or repositoryUrl/repositoryFullName is required'
+    }
+  }
+
+  const uniqueCandidates = [...new Set(normalizedCandidates)]
+  const orConditions = []
+  uniqueCandidates.forEach((candidate) => {
+    const escaped = escapeRegex(candidate)
+    orConditions.push({ fullName: { $regex: new RegExp(`^${escaped}$`, 'i') } })
+    orConditions.push({ repositoryUrl: { $regex: new RegExp(`(?:^|/)${escaped}(?:\\.git)?/?$`, 'i') } })
+  })
+
+  const projects = await Project.find({ $or: orConditions }).limit(5)
+  if (projects.length === 1) {
+    return { project: projects[0], reason: '' }
+  }
+  if (projects.length > 1) {
+    return {
+      project: null,
+      reason: 'Multiple projects matched repository. Set DASHBOARD_PROJECT_ID to avoid ambiguity'
+    }
+  }
+
+  return {
+    project: null,
+    reason: 'Project not found for repository. Import the repository or provide DASHBOARD_PROJECT_ID'
+  }
 }
 
 const listFilesByExtension = (dirPath, extension) => {
@@ -60,11 +144,270 @@ const extractReportNamesFromOutput = (output) => {
   }
 }
 
+const normalizeSeverity = (value) => {
+  const normalized = String(value || '').trim().toLowerCase()
+  if (normalized === 'critical') return 'Critical'
+  if (normalized === 'high') return 'High'
+  if (normalized === 'medium') return 'Medium'
+  return 'Low'
+}
+
+const mapSeverityToRiskScore = (severity) => {
+  if (severity === 'Critical') return 95
+  if (severity === 'High') return 80
+  if (severity === 'Medium') return 55
+  return 25
+}
+
+const buildCicdOnlySummary = (report) => {
+  const safeReport = report && typeof report === 'object' ? report : {}
+  const issues = Array.isArray(safeReport.issues) ? safeReport.issues : []
+  const summary = safeReport.summary && typeof safeReport.summary === 'object' ? safeReport.summary : {}
+  const severityCounts = { Critical: 0, High: 0, Medium: 0, Low: 0 }
+  const categoryCounts = {}
+
+  issues.forEach((issue) => {
+    const severity = normalizeSeverity(issue?.severity)
+    severityCounts[severity] = (severityCounts[severity] || 0) + 1
+
+    const category = String(issue?.threat_type || issue?.category_label || issue?.category || 'CI/CD Security')
+    categoryCounts[category] = (categoryCounts[category] || 0) + 1
+  })
+
+  const totalIssues = Number(summary.total_issues || issues.length || 0)
+  const riskScore = Number(safeReport.overall_risk_score || 0)
+
+  return {
+    totalFilesAnalyzed: 0,
+    totalIssues,
+    metrics: {
+      overall: Math.max(0, 100 - riskScore),
+      accuracy: 0,
+      complexity: 0,
+      efficiency: 0,
+      maintainability: 0,
+      documentation: 0
+    },
+    skillsGap: {
+      overallProficiency: 0,
+      skillLevels: {},
+      identifiedGaps: []
+    },
+    severityCounts,
+    categoryCounts,
+    cicd: {
+      overallRiskScore: riskScore,
+      overallSeverity: String(safeReport.overall_severity || '')
+    }
+  }
+}
+
+const parseJsonFile = (filePath) => {
+  if (!filePath || !fs.existsSync(filePath)) return null
+
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+const runPythonCommand = ({ cwd, args, allowExitCodes = [0], outputLimit = 120000, pythonBin }) =>
+  new Promise((resolve, reject) => {
+    const resolvedPythonBin = pythonBin || process.env.PYTHON_BIN || 'python'
+    let output = ''
+
+    const child = spawn(resolvedPythonBin, args, {
+      cwd,
+      env: { ...process.env, PYTHONUTF8: '1' }
+    })
+
+    child.stdout.on('data', (chunk) => {
+      output += chunk.toString()
+      if (output.length > outputLimit) output = output.slice(-outputLimit)
+    })
+
+    child.stderr.on('data', (chunk) => {
+      output += chunk.toString()
+      if (output.length > outputLimit) output = output.slice(-outputLimit)
+    })
+
+    child.on('error', (error) => {
+      reject(new Error(`Failed to run Python command: ${error.message}`))
+    })
+
+    child.on('close', (code) => {
+      if (!allowExitCodes.includes(code)) {
+        reject(new Error(`Process exited with code ${code}. ${output.slice(-800)}`))
+        return
+      }
+
+      resolve({ code, output })
+    })
+  })
+
+const getVenvPythonPath = (baseDir, venvName = '.venv') => {
+  const windowsPath = path.join(baseDir, venvName, 'Scripts', 'python.exe')
+  const unixPath = path.join(baseDir, venvName, 'bin', 'python')
+  if (fs.existsSync(windowsPath)) return windowsPath
+  if (fs.existsSync(unixPath)) return unixPath
+  return null
+}
+
+const ensurePythonEnv = async ({ baseDir, requirementsFile, label }) => {
+  if (!requirementsFile || !fs.existsSync(requirementsFile)) return null
+
+  const venvDir = path.join(baseDir, '.venv')
+  const pythonInVenv =
+    process.platform === 'win32'
+      ? path.join(venvDir, 'Scripts', 'python.exe')
+      : path.join(venvDir, 'bin', 'python')
+  const readyMarker = path.join(venvDir, '.ready')
+
+  if (!fs.existsSync(pythonInVenv)) {
+    await runPythonCommand({
+      cwd: baseDir,
+      args: ['-m', 'venv', venvDir],
+      pythonBin: process.env.PYTHON_BIN || 'python'
+    })
+  }
+
+  if (!fs.existsSync(readyMarker)) {
+    await runPythonCommand({
+      cwd: baseDir,
+      args: ['-m', 'pip', 'install', '--upgrade', 'pip'],
+      pythonBin: pythonInVenv,
+      allowExitCodes: [0]
+    })
+    await runPythonCommand({
+      cwd: baseDir,
+      args: ['-m', 'pip', 'install', '-r', requirementsFile],
+      pythonBin: pythonInVenv,
+      allowExitCodes: [0]
+    })
+    fs.writeFileSync(readyMarker, new Date().toISOString(), 'utf8')
+  }
+
+  return pythonInVenv
+}
+
+const mapCicdIssuesToUnifiedIssues = (issues) => {
+  if (!Array.isArray(issues)) return []
+
+  return issues.map((issue) => {
+    const location = issue?.location || {}
+    const filePath = String(location?.file_path || '')
+    const line = Number(location?.line_number || 0)
+    const threatType = String(issue?.threat_type || 'CI/CD Security')
+    const title = String(issue?.title || 'CI/CD security risk')
+    const severity = normalizeSeverity(issue?.severity)
+    const stepName = String(location?.step_name || '')
+
+    return {
+      issue: title,
+      location: line > 0 ? `${filePath}:${line}` : filePath || stepName || 'CI/CD pipeline',
+      code: stepName,
+      severity,
+      reason: String(issue?.description || issue?.impact || ''),
+      category: 'CI/CD Security',
+      category_label: threatType,
+      file: filePath || null,
+      threat_type: threatType,
+      remediation: String(issue?.remediation || ''),
+      source: 'cicd',
+      sourceIssueId: String(issue?.id || '')
+    }
+  })
+}
+
+const mergeAnalyzerAndCicdJson = ({ codeJson, cicdJson }) => {
+  const base = codeJson && typeof codeJson === 'object' ? { ...codeJson } : {}
+  const codeIssues = Array.isArray(base?.critical_issues) ? base.critical_issues : []
+  const cicdIssues = mapCicdIssuesToUnifiedIssues(cicdJson?.issues)
+  const mergedIssues = [...codeIssues, ...cicdIssues]
+
+  const sources = {
+    codeAnalyzer: codeIssues.length,
+    cicdSecurity: cicdIssues.length
+  }
+
+  const summary = cicdJson?.summary || {}
+
+  return {
+    ...base,
+    critical_issues: mergedIssues,
+    combined_sources: sources,
+    cicd_analysis: cicdJson
+      ? {
+          pipeline_name: cicdJson.pipeline_name || '',
+          overall_risk_score: Number(cicdJson.overall_risk_score || 0),
+          overall_severity: String(cicdJson.overall_severity || ''),
+          summary: {
+            total_issues: Number(summary.total_issues || 0),
+            critical_count: Number(summary.critical_count || 0),
+            high_count: Number(summary.high_count || 0),
+            medium_count: Number(summary.medium_count || 0),
+            low_count: Number(summary.low_count || 0)
+          }
+        }
+      : null
+  }
+}
+
+const syncRisksForScan = async ({ scanDoc, projectId, mergedIssues }) => {
+  if (!scanDoc || !Array.isArray(mergedIssues)) return
+
+  await Risk.deleteMany({
+    ownerId: scanDoc.ownerId,
+    scanId: scanDoc._id,
+    source: { $in: ['analyzer', 'cicd'] }
+  })
+
+  const risksToInsert = mergedIssues
+    .map((issue) => {
+      const severity = normalizeSeverity(issue?.severity)
+      const fileFromIssue = String(issue?.file || '')
+      const locationText = String(issue?.location || '')
+      const lineMatch = locationText.match(/:(\d+)(?!.*:\d+)/)
+      const parsedLine = lineMatch ? Number(lineMatch[1]) : null
+      const fileFromLocation = lineMatch ? locationText.slice(0, lineMatch.index) : locationText
+      const threatType = String(issue?.threat_type || issue?.category_label || issue?.category || 'Code Security')
+      const source = String(issue?.source || '').toLowerCase() === 'cicd' ? 'cicd' : 'analyzer'
+      const title = String(issue?.issue || issue?.title || '').trim()
+      if (!title) return null
+
+      return {
+        ownerId: scanDoc.ownerId,
+        projectId,
+        scanId: scanDoc._id,
+        title,
+        description: String(issue?.reason || ''),
+        severity: severity.toLowerCase(),
+        riskScore: mapSeverityToRiskScore(severity),
+        file: fileFromIssue || (fileFromLocation && !fileFromLocation.includes(' ') ? fileFromLocation : null),
+        line: parsedLine,
+        status: 'open',
+        source,
+        sourceIssueId: String(issue?.sourceIssueId || issue?.id || '') || null,
+        threatType,
+        remediation: String(issue?.remediation || '')
+      }
+    })
+    .filter(Boolean)
+
+  if (risksToInsert.length === 0) return
+  await Risk.insertMany(risksToInsert, { ordered: false })
+}
+
 const buildAnalysisSummary = (jsonData) => {
-  const aggregate = jsonData?.aggregate_metrics || {}
-  const criticalIssues = Array.isArray(jsonData?.critical_issues) ? jsonData.critical_issues : []
+  const aggregate = jsonData?.aggregate_metrics || jsonData?.aggregateMetrics || {}
+  const criticalIssues = Array.isArray(jsonData?.critical_issues)
+    ? jsonData.critical_issues
+    : Array.isArray(jsonData?.top_findings)
+      ? jsonData.top_findings
+      : []
   const skillsGap = jsonData?.skills_gap_analysis || {}
-  const skillLevels = skillsGap?.skill_levels && typeof skillsGap.skill_levels === 'object' ? skillsGap.skill_levels : {}
+  let skillLevels = skillsGap?.skill_levels && typeof skillsGap.skill_levels === 'object' ? skillsGap.skill_levels : {}
   const identifiedGaps = Array.isArray(skillsGap?.identified_gaps) ? skillsGap.identified_gaps : []
   const severityCounts = { High: 0, Medium: 0, Low: 0 }
   const categoryCounts = {}
@@ -78,19 +421,29 @@ const buildAnalysisSummary = (jsonData) => {
     categoryCounts[category] = (categoryCounts[category] || 0) + 1
   })
 
+  if (!skillLevels || Object.keys(skillLevels).length === 0) {
+    skillLevels = {
+      Accuracy: Number(aggregate?.accuracy || aggregate?.accuracy_score || 0),
+      Complexity: Number(aggregate?.complexity || aggregate?.complexity_score || 0),
+      Efficiency: Number(aggregate?.efficiency || aggregate?.efficiency_score || 0),
+      Maintainability: Number(aggregate?.maintainability || aggregate?.maintainability_score || 0),
+      Documentation: Number(aggregate?.documentation || aggregate?.documentation_score || 0)
+    }
+  }
+
   return {
-    totalFilesAnalyzed: Number(jsonData?.total_files_analyzed || 0),
+    totalFilesAnalyzed: Number(jsonData?.total_files_analyzed || jsonData?.summary?.files_scanned || 0),
     totalIssues: criticalIssues.length,
     metrics: {
-      overall: Number(aggregate?.overall_score || 0),
-      accuracy: Number(aggregate?.accuracy || 0),
-      complexity: Number(aggregate?.complexity || 0),
-      efficiency: Number(aggregate?.efficiency || 0),
-      maintainability: Number(aggregate?.maintainability || 0),
-      documentation: Number(aggregate?.documentation || 0)
+      overall: Number(aggregate?.overall_score || aggregate?.overallScore || aggregate?.overall || 0),
+      accuracy: Number(aggregate?.accuracy || aggregate?.accuracy_score || 0),
+      complexity: Number(aggregate?.complexity || aggregate?.complexity_score || 0),
+      efficiency: Number(aggregate?.efficiency || aggregate?.efficiency_score || 0),
+      maintainability: Number(aggregate?.maintainability || aggregate?.maintainability_score || 0),
+      documentation: Number(aggregate?.documentation || aggregate?.documentation_score || 0)
     },
     skillsGap: {
-      overallProficiency: Number(skillsGap?.overall_proficiency || 0),
+      overallProficiency: Number(skillsGap?.overall_proficiency || aggregate?.overallScore || 0),
       skillLevels: Object.entries(skillLevels).reduce((acc, [name, score]) => {
         acc[String(name)] = Number(score || 0)
         return acc
@@ -181,74 +534,135 @@ const saveScanFailure = async (scanId, errorText) => {
 }
 
 const executeAnalyzerForScan = async (scan) => {
-  if (!analyzerDir) {
-    throw new Error('Analyzer directory not found. Expected code-analyzer/analyzer.py')
+  if (!analyzerBaseDir || !analyzerScriptPath) {
+    throw new Error('Analyzer script not found. Expected main_analyzer.py or code-analyzer/analyzer.py')
   }
 
-  const reportsDir = path.join(analyzerDir, 'reports')
-  const jsonDir = path.join(analyzerDir, 'json_output')
+  const analyzerRequirements = analyzerRequirementsPath
+  const cicdRequirements = cicdScannerDir ? path.join(cicdScannerDir, 'requirements.txt') : null
+  const analyzerPython =
+    (await ensurePythonEnv({
+      baseDir: analyzerBaseDir,
+      requirementsFile: analyzerRequirements,
+      label: 'Code Analyzer'
+    })) || getVenvPythonPath(analyzerBaseDir) || process.env.PYTHON_BIN || 'python'
+  const cicdPython = cicdScannerDir
+    ? (await ensurePythonEnv({
+        baseDir: cicdScannerDir,
+        requirementsFile: cicdRequirements,
+        label: 'CI/CD Scanner'
+      })) || getVenvPythonPath(cicdScannerDir) || analyzerPython
+    : analyzerPython
+
+  const reportsDir = path.join(analyzerBaseDir, 'reports')
+  const jsonDir = path.join(analyzerBaseDir, 'json_output')
+  fs.mkdirSync(reportsDir, { recursive: true })
+  fs.mkdirSync(jsonDir, { recursive: true })
   const beforePdfFiles = listFilesByExtension(reportsDir, '.pdf')
   const beforeJsonFiles = listFilesByExtension(jsonDir, '.json')
 
-  const pythonBin = process.env.PYTHON_BIN || 'python'
-  const args = ['-X', 'utf8', 'analyzer.py', scan.repositoryUrl]
+  const args = ['-X', 'utf8', analyzerScriptPath, scan.repositoryUrl]
   if (process.env.ANALYZER_MAX_FILES) {
     args.push('--max-files', String(process.env.ANALYZER_MAX_FILES))
   }
 
-  return new Promise((resolve, reject) => {
-    let output = ''
-
-    const child = spawn(pythonBin, args, {
-      cwd: analyzerDir,
-      env: { ...process.env, PYTHONUTF8: '1' }
-    })
-
-    child.stdout.on('data', (chunk) => {
-      output += chunk.toString()
-      if (output.length > 120000) output = output.slice(-120000)
-    })
-
-    child.stderr.on('data', (chunk) => {
-      output += chunk.toString()
-      if (output.length > 120000) output = output.slice(-120000)
-    })
-
-    child.on('error', (error) => {
-      reject(new Error(`Failed to run analyzer: ${error.message}`))
-    })
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(`Analyzer exited with code ${code}. ${output.slice(-800)}`))
-        return
-      }
-
-      const repoName = parseRepositoryName(scan.repositoryUrl)
-      const { pdfFile: parsedPdf, jsonFile: parsedJson } = extractReportNamesFromOutput(output)
-      const afterPdfFiles = listFilesByExtension(reportsDir, '.pdf')
-      const afterJsonFiles = listFilesByExtension(jsonDir, '.json')
-      const newestPdf = getNewestAddedFile(beforePdfFiles, afterPdfFiles)
-      const newestJson = getNewestAddedFile(beforeJsonFiles, afterJsonFiles)
-
-      const pdfFile =
-        parsedPdf ||
-        (newestPdf?.name && newestPdf.name.includes(repoName) ? newestPdf.name : newestPdf?.name) ||
-        null
-      const jsonFile =
-        parsedJson ||
-        (newestJson?.name && newestJson.name.includes(repoName) ? newestJson.name : newestJson?.name) ||
-        null
-
-      resolve({
-        output,
-        pdfFile,
-        jsonFile,
-        pdfPath: pdfFile ? path.join(reportsDir, pdfFile) : null,
-        jsonPath: jsonFile ? path.join(jsonDir, jsonFile) : null
-      })
-    })
+  const analyzerRun = await runPythonCommand({
+    cwd: analyzerBaseDir,
+    args,
+    pythonBin: analyzerPython
   })
+  const output = analyzerRun.output
+
+  const repoName = parseRepositoryName(scan.repositoryUrl)
+  const { pdfFile: parsedPdf, jsonFile: parsedJson } = extractReportNamesFromOutput(output)
+  const afterPdfFiles = listFilesByExtension(reportsDir, '.pdf')
+  const afterJsonFiles = listFilesByExtension(jsonDir, '.json')
+  const newestPdf = getNewestAddedFile(beforePdfFiles, afterPdfFiles)
+  const newestJson = getNewestAddedFile(beforeJsonFiles, afterJsonFiles)
+
+  const pdfFile = parsedPdf || (newestPdf?.name && newestPdf.name.includes(repoName) ? newestPdf.name : newestPdf?.name) || null
+  const jsonFile =
+    parsedJson || (newestJson?.name && newestJson.name.includes(repoName) ? newestJson.name : newestJson?.name) || null
+
+  const jsonPath = jsonFile ? path.join(jsonDir, jsonFile) : null
+  const codeJson = parseJsonFile(jsonPath)
+
+  const tempRepoPath = path.join(analyzerBaseDir, 'temp_repo')
+  let cicdJsonPath = null
+  let cicdPdfPath = null
+  let cicdJson = null
+  let cicdOutput = ''
+
+  if (cicdScannerDir && fs.existsSync(tempRepoPath)) {
+    try {
+      const cicdFileName = `${repoName}_cicd_security_${Date.now()}.json`
+      cicdJsonPath = path.join(jsonDir, cicdFileName)
+      const cicdOutputDir = path.join(reportsDir, `cicd_${Date.now()}`)
+      fs.mkdirSync(cicdOutputDir, { recursive: true })
+      const cicdRun = await runPythonCommand({
+        cwd: cicdScannerDir,
+        args: ['scanner.py', '--repo-path', tempRepoPath, '--output', cicdJsonPath, '--output-dir', cicdOutputDir, '--pdf'],
+        allowExitCodes: [0, 2],
+        pythonBin: cicdPython
+      })
+      cicdOutput = cicdRun.output
+      cicdJson = parseJsonFile(cicdJsonPath)
+      const generatedCicdPdf = path.join(cicdOutputDir, 'report.pdf')
+      if (fs.existsSync(generatedCicdPdf)) {
+        cicdPdfPath = generatedCicdPdf
+      }
+    } catch (error) {
+      cicdOutput = `CI/CD scanner failed: ${error.message}`
+      cicdJsonPath = null
+      cicdPdfPath = null
+      cicdJson = null
+    }
+  }
+
+  let combinedJsonPath = null
+  let combinedJsonFile = null
+  let combinedPdfPath = null
+  let combinedPdfFile = null
+  if (codeJson || cicdJson) {
+    const combined = mergeAnalyzerAndCicdJson({ codeJson, cicdJson })
+    combinedJsonFile = `${repoName}_combined_analysis_${Date.now()}.json`
+    combinedJsonPath = path.join(jsonDir, combinedJsonFile)
+    fs.writeFileSync(combinedJsonPath, JSON.stringify(combined, null, 2), 'utf8')
+
+    try {
+      const combinedScriptPath = path.join(workspaceRoot, 'backend', 'scripts', 'generate_combined_pdf.py')
+      if (fs.existsSync(combinedScriptPath)) {
+        combinedPdfFile = `${repoName}_combined_security_report_${Date.now()}.pdf`
+        combinedPdfPath = path.join(reportsDir, combinedPdfFile)
+        await runPythonCommand({
+          cwd: workspaceRoot,
+          args: [combinedScriptPath, combinedJsonPath, combinedPdfPath, repoName],
+          pythonBin: analyzerPython
+        })
+      }
+    } catch (error) {
+      const combinedPdfError = `Combined PDF generation failed: ${error.message}`
+      cicdOutput = `${cicdOutput}\n${combinedPdfError}`.trim()
+      combinedPdfPath = null
+      combinedPdfFile = null
+    }
+  }
+
+  return {
+    output: `${output}\n${cicdOutput}`,
+    pdfFile: combinedPdfFile || pdfFile,
+    jsonFile: combinedJsonFile || jsonFile,
+    pdfPath: combinedPdfPath || (pdfFile ? path.join(reportsDir, pdfFile) : null),
+    jsonPath: combinedJsonPath || jsonPath,
+    cicdPdfFile: cicdPdfPath ? path.basename(cicdPdfPath) : null,
+    cicdPdfPath,
+    cicdJsonFile: cicdJsonPath ? path.basename(cicdJsonPath) : null,
+    cicdJsonPath,
+    combinedJsonFile,
+    combinedJsonPath,
+    combinedPdfFile,
+    combinedPdfPath
+  }
 }
 
 const processScanRun = async (scanId) => {
@@ -270,7 +684,15 @@ const processScanRun = async (scanId) => {
       pdfFile: result.pdfFile,
       pdfPath: result.pdfPath,
       jsonFile: result.jsonFile,
-      jsonPath: result.jsonPath
+      jsonPath: result.jsonPath,
+      cicdPdfFile: result.cicdPdfFile || null,
+      cicdPdfPath: result.cicdPdfPath || null,
+      cicdJsonFile: result.cicdJsonFile || null,
+      cicdJsonPath: result.cicdJsonPath || null,
+      combinedJsonFile: result.combinedJsonFile || null,
+      combinedJsonPath: result.combinedJsonPath || null,
+      combinedPdfFile: result.combinedPdfFile || null,
+      combinedPdfPath: result.combinedPdfPath || null
     }
 
     if (!reportFiles.pdfPath && !reportFiles.jsonPath) {
@@ -282,11 +704,13 @@ const processScanRun = async (scanId) => {
     let analysisSummary = null
     let findings = []
 
+    let mergedIssues = []
     if (reportFiles.jsonPath && fs.existsSync(reportFiles.jsonPath)) {
       try {
         const parsed = JSON.parse(fs.readFileSync(reportFiles.jsonPath, 'utf8'))
         analysisSummary = buildAnalysisSummary(parsed)
-        findings = (Array.isArray(parsed.critical_issues) ? parsed.critical_issues : []).slice(0, 50)
+        mergedIssues = Array.isArray(parsed.critical_issues) ? parsed.critical_issues : []
+        findings = mergedIssues.slice(0, 50)
       } catch {
         analysisSummary = null
       }
@@ -302,11 +726,19 @@ const processScanRun = async (scanId) => {
     freshScan.findings = findings
     await freshScan.save()
 
+    await syncRisksForScan({
+      scanDoc: freshScan,
+      projectId: freshScan.projectId,
+      mergedIssues
+    })
+
     const project = await Project.findById(freshScan.projectId)
     if (project) {
       project.lastScan = new Date()
       if (analysisSummary?.metrics?.overall !== undefined) {
         project.riskScore = Number((100 - analysisSummary.metrics.overall).toFixed(1))
+      } else if (analysisSummary?.totalIssues !== undefined) {
+        project.riskScore = Math.min(100, Number(analysisSummary.totalIssues || 0) * 5)
       }
       await project.save()
     }
@@ -370,6 +802,13 @@ router.post('/', protect, async (req, res) => {
 
 router.delete('/failed', protect, async (req, res) => {
   const ownerId = getOwnerId(req)
+  const failedScans = await Scan.find({ ownerId, status: 'failed' }).select('_id')
+  const failedScanIds = failedScans.map((scan) => scan._id)
+
+  if (failedScanIds.length > 0) {
+    await Risk.deleteMany({ ownerId, scanId: { $in: failedScanIds } })
+  }
+
   const result = await Scan.deleteMany({ ownerId, status: 'failed' })
 
   res.json({
@@ -424,7 +863,15 @@ router.post('/:id/run', protect, async (req, res) => {
     pdfFile: null,
     pdfPath: null,
     jsonFile: null,
-    jsonPath: null
+    jsonPath: null,
+    cicdPdfFile: null,
+    cicdPdfPath: null,
+    cicdJsonFile: null,
+    cicdJsonPath: null,
+    combinedJsonFile: null,
+    combinedJsonPath: null,
+    combinedPdfFile: null,
+    combinedPdfPath: null
   }
   scan.findings = []
   await scan.save()
@@ -463,7 +910,7 @@ router.get('/:id/report', protect, async (req, res) => {
   }
 
   const resolvedPath = path.resolve(filePath)
-  if (!analyzerDir || !resolvedPath.startsWith(path.resolve(analyzerDir)) || !fs.existsSync(resolvedPath)) {
+  if (!analyzerBaseDir || !resolvedPath.startsWith(path.resolve(analyzerBaseDir)) || !fs.existsSync(resolvedPath)) {
     return res.status(404).json({
       success: false,
       error: 'Report file not found'
@@ -509,14 +956,111 @@ router.delete('/:id', protect, async (req, res) => {
     return res.status(404).json({ success: false, error: 'Scan not found' })
   }
 
-  const deleted = await Scan.findOneAndDelete({ _id: req.params.id, ownerId: getOwnerId(req) })
+  const ownerId = getOwnerId(req)
+  const deleted = await Scan.findOneAndDelete({ _id: req.params.id, ownerId })
   if (!deleted) {
     return res.status(404).json({ success: false, error: 'Scan not found' })
   }
 
+  await Risk.deleteMany({ ownerId, scanId: deleted._id })
+
   res.json({
     success: true,
-    message: 'Scan deleted successfully'
+    message: 'Scan and related risks deleted successfully'
+  })
+})
+
+router.post('/ci-ingest', async (req, res) => {
+  const expectedApiKey = String(process.env.CI_INGEST_API_KEY || '').trim()
+  if (!expectedApiKey) {
+    return res.status(503).json({
+      success: false,
+      error: 'CI ingestion is disabled. Set CI_INGEST_API_KEY on the backend.'
+    })
+  }
+
+  const providedApiKey = String(req.headers['x-ci-api-key'] || '').trim()
+  if (!providedApiKey || providedApiKey !== expectedApiKey) {
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized CI ingest request'
+    })
+  }
+
+  const { projectId, repositoryUrl, repositoryFullName, branch, commitSha, workflowRunUrl, reportFileName } =
+    req.body || {}
+  const report =
+    req.body?.report && typeof req.body.report === 'object'
+      ? req.body.report
+      : (() => {
+          try {
+            return JSON.parse(String(req.body?.report || '{}'))
+          } catch {
+            return null
+          }
+        })()
+
+  if (!report || typeof report !== 'object') {
+    return res.status(400).json({ success: false, error: 'report JSON payload is required' })
+  }
+
+  const projectResolution = await resolveCiIngestProject({
+    projectId,
+    repositoryUrl,
+    repositoryFullName
+  })
+  const project = projectResolution.project
+  if (!project) {
+    const reasonText = String(projectResolution.reason || '')
+    const status = reasonText.includes('required') ? 400 : projectId ? 404 : 409
+    return res.status(status).json({ success: false, error: projectResolution.reason || 'Project not found' })
+  }
+
+  const startedAt = new Date()
+  const findings = mapCicdIssuesToUnifiedIssues(report?.issues).slice(0, 50)
+  const scan = await Scan.create({
+    ownerId: project.ownerId,
+    projectId: project._id,
+    repositoryUrl: String(repositoryUrl || project.repositoryUrl || '').trim(),
+    scanType: 'cicd',
+    branch: String(branch || 'main').trim() || 'main',
+    status: 'completed',
+    progress: 100,
+    startedAt,
+    completedAt: new Date(),
+    findings,
+    analysisSummary: buildCicdOnlySummary(report),
+    reportFiles: {
+      pdfFile: null,
+      pdfPath: null,
+      jsonFile: String(reportFileName || 'report.json'),
+      jsonPath: null,
+      cicdPdfFile: null,
+      cicdPdfPath: null,
+      cicdJsonFile: String(reportFileName || 'report.json'),
+      cicdJsonPath: null,
+      combinedJsonFile: null,
+      combinedJsonPath: null,
+      combinedPdfFile: null,
+      combinedPdfPath: null
+    },
+    analyzerLogTail: `CI ingest commit=${String(commitSha || '')} run=${String(workflowRunUrl || '')}`.trim()
+  })
+
+  await syncRisksForScan({
+    scanDoc: scan,
+    projectId: project._id,
+    mergedIssues: mapCicdIssuesToUnifiedIssues(report?.issues)
+  })
+
+  project.lastScan = new Date()
+  project.riskScore = Number(report?.overall_risk_score || 0)
+  await project.save()
+
+  res.status(201).json({
+    success: true,
+    message: 'CI report ingested successfully',
+    data: toResponse(scan)
   })
 })
 
