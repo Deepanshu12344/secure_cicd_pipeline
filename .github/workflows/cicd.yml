@@ -1,0 +1,53 @@
+name: CI/CD Security Check
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  security_check:
+    name: Run Security Check Command
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install scanner dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r capci_cd/requirements.txt
+
+      - name: Run CI/CD security check command
+        env:
+          DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
+          DASHBOARD_PROJECT_ID: ${{ secrets.DASHBOARD_PROJECT_ID }}
+          CI_INGEST_API_KEY: ${{ secrets.CI_INGEST_API_KEY }}
+          PYTHON: python
+        run: npm run security-check
+
+      - name: Upload security check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cicd-security-report-${{ github.sha }}
+          path: capci_cd/reports/report.json
+          if-no-files-found: warn

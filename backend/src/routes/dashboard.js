@@ -1,10 +1,18 @@
 import express from 'express';
+import { getLatestCiDashboardStatus } from '../utils/ciDashboardStore.js';
 
 const router = express.Router();
 
 // Get dashboard metrics
-router.get('/', (req, res) => {
-  res.json({
+router.get('/', async (req, res, next) => {
+  try {
+    const latestCiStatus = await getLatestCiDashboardStatus({
+      projectId: req.query.projectId,
+      repositoryUrl: req.query.repositoryUrl,
+      repositoryFullName: req.query.repositoryFullName
+    })
+
+    res.json({
     success: true,
     data: {
       totalProjects: 24,
@@ -16,9 +24,13 @@ router.get('/', (req, res) => {
       falsePositives: 2,
       scansCompleted: 156,
       pipelineSuccessRate: 94.5,
-      averageRiskScore: 6.2
+      averageRiskScore: 6.2,
+      latestCiStatus
     }
   });
+  } catch (error) {
+    next(error)
+  }
 });
 
 // Get risk trends
@@ -63,5 +75,22 @@ router.get('/vulnerabilities/types', (req, res) => {
     }
   });
 });
+
+router.get('/ci-status', async (req, res, next) => {
+  try {
+    const data = await getLatestCiDashboardStatus({
+      projectId: req.query.projectId,
+      repositoryUrl: req.query.repositoryUrl,
+      repositoryFullName: req.query.repositoryFullName
+    })
+
+    res.json({
+      success: true,
+      data
+    })
+  } catch (error) {
+    next(error)
+  }
+})
 
 export default router;
