@@ -1,3 +1,5 @@
+# ,aoamoan
+
 name: "Secure Pipeline Action"
 description: "Runs the capci_cd security pipeline against the checked-out repository"
 inputs:
@@ -117,6 +119,7 @@ req = urllib.request.Request(
     headers={"Content-Type": "application/json", "x-ci-api-key": os.environ["DASHBOARD_API_KEY"]},
     method="POST",
 )
+
 
 with urllib.request.urlopen(req, timeout=30) as resp:
     print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
