@@ -93,14 +93,25 @@ const resolveCiIngestProject = async ({ projectId, repositoryUrl, repositoryFull
     orConditions.push({ repositoryUrl: { $regex: new RegExp(`(?:^|/)${escaped}(?:\\.git)?/?$`, 'i') } })
   })
 
-  const projects = await Project.find({ $or: orConditions }).limit(5)
+  const projects = await Project.find({ $or: orConditions })
+    .sort({ updatedAt: -1, createdAt: -1 })
+    .limit(50)
   if (projects.length === 1) {
     return { project: projects[0], reason: '' }
   }
   if (projects.length > 1) {
+    const exactCandidates = new Set(uniqueCandidates)
+    const exactMatches = projects.filter((project) => {
+      const fullNameMatch = exactCandidates.has(normalizeRepositoryIdentifier(project.fullName))
+      const repoUrlMatch = exactCandidates.has(normalizeRepositoryIdentifier(project.repositoryUrl))
+      return fullNameMatch || repoUrlMatch
+    })
+
+    const preferred = exactMatches[0] || projects[0]
     return {
-      project: null,
-      reason: 'Multiple projects matched repository. Set DASHBOARD_PROJECT_ID to avoid ambiguity'
+      project: preferred,
+      reason:
+        'Multiple projects matched repository; selected the most recently updated matching project. Set DASHBOARD_PROJECT_ID for deterministic routing.'
     }
   }
 

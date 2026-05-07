@@ -81,10 +81,10 @@ runs:
         COMMIT_SHA: ${{ github.sha }}
         RUN_ID: ${{ github.run_id }}
       run: |
-        set +e
+        set -euo pipefail
         if [ -z "${DASHBOARD_URL}" ] || [ -z "${DASHBOARD_API_KEY}" ]; then
-          echo "Skipping scans ingest because dashboard-url or dashboard-api-key is not set."
-          exit 0
+          echo "Missing dashboard-url or dashboard-api-key input. Cannot ingest scan." >&2
+          exit 1
         fi
 
         python <<'PY'
@@ -121,11 +121,6 @@ runs:
             print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
             print(resp.read().decode("utf-8", errors="replace")[:500])
         PY
-
-        if [ "$?" -ne 0 ]; then
-          echo "Scans ingest failed; continuing to gate checks."
-        fi
-        exit 0
 
     - name: Enforce gate
       shell: bash

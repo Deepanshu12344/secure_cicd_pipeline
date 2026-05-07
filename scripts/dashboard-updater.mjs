@@ -1,4 +1,4 @@
-const DEFAULT_TIMEOUT_MS = 10000
+const DEFAULT_TIMEOUT_MS = 30000
 
 const withTrailingSlashTrimmed = (value) => String(value || '').replace(/\/+$/, '')
 
