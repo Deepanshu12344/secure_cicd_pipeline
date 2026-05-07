@@ -187,22 +187,53 @@ const buildCicdOnlySummary = (report) => {
 
   const totalIssues = Number(summary.total_issues || issues.length || 0)
   const riskScore = Number(safeReport.overall_risk_score || 0)
+  const criticalCount = Number(summary.critical_count || severityCounts.Critical || 0)
+  const highCount = Number(summary.high_count || severityCounts.High || 0)
+  const mediumCount = Number(summary.medium_count || severityCounts.Medium || 0)
+  const lowCount = Number(summary.low_count || severityCounts.Low || 0)
+  const weightedIssueImpact = criticalCount * 12 + highCount * 7 + mediumCount * 4 + lowCount * 2
+  const issuePressure = totalIssues > 0 ? weightedIssueImpact / totalIssues : 0
+  const clampMetric = (value) => Math.max(0, Math.min(100, Number(value || 0)))
+  const overallScore = clampMetric(100 - riskScore)
+
+  // CI/CD reports do not provide code-level skills directly; derive practical proxies from risk profile.
+  const accuracy = clampMetric(overallScore - issuePressure * 1.4)
+  const complexity = clampMetric(overallScore - (highCount + criticalCount * 2) * 2.2)
+  const efficiency = clampMetric(overallScore - totalIssues * 0.7)
+  const maintainability = clampMetric(overallScore - (mediumCount * 1.4 + highCount * 1.1))
+  const documentation = clampMetric(overallScore - (lowCount * 0.8 + mediumCount * 0.5))
+
+  const skillLevels = {
+    Accuracy: accuracy,
+    Complexity: complexity,
+    Efficiency: efficiency,
+    Maintainability: maintainability,
+    Documentation: documentation
+  }
+
+  const identifiedGaps = Object.entries(skillLevels)
+    .filter(([, score]) => Number(score) < 60)
+    .map(([skill, score]) => ({
+      skill,
+      score: Number(score),
+      severity: Number(score) < 40 ? 'High' : 'Medium'
+    }))
 
   return {
     totalFilesAnalyzed: 0,
     totalIssues,
     metrics: {
-      overall: Math.max(0, 100 - riskScore),
-      accuracy: 0,
-      complexity: 0,
-      efficiency: 0,
-      maintainability: 0,
-      documentation: 0
+      overall: overallScore,
+      accuracy,
+      complexity,
+      efficiency,
+      maintainability,
+      documentation
     },
     skillsGap: {
-      overallProficiency: 0,
-      skillLevels: {},
-      identifiedGaps: []
+      overallProficiency: Math.round((accuracy + complexity + efficiency + maintainability + documentation) / 5),
+      skillLevels,
+      identifiedGaps
     },
     severityCounts,
     categoryCounts,

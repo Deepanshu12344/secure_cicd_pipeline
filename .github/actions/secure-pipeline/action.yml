@@ -69,7 +69,7 @@ runs:
         mkdir -p "$DEST_DIR"
         cp "$REPORT_SOURCE" "$DEST_FILE"
         echo "report_json_path=$DEST_FILE" >> "$GITHUB_OUTPUT"
-
+# rtrttr
     - name: Ingest report to scans endpoint
       shell: bash
       env:
