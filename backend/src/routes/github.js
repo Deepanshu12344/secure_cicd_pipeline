@@ -9,16 +9,24 @@ const router = express.Router();
 
 const getCallbackUrl = () =>
   process.env.GITHUB_CONNECT_CALLBACK_URL || 'http://localhost:5000/api/github/callback';
+const getFrontendBaseUrl = (req) => {
+  const configured = String(FRONTEND_URL || '').trim();
+  if (configured) return configured.replace(/\/+$/, '');
+  const proto = String(req.headers['x-forwarded-proto'] || req.protocol || 'https').split(',')[0].trim();
+  const host = String(req.headers['x-forwarded-host'] || req.get('host') || '').split(',')[0].trim();
+  return host ? `${proto}://${host}` : 'http://localhost:3000';
+};
 
 const normalizeEmail = (value) => String(value || '').trim().toLowerCase();
 const getOwnerId = (req) => req.user?._id || req.user?.id;
 
 router.get('/github/connect', protect, (req, res) => {
+  const frontendBase = getFrontendBaseUrl(req);
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    return res.redirect(`${FRONTEND_URL}/projects?github=config_missing`);
+    return res.redirect(`${frontendBase}/projects?github=config_missing`);
   }
 
   const state = crypto.randomBytes(24).toString('hex');
@@ -40,18 +48,19 @@ router.get('/github/connect', protect, (req, res) => {
 });
 
 router.get('/github/callback', async (req, res) => {
+  const frontendBase = getFrontendBaseUrl(req);
   const { code, state } = req.query;
   const oauthSession = req.session.githubOAuth;
 
   if (!code || !state || !oauthSession?.state || state !== oauthSession.state) {
-    return res.redirect(`${FRONTEND_URL}/projects?github=link_failed`);
+    return res.redirect(`${frontendBase}/projects?github=link_failed`);
   }
 
   try {
     const appUser = await User.findById(oauthSession.userId).select('email');
     if (!appUser) {
       delete req.session.githubOAuth;
-      return res.redirect(`${FRONTEND_URL}/projects?github=link_failed`);
+      return res.redirect(`${frontendBase}/projects?github=link_failed`);
     }
 
     const tokenResponse = await axios.post(
@@ -74,7 +83,7 @@ router.get('/github/callback', async (req, res) => {
     const accessToken = tokenResponse.data?.access_token;
     if (!accessToken) {
       console.error('GitHub token exchange failed:', tokenResponse.data);
-      return res.redirect(`${FRONTEND_URL}/projects?github=link_failed`);
+      return res.redirect(`${frontendBase}/projects?github=link_failed`);
     }
 
     const profileResponse = await axios.get('https://api.github.com/user', {
@@ -91,7 +100,7 @@ router.get('/github/callback', async (req, res) => {
     if (!githubId) {
       console.error('GitHub profile fetch returned no id');
       delete req.session.githubOAuth;
-      return res.redirect(`${FRONTEND_URL}/projects?github=link_failed`);
+      return res.redirect(`${frontendBase}/projects?github=link_failed`);
     }
 
     const emailsResponse = await axios.get('https://api.github.com/user/emails', {
@@ -112,12 +121,12 @@ router.get('/github/callback', async (req, res) => {
 
     if (!githubVerifiedEmail) {
       delete req.session.githubOAuth;
-      return res.redirect(`${FRONTEND_URL}/projects?github=email_unverified`);
+      return res.redirect(`${frontendBase}/projects?github=email_unverified`);
     }
 
     if (githubVerifiedEmail !== appEmail) {
       delete req.session.githubOAuth;
-      return res.redirect(`${FRONTEND_URL}/projects?github=email_mismatch`);
+      return res.redirect(`${frontendBase}/projects?github=email_mismatch`);
     }
 
     await User.findByIdAndUpdate(oauthSession.userId, {
@@ -126,11 +135,11 @@ router.get('/github/callback', async (req, res) => {
     });
 
     delete req.session.githubOAuth;
-    return res.redirect(`${FRONTEND_URL}/projects?github=connected`);
+    return res.redirect(`${frontendBase}/projects?github=connected`);
   } catch (error) {
     const details = error?.response?.data || error?.message || error;
     console.error('GitHub OAuth callback error:', details);
-    return res.redirect(`${FRONTEND_URL}/projects?github=link_failed`);
+    return res.redirect(`${frontendBase}/projects?github=link_failed`);
   }
 });
 

@@ -1,0 +1,268 @@
+﻿Main Feature: Public CI/CD Scan + Dashboard Ingestion
+Date: 2026-05-07
+
+Goal
+- Let any user add a command/workflow in their own CI/CD pipeline that scans their repository and pushes results to your public dashboard backend.
+
+Current State in This Project
+- Already implemented:
+  - CI ingest endpoint: POST /api/ci-status (API-key protected)
+  - CI status retrieval endpoint: GET /api/ci-status/latest
+  - Dashboard route integration: /api/dashboard/ci-status (used by frontend)
+  - CI sender script: scripts/security-check.mjs
+  - Payload builder + HTTP sender: scripts/dashboard-updater.mjs
+- Important limitation now:
+  - The scan command depends on local capci_cd files being present in the same repository.
+  - So external repos cannot just run your scanner unless you package/distribute it.
+
+==================================================
+PHASE 1: Make Your Platform Publicly Reachable
+==================================================
+
+1) Deploy Backend Publicly (HTTPS required)
+- Deploy backend service (Node/Express) to a public host:
+  - Render / Railway / Fly.io / VPS / Kubernetes are all fine.
+- Ensure the backend is reachable at:
+  - https://your-backend-domain
+- Required backend runtime env vars:
+  - NODE_ENV=production
+  - PORT=<platform port>
+  - MONGODB_URI=<your mongo uri>
+  - JWT_SECRET=<strong random>
+  - CI_INGEST_API_KEY=<strong random shared key>
+  - FRONTEND_URL=https://your-frontend-domain
+
+2) Deploy Frontend Publicly
+- Deploy frontend (Vite build) to Vercel/Netlify/etc.
+- Configure API base URL in frontend (if required by your service config) to point to your public backend.
+- Ensure CORS in backend allows frontend domain:
+  - FRONTEND_URL must exactly match deployed frontend origin.
+
+3) Verify Public Health
+- Backend:
+  - GET https://your-backend-domain/health -> 200
+- Frontend:
+  - Open dashboard URL in browser.
+
+==================================================
+PHASE 2: Enable Secure CI Ingestion on Backend
+==================================================
+
+4) Keep CI Ingestion Locked with API Key
+- Your route backend/src/routes/ciStatus.js expects:
+  - Header: x-ci-api-key
+  - Value equals backend env CI_INGEST_API_KEY
+- If missing/incorrect, backend returns 401.
+- If CI_INGEST_API_KEY not configured, backend returns 503.
+
+5) Test Ingestion Endpoint Manually
+- Example curl:
+  curl -X POST "https://your-backend-domain/api/ci-status" \
+    -H "content-type: application/json" \
+    -H "x-ci-api-key: <CI_INGEST_API_KEY>" \
+    -d '{
+      "repositoryFullName":"owner/repo",
+      "repositoryUrl":"https://github.com/owner/repo",
+      "branch":"main",
+      "commitSha":"abc123",
+      "status":"passed",
+      "issueCount":0,
+      "severitySummary":{"critical":0,"high":0,"medium":0,"low":0,"nonCritical":0},
+      "source":"github-actions"
+    }'
+- Expected: HTTP 201 with success true.
+
+==================================================
+PHASE 3: Make Scanner Usable by External Repositories
+==================================================
+
+You have two viable distribution models. Pick one.
+
+Option A (Recommended): Publish a Reusable GitHub Action
+- Best developer UX.
+- External repo can do: uses: your-org/secure-pipeline-action@v1
+
+Option B: Publish Scanner as a Python Package
+- External repo installs via pip and runs CLI command.
+
+This guide continues with Option A because it is easiest for users.
+
+6) Create Dedicated Public Action Repository
+- New repo example: your-org/secure-pipeline-action
+- Put scanner code there:
+  - capci_cd/
+  - action.yml
+  - docs/README with setup instructions
+
+7) Fix Action Structure (Important)
+- In your current repo, .github/actions/secure-pipeline/action.yml references:
+  - ${github.action_path}/capci_cd/...
+- But that local action folder currently contains only action.yml.
+- In the public action repo, include capci_cd beside action.yml so paths are valid.
+
+8) Action Inputs to Support
+- python-version (default 3.11)
+- target-path (default .)
+- dashboard-url
+- dashboard-api-key
+- dashboard-project-id (optional)
+- risk-threshold (default 80)
+- fail-on-critical (default true)
+
+9) Action Behavior
+- Install Python deps.
+- Run scanner.
+- Read JSON report.
+- Build payload:
+  - repositoryFullName, repositoryUrl, branch, commitSha, workflowRunUrl, issueCount, severity summary, status.
+- POST to:
+  - ${dashboard-url}/api/ci-status
+  - with header x-ci-api-key=${dashboard-api-key}
+- Fail workflow if policy gate violated.
+
+10) Tag and Release
+- Create semantic tag:
+  - v1.0.0
+- Then create major floating tag:
+  - v1
+- External users should reference @v1.
+
+==================================================
+PHASE 4: User Onboarding (External Repo)
+==================================================
+
+11) External User Adds Repo Secrets
+In their GitHub repository settings -> Secrets and variables -> Actions:
+- DASHBOARD_URL = https://your-backend-domain
+- CI_INGEST_API_KEY = <shared ingest key>
+- DASHBOARD_PROJECT_ID = <optional, if mapping to an existing project>
+
+12) External User Adds Workflow File
+Example .github/workflows/security-scan.yml:
+
+name: CI/CD Security Scan
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Secure Pipeline
+        uses: your-org/secure-pipeline-action@v1
+        with:
+          python-version: "3.11"
+          target-path: "."
+          dashboard-url: ${{ secrets.DASHBOARD_URL }}
+          dashboard-api-key: ${{ secrets.CI_INGEST_API_KEY }}
+          dashboard-project-id: ${{ secrets.DASHBOARD_PROJECT_ID }}
+          risk-threshold: "80"
+          fail-on-critical: "true"
+
+13) Verify End-to-End
+- Trigger workflow by push.
+- Confirm workflow run includes scan output.
+- Confirm backend receives POST /api/ci-status.
+- Confirm dashboard shows latest scan status and counts.
+
+==================================================
+PHASE 5: Dashboard Data Mapping Notes
+==================================================
+
+14) How Project Mapping Works in Your Backend
+- In backend/src/utils/ciDashboardStore.js, mapping tries this order:
+  1. projectId (if provided and valid)
+  2. repositoryFullName (owner/repo)
+  3. repositoryUrl normalized
+- If project is found in Mongo, pipeline/project summary is updated.
+- If not found, data is still stored in storage/ci-dashboard-status.json using a computed key.
+
+15) Recommended Mapping Strategy
+- Prefer sending repositoryFullName always.
+- If you already have project documents in DB, include DASHBOARD_PROJECT_ID for deterministic linkage.
+
+==================================================
+PHASE 6: Security Hardening (Do This Before Broad Public Use)
+==================================================
+
+16) Rotate Existing Exposed Secrets
+- Any previously committed credentials should be rotated immediately:
+  - Mongo credentials
+  - OAuth client secrets
+  - GitHub app/client secrets
+  - JWT secrets
+- Never keep real secrets in tracked files.
+
+17) Add Additional Ingestion Protection
+- Add per-key rate limiting on /api/ci-status.
+- Add optional HMAC signature verification.
+- Add request size limits and strict schema validation.
+- Log source repository and workflow run URL for audit.
+
+18) Multi-Tenant Isolation (If many users)
+- Do not use one global ingest key for all users long-term.
+- Better model:
+  - one key per organization/user
+  - map key -> tenant
+  - isolate displayed data by tenant.
+
+==================================================
+PHASE 7: Operational Checklist
+==================================================
+
+19) Backend Checklist
+- [ ] Public HTTPS domain live
+- [ ] Mongo connected
+- [ ] CI_INGEST_API_KEY set
+- [ ] FRONTEND_URL correct
+- [ ] /health returns 200
+
+20) Action/Scanner Checklist
+- [ ] Public action repo created
+- [ ] capci_cd included in action repo
+- [ ] action.yml paths validated
+- [ ] v1 tag published
+
+21) External User Checklist
+- [ ] Secrets set in GitHub Actions
+- [ ] workflow file added
+- [ ] run triggered
+- [ ] result visible on dashboard
+
+==================================================
+Troubleshooting
+==================================================
+
+22) "CI dashboard ingestion is disabled"
+- Cause: backend missing CI_INGEST_API_KEY.
+- Fix: set env var and restart backend.
+
+23) "Unauthorized CI dashboard update request"
+- Cause: wrong/missing x-ci-api-key.
+- Fix: sync GitHub secret CI_INGEST_API_KEY with backend value.
+
+24) Workflow passes scan but dashboard not updated
+- Check DASHBOARD_URL correctness and HTTPS reachability.
+- Check backend logs for POST /api/ci-status.
+- Check action step that performs dashboard update.
+
+25) Action works in your repo, fails in external repo
+- Usually packaging/path issue.
+- Ensure scanner files are in the public action repo and action.yml references valid relative paths.
+
+==================================================
+Short Answer to Your Question
+==================================================
+
+- Yes, the feature exists in your backend and scripts.
+- To make it truly public for arbitrary user repos, you must package scanner distribution (prefer GitHub Action) and deploy backend/frontend publicly with secure API-key ingestion.

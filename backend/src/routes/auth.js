@@ -24,6 +24,13 @@ const getGithubAuthCallbackUrl = () =>
   process.env.GITHUB_AUTH_CALLBACK_URL ||
   process.env.GITHUB_CALLBACK_URL ||
   'http://localhost:5000/api/auth/github/callback';
+const getFrontendBaseUrl = (req) => {
+  const configured = String(FRONTEND_URL || '').trim();
+  if (configured) return configured.replace(/\/+$/, '');
+  const proto = String(req.headers['x-forwarded-proto'] || req.protocol || 'https').split(',')[0].trim();
+  const host = String(req.headers['x-forwarded-host'] || req.get('host') || '').split(',')[0].trim();
+  return host ? `${proto}://${host}` : 'http://localhost:3000';
+};
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -331,6 +338,7 @@ router.get('/google/client-id', (req, res) => {
 });
 
 router.get('/github/login', (req, res) => {
+  const frontendBase = getFrontendBaseUrl(req);
   if (requireDbConnection(res)) {
     return;
   }
@@ -340,7 +348,7 @@ router.get('/github/login', (req, res) => {
   const redirectTo = typeof req.query.redirect === 'string' ? req.query.redirect : '/';
 
   if (!clientId || !clientSecret) {
-    return res.redirect(`${FRONTEND_URL}/login?github=config_missing`);
+    return res.redirect(`${frontendBase}/login?github=config_missing`);
   }
 
   const state = crypto.randomBytes(24).toString('hex');
@@ -361,6 +369,7 @@ router.get('/github/login', (req, res) => {
 });
 
 router.get('/github/callback', asyncHandler(async (req, res) => {
+  const frontendBase = getFrontendBaseUrl(req);
   if (requireDbConnection(res)) {
     return;
   }
@@ -370,11 +379,11 @@ router.get('/github/callback', asyncHandler(async (req, res) => {
   delete req.session.githubAuth;
 
   if (!code || !state || !authSession?.state || state !== authSession.state) {
-    return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+    return res.redirect(`${frontendBase}/login?github=oauth_failed`);
   }
   const sessionAgeMs = Date.now() - Number(authSession.createdAt || 0);
   if (!Number.isFinite(sessionAgeMs) || sessionAgeMs > 10 * 60 * 1000) {
-    return res.redirect(`${FRONTEND_URL}/login?github=oauth_expired`);
+    return res.redirect(`${frontendBase}/login?github=oauth_expired`);
   }
 
   try {
@@ -397,7 +406,7 @@ router.get('/github/callback', asyncHandler(async (req, res) => {
 
     const accessToken = tokenResponse.data?.access_token;
     if (!accessToken) {
-      return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+      return res.redirect(`${frontendBase}/login?github=oauth_failed`);
     }
 
     const [profileResponse, emailsResponse] = await Promise.all([
@@ -423,7 +432,7 @@ router.get('/github/callback', asyncHandler(async (req, res) => {
 
     const githubId = String(profileResponse.data?.id || '');
     if (!githubId) {
-      return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+      return res.redirect(`${frontendBase}/login?github=oauth_failed`);
     }
 
     const emailList = Array.isArray(emailsResponse.data) ? emailsResponse.data : [];
@@ -432,7 +441,7 @@ router.get('/github/callback', asyncHandler(async (req, res) => {
     const githubEmail = normalizeEmail(primaryVerified?.email || anyVerified?.email);
 
     if (!githubEmail) {
-      return res.redirect(`${FRONTEND_URL}/login?github=email_unverified`);
+      return res.redirect(`${frontendBase}/login?github=email_unverified`);
     }
 
     const [userByEmail, userByGithubId] = await Promise.all([
@@ -441,7 +450,7 @@ router.get('/github/callback', asyncHandler(async (req, res) => {
     ]);
 
     if (userByGithubId && userByEmail && String(userByGithubId._id) !== String(userByEmail._id)) {
-      return res.redirect(`${FRONTEND_URL}/login?github=account_conflict`);
+      return res.redirect(`${frontendBase}/login?github=account_conflict`);
     }
 
     let user = userByEmail || userByGithubId;
@@ -476,11 +485,11 @@ router.get('/github/callback', asyncHandler(async (req, res) => {
         ? authSession.redirectTo
         : '/';
 
-    return res.redirect(`${FRONTEND_URL}/login?github=success&token=${encodeURIComponent(token)}&next=${encodeURIComponent(nextPath)}`);
+    return res.redirect(`${frontendBase}/login?github=success&token=${encodeURIComponent(token)}&next=${encodeURIComponent(nextPath)}`);
   } catch (error) {
     const details = error?.response?.data || error?.message || error;
     console.error('GitHub auth callback error:', details);
-    return res.redirect(`${FRONTEND_URL}/login?github=oauth_failed`);
+    return res.redirect(`${frontendBase}/login?github=oauth_failed`);
   }
 }));
 

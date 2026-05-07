@@ -30,7 +30,9 @@ const Home = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [quickTab, setQuickTab] = useState('recent')
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+  const apiBase =
+    String(import.meta.env.VITE_API_URL || '').trim() ||
+    `${window.location.origin}/api`
   const backendBase = apiBase.replace(/\/api\/?$/, '')
   const profilePhotoSrc = user?.profilePhotoUrl
     ? user.profilePhotoUrl.startsWith('http')
