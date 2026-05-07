@@ -1,20 +1,16 @@
-# ,aoamoan
-# sbgdsrgsrf
 name: "Secure Pipeline Action"
 description: "Runs the capci_cd security pipeline against the checked-out repository"
+
 inputs:
   python-version:
     required: false
     default: "3.9"
-
   target-path:
     required: false
     default: "."
-
   risk-threshold:
     required: false
     default: "80"
-
   fail-on-critical:
     required: false
     default: "true"
@@ -35,7 +31,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
@@ -65,14 +60,13 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        mkdir -p "${{ github.workspace }}/security-reports"
         REPORT_SOURCE="${{ github.workspace }}/capci_cd/reports/report.json"
+        DEST_DIR="${{ github.workspace }}/security-reports"
+        DEST_FILE="$DEST_DIR/report.json"
         [ -f "$REPORT_SOURCE" ] || { echo "Expected report not found: $REPORT_SOURCE" >&2; exit 1; }
-
-        cp "$REPORT_SOURCE" \
-           "${{ github.workspace }}/security-reports/report.json"
-
-        echo "report_json_path=${{ github.workspace }}/security-reports/report.json" >> "$GITHUB_OUTPUT"
+        mkdir -p "$DEST_DIR"
+        cp "$REPORT_SOURCE" "$DEST_FILE"
+        echo "report_json_path=$DEST_FILE" >> "$GITHUB_OUTPUT"
 
     - name: Ingest report to scans endpoint
       shell: bash
@@ -94,37 +88,40 @@ runs:
         fi
 
         python <<'PY'
-import json
-import os
-import urllib.request
+        import json
+        import os
+        import urllib.request
 
-with open(os.environ["REPORT_PATH"], encoding="utf-8") as f:
-    report = json.load(f)
+        with open(os.environ["REPORT_PATH"], encoding="utf-8") as f:
+            report = json.load(f)
 
-endpoint = os.environ["DASHBOARD_URL"].rstrip("/") + "/api/scans/ci-ingest"
-payload = {
-    "projectId": os.environ.get("DASHBOARD_PROJECT_ID") or None,
-    "repositoryUrl": os.environ["REPOSITORY_URL"],
-    "repositoryFullName": os.environ["REPOSITORY"],
-    "branch": os.environ["REF_NAME"],
-    "commitSha": os.environ["COMMIT_SHA"],
-    "workflowRunUrl": f"https://github.com/{os.environ['REPOSITORY']}/actions/runs/{os.environ['RUN_ID']}",
-    "reportFileName": "report.json",
-    "report": report,
-}
+        endpoint = os.environ["DASHBOARD_URL"].rstrip("/") + "/api/scans/ci-ingest"
+        payload = {
+            "projectId": os.environ.get("DASHBOARD_PROJECT_ID") or None,
+            "repositoryUrl": os.environ["REPOSITORY_URL"],
+            "repositoryFullName": os.environ["REPOSITORY"],
+            "branch": os.environ["REF_NAME"],
+            "commitSha": os.environ["COMMIT_SHA"],
+            "workflowRunUrl": f"https://github.com/{os.environ['REPOSITORY']}/actions/runs/{os.environ['RUN_ID']}",
+            "reportFileName": "report.json",
+            "report": report,
+        }
 
-req = urllib.request.Request(
-    endpoint,
-    data=json.dumps(payload).encode("utf-8"),
-    headers={"Content-Type": "application/json", "x-ci-api-key": os.environ["DASHBOARD_API_KEY"]},
-    method="POST",
-)
+        req = urllib.request.Request(
+            endpoint,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "x-ci-api-key": os.environ["DASHBOARD_API_KEY"],
+            },
+            method="POST",
+        )
 
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
+            print(resp.read().decode("utf-8", errors="replace")[:500])
+        PY
 
-with urllib.request.urlopen(req, timeout=30) as resp:
-    print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
-    print(resp.read().decode("utf-8", errors="replace")[:500])
-PY
         if [ "$?" -ne 0 ]; then
           echo "Scans ingest failed; continuing to gate checks."
         fi
@@ -156,11 +153,6 @@ PY
           exit 1
         fi
 
-        if [ "$EXIT_CODE" -ne 0 ]; then
-          exit "$EXIT_CODE"
-        fi
-      fi
-
-        if [ "$EXIT_CODE" -ne 0 ]; then
+        if [ "${EXIT_CODE:-0}" -ne 0 ]; then
           exit "$EXIT_CODE"
         fi
