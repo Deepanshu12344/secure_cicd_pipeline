@@ -53,34 +53,70 @@ export const updateDashboardStatus = async (payload) => {
     return { skipped: true, reason: 'missing_ci_ingest_api_key' }
   }
 
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS)
-
   try {
-    const response = await fetch(`${dashboardUrl}/api/ci-status`, {
+    const ciStatusResponse = await fetch(`${dashboardUrl}/api/ci-status`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
         'x-ci-api-key': apiKey
       },
       body: JSON.stringify(payload),
-      signal: controller.signal
+      signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS)
     })
 
-    const text = await response.text()
-    let data = null
+    const ciStatusText = await ciStatusResponse.text()
+    let ciStatusData = null
     try {
-      data = text ? JSON.parse(text) : null
+      ciStatusData = ciStatusText ? JSON.parse(ciStatusText) : null
     } catch {
-      data = { raw: text }
+      ciStatusData = { raw: ciStatusText }
     }
 
-    if (!response.ok) {
-      throw new Error(`Dashboard update failed (${response.status}): ${text}`)
+    if (!ciStatusResponse.ok) {
+      throw new Error(`Dashboard CI status update failed (${ciStatusResponse.status}): ${ciStatusText}`)
     }
 
-    return { skipped: false, data }
-  } finally {
-    clearTimeout(timeout)
+    const ingestPayload = {
+      projectId: payload.projectId,
+      repositoryUrl: payload.repositoryUrl,
+      repositoryFullName: payload.repositoryFullName,
+      branch: payload.branch,
+      commitSha: payload.commitSha,
+      workflowRunUrl: payload.workflowRunUrl,
+      reportFileName: 'report.json',
+      report: payload.report
+    }
+
+    const scansIngestResponse = await fetch(`${dashboardUrl}/api/scans/ci-ingest`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-ci-api-key': apiKey
+      },
+      body: JSON.stringify(ingestPayload),
+      signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS)
+    })
+
+    const scansIngestText = await scansIngestResponse.text()
+    let scansIngestData = null
+    try {
+      scansIngestData = scansIngestText ? JSON.parse(scansIngestText) : null
+    } catch {
+      scansIngestData = { raw: scansIngestText }
+    }
+
+    if (!scansIngestResponse.ok) {
+      throw new Error(`Dashboard scans ingest failed (${scansIngestResponse.status}): ${scansIngestText}`)
+    }
+
+    return {
+      skipped: false,
+      data: {
+        ciStatus: ciStatusData,
+        scansIngest: scansIngestData
+      }
+    }
+  } catch (error) {
+    throw new Error(error?.message || 'Dashboard update failed')
   }
 }

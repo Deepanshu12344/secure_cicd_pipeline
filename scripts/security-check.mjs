@@ -41,14 +41,14 @@ const runScanner = () =>
 const main = async () => {
   if (!fs.existsSync(scannerEntry)) {
     console.error(`Security scanner entry not found: ${scannerEntry}`)
-    process.exit(1)
+    return 1
   }
 
   await runScanner()
 
   if (!fs.existsSync(reportPath)) {
     console.error(`Security report not found: ${reportPath}`)
-    process.exit(1)
+    return 1
   }
 
   const report = readJsonFile(reportPath)
@@ -59,7 +59,7 @@ const main = async () => {
     await updateDashboardStatus(payload)
   } catch (error) {
     console.error(error.message)
-    process.exit(1)
+    return 1
   }
 
   console.log(
@@ -77,13 +77,15 @@ const main = async () => {
 
   if (classification.hasCritical) {
     console.error('Critical issues found. Failing CI/CD security check.')
-    process.exit(1)
+    return 1
   }
 
-  process.exit(0)
+  return 0
 }
 
 main().catch((error) => {
   console.error(error)
-  process.exit(1)
+  return 1
+}).then((code) => {
+  process.exitCode = Number.isInteger(code) ? code : 1
 })
