@@ -1,6 +1,8 @@
 name: "Secure Pipeline Action"
 description: "Runs the capci_cd security pipeline against the checked-out repository"
 
+# grerg
+
 inputs:
   python-version:
     required: false
@@ -17,15 +19,6 @@ inputs:
   fail-on-critical:
     required: false
     default: "true"
-  dashboard-url:
-    required: false
-    default: ""
-  dashboard-project-id:
-    required: false
-    default: ""
-  dashboard-api-key:
-    required: false
-    default: ""
 
 outputs:
   report-json-path:
@@ -43,19 +36,16 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        set -euo pipefail
-        REQ_FILE="${{ github.workspace }}/capci_cd/requirements.txt"
-        [ -f "$REQ_FILE" ] || { echo "Missing requirements file: $REQ_FILE" >&2; exit 1; }
-        python -m pip install --upgrade pip
-        python -m pip install -r "$REQ_FILE"
+        set -e
+        pip install -r "${{ github.action_path }}/capci_cd/requirements.txt"
 
     - name: Run pipeline
       id: run_pipeline
       shell: bash
+      working-directory: ${{ inputs.target-path }}
       run: |
         set +e
-        cd "${{ inputs.target-path }}"
-        python "${{ github.workspace }}/capci_cd/run_secure_pipeline.py"
+        python "${{ github.action_path }}/capci_cd/run_secure_pipeline.py"
         echo "pipeline_exit_code=$?" >> "$GITHUB_OUTPUT"
         exit 0
 
@@ -63,83 +53,27 @@ runs:
       id: export
       shell: bash
       run: |
-        set -euo pipefail
+        set -e
         mkdir -p "${{ github.workspace }}/security-reports"
-        REPORT_SOURCE="${{ github.workspace }}/capci_cd/reports/report.json"
-        [ -f "$REPORT_SOURCE" ] || { echo "Expected report not found: $REPORT_SOURCE" >&2; exit 1; }
 
-        cp "$REPORT_SOURCE" \
+        cp "${{ github.action_path }}/capci_cd/reports/report.json" \
            "${{ github.workspace }}/security-reports/report.json"
 
         echo "report_json_path=${{ github.workspace }}/security-reports/report.json" >> "$GITHUB_OUTPUT"
 
-    - name: Ingest report to scans endpoint
-      shell: bash
-      env:
-        DASHBOARD_URL: ${{ inputs.dashboard-url }}
-        DASHBOARD_PROJECT_ID: ${{ inputs.dashboard-project-id }}
-        DASHBOARD_API_KEY: ${{ inputs.dashboard-api-key }}
-        REPORT_PATH: ${{ steps.export.outputs.report_json_path }}
-        REPOSITORY: ${{ github.repository }}
-        REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}
-        REF_NAME: ${{ github.ref_name }}
-        COMMIT_SHA: ${{ github.sha }}
-        RUN_ID: ${{ github.run_id }}
-      run: |
-        set +e
-        if [ -z "${DASHBOARD_URL}" ] || [ -z "${DASHBOARD_API_KEY}" ]; then
-          echo "Skipping scans ingest because dashboard-url or dashboard-api-key is not set."
-          exit 0
-        fi
-
-        python <<'PY'
-import json
-import os
-import urllib.request
-
-with open(os.environ["REPORT_PATH"], encoding="utf-8") as f:
-    report = json.load(f)
-
-endpoint = os.environ["DASHBOARD_URL"].rstrip("/") + "/api/scans/ci-ingest"
-payload = {
-    "projectId": os.environ.get("DASHBOARD_PROJECT_ID") or None,
-    "repositoryUrl": os.environ["REPOSITORY_URL"],
-    "repositoryFullName": os.environ["REPOSITORY"],
-    "branch": os.environ["REF_NAME"],
-    "commitSha": os.environ["COMMIT_SHA"],
-    "workflowRunUrl": f"https://github.com/{os.environ['REPOSITORY']}/actions/runs/{os.environ['RUN_ID']}",
-    "reportFileName": "report.json",
-    "report": report,
-}
-
-req = urllib.request.Request(
-    endpoint,
-    data=json.dumps(payload).encode("utf-8"),
-    headers={"Content-Type": "application/json", "x-ci-api-key": os.environ["DASHBOARD_API_KEY"]},
-    method="POST",
-)
-
-with urllib.request.urlopen(req, timeout=30) as resp:
-    print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
-    print(resp.read().decode("utf-8", errors="replace")[:500])
-PY
-        if [ "$?" -ne 0 ]; then
-          echo "Scans ingest failed; continuing to gate checks."
-        fi
-        exit 0
-
     - name: Enforce gate
       shell: bash
       run: |
-        set -euo pipefail
+        set -e
 
         REPORT="${{ steps.export.outputs.report_json_path }}"
         EXIT_CODE="${{ steps.run_pipeline.outputs.pipeline_exit_code }}"
         THRESHOLD="${{ inputs.risk-threshold }}"
         FAIL_CRIT="${{ inputs.fail-on-critical }}"
 
-        SCORE=$(python -c "import json; print(float(json.load(open('$REPORT', encoding='utf-8')).get('overall_risk_score', 0) or 0))")
-        CRITICAL=$(python -c "import json; print(int(json.load(open('$REPORT', encoding='utf-8')).get('summary', {}).get('critical_count', 0) or 0))")
+        SCORE=$(python -c "import json; print(json.load(open('$REPORT')).get('overall_risk_score', 0))")
+
+        CRITICAL=$(python -c "import json; print(json.load(open('$REPORT')).get('summary', {}).get('critical_count', 0))")
 
         echo "Score: $SCORE"
         echo "Critical: $CRITICAL"
@@ -149,7 +83,7 @@ PY
           exit 1
         fi
 
-        if SCORE="$SCORE" THRESHOLD="$THRESHOLD" python -c "import os,sys; sys.exit(0 if float(os.environ['SCORE']) >= float(os.environ['THRESHOLD']) else 1)"; then
+        if [ "$SCORE" -ge "$THRESHOLD" ]; then
           echo "Risk score exceeded threshold."
           exit 1
         fi
