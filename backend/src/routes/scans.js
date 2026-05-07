@@ -1060,6 +1060,72 @@ router.post('/ci-ingest', async (req, res) => {
 
   const startedAt = new Date()
   const findings = mapCicdIssuesToUnifiedIssues(report?.issues).slice(0, 50)
+  const repoName = parseRepositoryName(String(repositoryUrl || project.repositoryUrl || project.fullName || 'repository'))
+  const reportsBaseDir = analyzerBaseDir || workspaceRoot
+  const reportsDir = path.join(reportsBaseDir, 'reports')
+  const jsonDir = path.join(reportsBaseDir, 'json_output')
+  fs.mkdirSync(reportsDir, { recursive: true })
+  fs.mkdirSync(jsonDir, { recursive: true })
+
+  const timestamp = Date.now()
+  const cicdJsonFile = `${repoName}_cicd_ingest_${timestamp}.json`
+  const cicdJsonPath = path.join(jsonDir, cicdJsonFile)
+  let combinedJsonFile = null
+  let combinedJsonPath = null
+  let combinedPdfFile = null
+  let combinedPdfPath = null
+  let reportFiles = null
+
+  try {
+    fs.writeFileSync(cicdJsonPath, JSON.stringify(report, null, 2), 'utf8')
+
+    const combined = mergeAnalyzerAndCicdJson({ codeJson: null, cicdJson: report })
+    combinedJsonFile = `${repoName}_combined_ci_ingest_${timestamp}.json`
+    combinedJsonPath = path.join(jsonDir, combinedJsonFile)
+    fs.writeFileSync(combinedJsonPath, JSON.stringify(combined, null, 2), 'utf8')
+
+    const combinedScriptPath = path.join(workspaceRoot, 'backend', 'scripts', 'generate_combined_pdf.py')
+    if (fs.existsSync(combinedScriptPath)) {
+      const cicdRequirements = cicdScannerDir ? path.join(cicdScannerDir, 'requirements.txt') : null
+      const cicdPython =
+        (await ensurePythonEnv({
+          baseDir: cicdScannerDir || reportsBaseDir,
+          requirementsFile: cicdRequirements,
+          label: 'CI/CD Scanner'
+        })) ||
+        getVenvPythonPath(cicdScannerDir || reportsBaseDir) ||
+        process.env.PYTHON_BIN ||
+        'python'
+
+      combinedPdfFile = `${repoName}_combined_ci_ingest_${timestamp}.pdf`
+      combinedPdfPath = path.join(reportsDir, combinedPdfFile)
+      await runPythonCommand({
+        cwd: workspaceRoot,
+        args: [combinedScriptPath, combinedJsonPath, combinedPdfPath, repoName],
+        pythonBin: cicdPython
+      })
+    }
+  } catch {
+    // Keep ingest non-fragile: scan is still saved even if report file generation fails.
+    combinedPdfFile = null
+    combinedPdfPath = null
+  }
+
+  reportFiles = {
+    pdfFile: combinedPdfFile,
+    pdfPath: combinedPdfPath,
+    jsonFile: combinedJsonFile || cicdJsonFile,
+    jsonPath: combinedJsonPath || cicdJsonPath,
+    cicdPdfFile: combinedPdfFile,
+    cicdPdfPath: combinedPdfPath,
+    cicdJsonFile,
+    cicdJsonPath,
+    combinedJsonFile,
+    combinedJsonPath,
+    combinedPdfFile,
+    combinedPdfPath
+  }
+
   const scan = await Scan.create({
     ownerId: project.ownerId,
     projectId: project._id,
@@ -1072,20 +1138,7 @@ router.post('/ci-ingest', async (req, res) => {
     completedAt: new Date(),
     findings,
     analysisSummary: buildCicdOnlySummary(report),
-    reportFiles: {
-      pdfFile: null,
-      pdfPath: null,
-      jsonFile: String(reportFileName || 'report.json'),
-      jsonPath: null,
-      cicdPdfFile: null,
-      cicdPdfPath: null,
-      cicdJsonFile: String(reportFileName || 'report.json'),
-      cicdJsonPath: null,
-      combinedJsonFile: null,
-      combinedJsonPath: null,
-      combinedPdfFile: null,
-      combinedPdfPath: null
-    },
+    reportFiles,
     analyzerLogTail: `CI ingest commit=${String(commitSha || '')} run=${String(workflowRunUrl || '')}`.trim()
   })
 
