@@ -44,6 +44,68 @@ jobs:
           PYTHON: python
         run: npm run security-check
 
+      - name: Ingest scan report to Scans page
+        if: always()
+        shell: bash
+        env:
+          DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
+          DASHBOARD_PROJECT_ID: ${{ secrets.DASHBOARD_PROJECT_ID }}
+          CI_INGEST_API_KEY: ${{ secrets.CI_INGEST_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+        run: |
+          set -euo pipefail
+
+          REPORT_PATH="capci_cd/reports/report.json"
+          if [ ! -f "$REPORT_PATH" ]; then
+            echo "No report found at $REPORT_PATH; skipping ingest."
+            exit 0
+          fi
+
+          if [ -z "${DASHBOARD_URL}" ] || [ -z "${CI_INGEST_API_KEY}" ]; then
+            echo "Missing DASHBOARD_URL or CI_INGEST_API_KEY; skipping ingest."
+            exit 0
+          fi
+
+          python <<'PY'
+import json
+import os
+import urllib.request
+
+with open("capci_cd/reports/report.json", encoding="utf-8") as f:
+    report = json.load(f)
+
+endpoint = os.environ["DASHBOARD_URL"].rstrip("/") + "/api/scans/ci-ingest"
+payload = {
+    "projectId": os.environ.get("DASHBOARD_PROJECT_ID") or None,
+    "repositoryUrl": f"{os.environ['GITHUB_SERVER_URL'].rstrip('/')}/{os.environ['GITHUB_REPOSITORY']}",
+    "repositoryFullName": os.environ["GITHUB_REPOSITORY"],
+    "branch": os.environ["GITHUB_REF_NAME"],
+    "commitSha": os.environ["GITHUB_SHA"],
+    "workflowRunUrl": f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+    "reportFileName": "report.json",
+    "report": report
+}
+
+req = urllib.request.Request(
+    endpoint,
+    data=json.dumps(payload).encode("utf-8"),
+    headers={
+        "Content-Type": "application/json",
+        "x-ci-api-key": os.environ["CI_INGEST_API_KEY"]
+    },
+    method="POST",
+)
+
+with urllib.request.urlopen(req, timeout=30) as resp:
+    body = resp.read().decode("utf-8", errors="replace")
+    print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
+    print(body[:1000])
+PY
+
       - name: Upload security check report
         if: always()
         uses: actions/upload-artifact@v4
