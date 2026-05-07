@@ -1,0 +1,68 @@
+services:
+  - type: web
+    name: secure-cicd-backend
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_HOST
+        fromService:
+          type: pserv
+          name: secure-cicd-mongo
+          property: host
+      - key: MONGO_PORT
+        fromService:
+          type: pserv
+          name: secure-cicd-mongo
+          property: port
+      - key: MONGO_DB
+        value: secure-cicd
+      - key: ML_ENGINE_URL
+        fromService:
+          type: pserv
+          name: secure-cicd-ml-engine
+          property: hostport
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: secure-cicd-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: web
+    name: secure-cicd-frontend
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: BACKEND_HOSTPORT
+        fromService:
+          type: web
+          name: secure-cicd-backend
+          property: hostport
+
+  - type: pserv
+    name: secure-cicd-ml-engine
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./ml-engine/Dockerfile
+    dockerContext: ./ml-engine
+
+  - type: pserv
+    name: secure-cicd-mongo
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./infra/mongo/Dockerfile
+    dockerContext: ./infra/mongo
+    disk:
+      name: mongo-data
+      mountPath: /data/db
+      sizeGB: 10

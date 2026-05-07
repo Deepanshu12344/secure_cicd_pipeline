@@ -70,7 +70,11 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
+const mongoHost = String(process.env.MONGO_HOST || '').trim();
+const mongoPort = String(process.env.MONGO_PORT || '').trim() || '27017';
+const mongoDb = String(process.env.MONGO_DB || '').trim() || 'secure-cicd';
+const derivedMongoUri = mongoHost ? `mongodb://${mongoHost}:${mongoPort}/${mongoDb}` : '';
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI || derivedMongoUri;
 const SHOULD_SKIP_MONGO =
   String(process.env.SKIP_MONGO || '').trim() === '1' ||
   String(process.env.SKIP_MONGO || '').trim().toLowerCase() === 'true' ||
