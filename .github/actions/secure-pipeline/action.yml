@@ -134,6 +134,7 @@ runs:
         dashboard_url = normalize_url(candidate_urls[0])
         errors = []
         endpoint = ""
+        selected_base_url = ""
         for raw in candidate_urls:
             dashboard_url = normalize_url(raw)
             parsed = urlparse(dashboard_url)
@@ -154,7 +155,8 @@ runs:
                 )
                 continue
 
-            endpoint = dashboard_url.rstrip("/") + "/api/scans/ci-ingest"
+            selected_base_url = dashboard_url.rstrip("/")
+            endpoint = selected_base_url + "/api/scans/ci-ingest"
             break
 
         if not endpoint:
@@ -178,29 +180,81 @@ runs:
             "report": report,
         }
 
-        req = urllib.request.Request(
-            endpoint,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "Content-Type": "application/json",
-                "x-ci-api-key": os.environ["DASHBOARD_API_KEY"],
-            },
-            method="POST",
-        )
+        base_headers = {
+            "Content-Type": "application/json",
+            "x-ci-api-key": os.environ["DASHBOARD_API_KEY"],
+        }
+
+        ingest_path_candidates = [
+            "/api/scans/ci-ingest",
+            "/api/scans/ci-ingest/",
+            "/scans/ci-ingest",
+            "/scans/ci-ingest/",
+        ]
 
         try:
+            health_url = selected_base_url + "/health"
+            try:
+                with urllib.request.urlopen(health_url, timeout=20) as health_resp:
+                    health_body = health_resp.read().decode("utf-8", errors="replace")
+                    if getattr(health_resp, "status", 0) >= 400:
+                        raise urllib.error.HTTPError(health_url, health_resp.status, "health check failed", health_resp.headers, None)
+                    if "Backend is running" not in health_body:
+                        print(f"Health check response did not match expected backend marker. URL: {health_url}")
+            except Exception as health_exc:
+                if require_ingest:
+                    raise SystemExit(
+                        f"Dashboard URL is reachable but not a valid backend health endpoint: '{health_url}'. Details: {health_exc}"
+                    )
+                print(f"Dashboard ingest skipped due to health check failure: {health_exc}")
+                sys.exit(0)
+
             response_body = None
-            for attempt in range(1, 4):
+            last_http_404 = None
+            posted = False
+            for ingest_path in ingest_path_candidates:
+                endpoint = selected_base_url + ingest_path
                 try:
-                    with urllib.request.urlopen(req, timeout=30) as resp:
-                        response_body = resp.read().decode("utf-8", errors="replace")
-                        print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')} (attempt {attempt})")
-                        print(response_body[:500])
+                    req = urllib.request.Request(
+                        endpoint,
+                        data=json.dumps(payload).encode("utf-8"),
+                        headers=base_headers,
+                        method="POST",
+                    )
+                    for attempt in range(1, 4):
+                        try:
+                            with urllib.request.urlopen(req, timeout=30) as resp:
+                                response_body = resp.read().decode("utf-8", errors="replace")
+                                print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')} via {endpoint} (attempt {attempt})")
+                                print(response_body[:500])
+                                posted = True
+                                break
+                        except urllib.error.HTTPError as retry_http_exc:
+                            if retry_http_exc.code == 404:
+                                last_http_404 = retry_http_exc
+                                raise
+                            if attempt == 3:
+                                raise
+                            print(f"Ingest attempt {attempt} failed at {endpoint}: HTTP {retry_http_exc.code}. Retrying...")
+                        except (urllib.error.URLError, TimeoutError) as retry_exc:
+                            if attempt == 3:
+                                raise retry_exc
+                            print(f"Ingest attempt {attempt} failed at {endpoint}: {retry_exc}. Retrying...")
+                    if posted:
                         break
-                except (urllib.error.URLError, TimeoutError) as retry_exc:
-                    if attempt == 3:
-                        raise retry_exc
-                    print(f"Ingest attempt {attempt} failed: {retry_exc}. Retrying...")
+                except urllib.error.HTTPError as endpoint_http_exc:
+                    if endpoint_http_exc.code == 404:
+                        print(f"Ingest endpoint not found at {endpoint}. Trying next endpoint candidate...")
+                        continue
+                    raise
+
+            if not posted:
+                if last_http_404 is not None and require_ingest:
+                    raise SystemExit(
+                        f"Dashboard backend responded 404 for all ingest endpoint candidates under '{selected_base_url}'. "
+                        "Deploy latest backend code containing '/api/scans/ci-ingest' route."
+                    )
+                raise urllib.error.URLError("Unable to post ingest payload to any endpoint candidate")
         except urllib.error.HTTPError as exc:
             body = ""
             try:
