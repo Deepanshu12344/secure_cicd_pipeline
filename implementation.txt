@@ -1,0 +1,145 @@
+IMPLEMENTATION NOTES FOR PROJECT VIVA
+
+1. Problem Statement and Goal
+- The project implements an AI-assisted secure CI/CD pipeline that identifies security risks from source code and pipeline configurations.
+- The goal is to automate vulnerability detection, score risk, and show actionable results on a web dashboard.
+- It integrates static scan outputs from code analysis and CI pipeline scans into one unified reporting workflow.
+
+2. High-Level Architecture
+- Frontend: React + Vite dashboard for projects, scans, risks, and pipeline status.
+- Backend: Node.js + Express REST API for authentication, project management, scan orchestration, and CI ingest.
+- ML/AI Engine: Python Flask service for risk analysis and heuristic vulnerability interpretation.
+- Data Layer: MongoDB for users, projects, scans, risks, and pipeline metadata.
+- CI Integration: GitHub Actions custom composite action for secure scan execution and dashboard ingest.
+
+3. Core Modules Implemented
+- Authentication module: JWT/session-based login and protected API routes.
+- Project module: import and manage repository metadata.
+- Scan module: create, execute, monitor, and store scan runs.
+- Risk module: normalize findings and persist risk records with severity/score.
+- Dashboard module: aggregate metrics, severity trends, and issue category distribution.
+- CI ingest module: receives GitHub Actions report payload and writes scan records directly.
+
+4. Backend Implementation Details
+- Framework: Express with modular routes under `backend/src/routes`.
+- Database access: Mongoose models for User, Project, Scan, Risk, Pipeline.
+- Startup behavior:
+  - Connects MongoDB when URI is provided.
+  - Supports non-blocking startup when Mongo is intentionally skipped.
+- Health endpoint: `/health` for deployment and workflow connectivity checks.
+- Protected routes use middleware to validate auth tokens and owner scoping.
+
+5. Scan Processing Workflow (Manual/Interactive)
+- User creates scan request from dashboard for a selected project.
+- Backend creates scan record with `queued` status.
+- Backend starts analyzer worker process and updates scan lifecycle:
+  - queued -> running -> completed/failed.
+- Analyzer outputs JSON/PDF artifacts.
+- Backend parses results, builds analysis summary, and syncs risks.
+- Final scan response includes report availability and metrics for UI rendering.
+
+6. CI/CD Scan Ingest Workflow (Automated)
+- GitHub Action runs secure pipeline script and generates `report.json`.
+- Composite action uploads/reads report and posts payload to backend ingest endpoint.
+- Ingest endpoint used for scans page:
+  - `POST /api/scans/ci-ingest`
+- Backend validates `x-ci-api-key` against `CI_INGEST_API_KEY`.
+- Backend resolves target project using:
+  - `DASHBOARD_PROJECT_ID` when valid and found.
+  - Automatic fallback matching by `repositoryFullName/repositoryUrl`.
+- Backend creates scan entry with `scanType = cicd`, status `completed`, findings, and report files.
+- Dashboard then shows this scan on `/scans` for the project owner.
+
+7. Robustness Improvements Implemented
+- URL handling in GitHub Action:
+  - Supports primary and backup dashboard URLs.
+  - Validates DNS/host resolution before ingest.
+  - Verifies backend health endpoint before posting report.
+- Endpoint fallback handling:
+  - Tries multiple ingest path variants when deployments differ in trailing slash/path handling.
+- Clear failure diagnostics:
+  - Workflow logs now show exact endpoint attempted and success/failure cause.
+- Project resolution fallback:
+  - If provided projectId is stale/not found, backend falls back to repository matching.
+
+8. Risk Scoring and Severity Mapping
+- Input issues include type, severity, location, and remediation.
+- Severity normalization maps raw values into Critical/High/Medium/Low.
+- Risk score is derived from issue profile and report summary.
+- Dashboard shows:
+  - overall score,
+  - severity counts,
+  - category distribution,
+  - skill-gap proxy metrics for visualization.
+
+9. Data Model (Implementation-Oriented)
+- Project:
+  - ownerId, name, fullName, repositoryUrl, language, riskScore, lastScan.
+- Scan:
+  - ownerId, projectId, scanType, branch, status, progress,
+  - findings, analysisSummary, reportFiles, timestamps.
+- Risk:
+  - ownerId, projectId, scanId, title, severity, file/line, status, source.
+- Pipeline:
+  - last scan summary/status for CI dashboard context.
+
+10. Frontend Implementation Details
+- API client centralizes backend calls with token injection.
+- Scans page features:
+  - list of scans with status/progress,
+  - report download (JSON/PDF),
+  - expanded analytics cards/charts.
+- Auto-refresh logic implemented for near-real-time updates:
+  - frequent polling while scans are running,
+  - periodic background polling to surface CI-ingested completed scans without manual refresh.
+
+11. Security Controls Implemented
+- Protected backend routes using auth middleware.
+- CI ingest endpoint protected by secret API key header.
+- Input parsing with safe defaults and null checks.
+- Owner-based data isolation for scans/projects/risks listing.
+
+12. Deployment and Environment Setup
+- Required backend env variables:
+  - `MONGODB_URI`
+  - `JWT_SECRET`
+  - `CI_INGEST_API_KEY`
+  - optional OAuth and frontend URL settings.
+- Required GitHub secrets for ingest:
+  - `RENDER_BACKEND_URL` (or active public tunnel URL)
+  - `DASHBOARD_URL` (backup URL)
+  - `CI_INGEST_API_KEY`
+  - `DASHBOARD_PROJECT_ID` (recommended for deterministic mapping)
+- Important operational note:
+  - Temporary ngrok/cloudflare URLs change; secrets must be updated when tunnel restarts.
+
+13. End-to-End Execution Sequence (Viva Ready)
+- Step 1: User imports repository into dashboard (project record created).
+- Step 2: Code pushed to GitHub triggers workflow.
+- Step 3: Secure pipeline runs and generates report.
+- Step 4: Workflow posts report to backend ingest endpoint.
+- Step 5: Backend authenticates request and maps project.
+- Step 6: Scan and risk records stored in MongoDB.
+- Step 7: Frontend polls and displays new scan automatically on `/scans`.
+
+14. Testing Performed
+- Local service validation:
+  - backend `/health`, ml `/health`, frontend reachable.
+- CI ingest API tested with synthetic payloads.
+- Verified database writes for `scanType=cicd` entries.
+- Verified fallback behavior for stale project IDs.
+- Frontend production build test completed successfully.
+
+15. Common Failure Cases and Fixes
+- Failure: Missing dashboard URL/API key in action.
+  - Fix: enforce secrets and allow backup URL fallback.
+- Failure: Public URL DNS not resolvable.
+  - Fix: replace expired tunnel URL with active one.
+- Failure: Ingest 404 Not Found.
+  - Fix: ensure backend deployment has `/api/scans/ci-ingest` route and correct base URL.
+- Failure: Scan not visible on UI.
+  - Fix: owner/project mapping correction + frontend periodic polling.
+
+16. Viva Conclusion Statement
+- The implementation achieves automated secure CI/CD monitoring by combining static/CI findings, risk scoring, protected ingest APIs, persistent storage, and a live dashboard.
+- The system is modular, testable, and deployment-ready, with practical fallbacks for real-world CI/network issues.
