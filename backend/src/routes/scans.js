@@ -70,7 +70,10 @@ const normalizeRepositoryIdentifier = (value) => {
 
 const resolveCiIngestProject = async ({ projectId, repositoryUrl, repositoryFullName }) => {
   if (projectId && mongoose.Types.ObjectId.isValid(projectId)) {
-    return { project: await Project.findById(projectId), reason: '' }
+    const byId = await Project.findById(projectId)
+    if (byId) {
+      return { project: byId, reason: '' }
+    }
   }
 
   const normalizedCandidates = [

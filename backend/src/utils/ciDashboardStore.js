@@ -59,7 +59,8 @@ const resolveProject = async ({ projectId, repositoryUrl, repositoryFullName }) 
   }
 
   if (projectId && mongoose.Types.ObjectId.isValid(projectId)) {
-    return Project.findById(projectId)
+    const byId = await Project.findById(projectId)
+    if (byId) return byId
   }
 
   const candidates = [
