@@ -1,0 +1,67 @@
+name: Secure CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  security_scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Secure CI/CD Scanner
+        uses: Deepanshu12344/secure_cicd_pipeline@v1
+
+  build_and_push:
+    name: Build and Push Docker Image
+    needs: security_scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Hub secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          [ -n "${{ secrets.DOCKER_USERNAME }}" ] || { echo "Missing secret: DOCKER_USERNAME" >&2; exit 1; }
+          [ -n "${{ secrets.DOCKER_PASSWORD }}" ] || { echo "Missing secret: DOCKER_PASSWORD" >&2; exit 1; }
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: docker build -t deepanshu091224/mortygram:${{ github.sha }} .
+
+      - name: Push Docker Image
+        run: docker push deepanshu091224/mortygram:${{ github.sha }}
+
+  deploy:
+    name: Deploy Container
+    needs: build_and_push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull Latest Docker Image
+        run: sudo docker pull deepanshu091224/mortygram:${{ github.sha }}
+
+      - name: Remove Old Container
+        run: sudo docker rm -f mortygram-container || true
+
+      - name: Run New Container
+        run: |
+          sudo docker run -d \
+            -p 7070:7070 \
+            --name mortygram-container \
+            deepanshu091224/mortygram:${{ github.sha }}
