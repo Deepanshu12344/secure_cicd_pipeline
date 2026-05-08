@@ -100,6 +100,7 @@ runs:
         python <<'PY'
         import json
         import os
+        import socket
         import sys
         import urllib.error
         import urllib.request
@@ -108,13 +109,38 @@ runs:
         with open(os.environ["REPORT_PATH"], encoding="utf-8") as f:
             report = json.load(f)
 
-        dashboard_url = os.environ["DASHBOARD_URL"].strip()
+        dashboard_url = os.environ["DASHBOARD_URL"].strip().strip("'\"")
+        if dashboard_url and "://" not in dashboard_url:
+            dashboard_url = f"https://{dashboard_url}"
         require_ingest = os.environ.get("REQUIRE_DASHBOARD_INGEST", "false").lower() == "true"
         parsed = urlparse(dashboard_url)
         if parsed.scheme not in ("http", "https") or not parsed.netloc:
             msg = (
                 f"Invalid DASHBOARD_URL '{dashboard_url}'. "
                 "Expected full URL like https://your-domain.com"
+            )
+            if require_ingest:
+                raise SystemExit(msg)
+            print(f"{msg}. Skipping dashboard ingest.")
+            raise SystemExit(0)
+
+        host = (parsed.hostname or "").strip()
+        if not host:
+            msg = (
+                f"Invalid DASHBOARD_URL '{dashboard_url}'. "
+                "Hostname is missing."
+            )
+            if require_ingest:
+                raise SystemExit(msg)
+            print(f"{msg}. Skipping dashboard ingest.")
+            raise SystemExit(0)
+
+        try:
+            socket.getaddrinfo(host, parsed.port or (443 if parsed.scheme == "https" else 80))
+        except socket.gaierror as exc:
+            msg = (
+                f"DASHBOARD_URL host cannot be resolved: '{host}' (from '{dashboard_url}'). "
+                f"Update GitHub secret DASHBOARD_URL to your live backend/frontend domain. Details: {exc}"
             )
             if require_ingest:
                 raise SystemExit(msg)
@@ -160,7 +186,10 @@ runs:
             sys.exit(0)
         except (urllib.error.URLError, TimeoutError) as exc:
             if require_ingest:
-                raise
+                raise SystemExit(
+                    f"Dashboard ingest network error for endpoint '{endpoint}': {exc}. "
+                    "Check DASHBOARD_URL DNS and backend availability."
+                )
             print(f"Dashboard ingest skipped due to network error: {exc}")
             sys.exit(0)
         PY
