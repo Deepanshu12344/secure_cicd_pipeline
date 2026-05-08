@@ -87,9 +87,12 @@ jobs:
           fi
 
           if [ -z "$NAMESPACE" ]; then
-            echo "Missing Docker namespace. Set DOCKER_NAMESPACE or DOCKER_USERNAME secret." >&2
-            exit 1
+            NAMESPACE="${{ github.repository_owner }}"
+            echo "DOCKER_NAMESPACE/DOCKER_USERNAME not set; falling back to github.repository_owner: $NAMESPACE"
           fi
+
+          # Docker Hub namespaces are lowercase.
+          NAMESPACE="$(echo "$NAMESPACE" | tr '[:upper:]' '[:lower:]')"
 
           echo "image_repo=${NAMESPACE}/secure-cicd-${{ matrix.service }}" >> "$GITHUB_OUTPUT"
 
