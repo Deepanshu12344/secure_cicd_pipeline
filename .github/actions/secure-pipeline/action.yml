@@ -92,12 +92,16 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         set -euo pipefail
-        if [ -z "${DASHBOARD_URL}" ] || [ -z "${DASHBOARD_API_KEY}" ]; then
+        DASHBOARD_URL_TRIMMED="$(echo "${DASHBOARD_URL}" | tr -d "[:space:]")"
+        DASHBOARD_BACKUP_URL_TRIMMED="$(echo "${DASHBOARD_BACKUP_URL}" | tr -d "[:space:]")"
+        DASHBOARD_API_KEY_TRIMMED="$(echo "${DASHBOARD_API_KEY}" | tr -d "[:space:]")"
+
+        if { [ -z "${DASHBOARD_URL_TRIMMED}" ] && [ -z "${DASHBOARD_BACKUP_URL_TRIMMED}" ]; } || [ -z "${DASHBOARD_API_KEY_TRIMMED}" ]; then
           if [ "${REQUIRE_DASHBOARD_INGEST}" = "true" ]; then
-            echo "Missing dashboard-url or dashboard-api-key input. Cannot ingest scan." >&2
+            echo "Missing dashboard url (primary and backup both empty) or dashboard-api-key input. Cannot ingest scan." >&2
             exit 1
           fi
-          echo "Dashboard ingest skipped: dashboard-url or dashboard-api-key not set."
+          echo "Dashboard ingest skipped: dashboard url missing (primary and backup) or dashboard-api-key not set."
           exit 0
         fi
 
@@ -116,6 +120,7 @@ runs:
         raw_primary = os.environ.get("DASHBOARD_URL", "").strip().strip("'\"")
         raw_backup = os.environ.get("DASHBOARD_BACKUP_URL", "").strip().strip("'\"")
         candidate_urls = [u for u in (raw_primary, raw_backup) if u]
+        require_ingest = os.environ.get("REQUIRE_DASHBOARD_INGEST", "false").lower() == "true"
         if not candidate_urls:
             msg = "No dashboard URL candidates provided."
             if require_ingest:
@@ -127,7 +132,6 @@ runs:
             return u if "://" in u else f"https://{u}"
 
         dashboard_url = normalize_url(candidate_urls[0])
-        require_ingest = os.environ.get("REQUIRE_DASHBOARD_INGEST", "false").lower() == "true"
         errors = []
         endpoint = ""
         for raw in candidate_urls:
