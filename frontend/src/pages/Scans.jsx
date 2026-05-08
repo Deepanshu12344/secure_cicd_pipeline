@@ -80,6 +80,14 @@ export default function Scans() {
   }, [scans, loadData])
 
   useEffect(() => {
+    const timer = setInterval(() => {
+      loadData(false)
+    }, 15000)
+
+    return () => clearInterval(timer)
+  }, [loadData])
+
+  useEffect(() => {
     if (scans.length === 0) {
       setExpandedScanId('')
       return
