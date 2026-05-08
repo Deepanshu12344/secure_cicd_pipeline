@@ -33,6 +33,7 @@ jobs:
           dashboard-url: ${{ secrets.DASHBOARD_URL }}
           dashboard-project-id: ${{ secrets.DASHBOARD_PROJECT_ID }}
           dashboard-api-key: ${{ secrets.CI_INGEST_API_KEY }}
+          require-dashboard-ingest: 'true'
           risk-threshold: '80'
           fail-on-critical: 'true'
 
