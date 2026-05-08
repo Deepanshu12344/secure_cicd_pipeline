@@ -25,6 +25,9 @@ inputs:
   dashboard-api-key:
     required: false
     default: ""
+  require-dashboard-ingest:
+    required: false
+    default: "false"
 
 outputs:
   report-json-path:
@@ -76,6 +79,7 @@ runs:
         DASHBOARD_URL: ${{ inputs.dashboard-url }}
         DASHBOARD_PROJECT_ID: ${{ inputs.dashboard-project-id }}
         DASHBOARD_API_KEY: ${{ inputs.dashboard-api-key }}
+        REQUIRE_DASHBOARD_INGEST: ${{ inputs.require-dashboard-ingest }}
         REPORT_PATH: ${{ steps.export.outputs.report_json_path }}
         REPOSITORY: ${{ github.repository }}
         REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}
@@ -85,19 +89,39 @@ runs:
       run: |
         set -euo pipefail
         if [ -z "${DASHBOARD_URL}" ] || [ -z "${DASHBOARD_API_KEY}" ]; then
-          echo "Missing dashboard-url or dashboard-api-key input. Cannot ingest scan." >&2
-          exit 1
+          if [ "${REQUIRE_DASHBOARD_INGEST}" = "true" ]; then
+            echo "Missing dashboard-url or dashboard-api-key input. Cannot ingest scan." >&2
+            exit 1
+          fi
+          echo "Dashboard ingest skipped: dashboard-url or dashboard-api-key not set."
+          exit 0
         fi
 
         python <<'PY'
         import json
         import os
+        import sys
         import urllib.request
+        import urllib.error
+        from urllib.parse import urlparse
 
         with open(os.environ["REPORT_PATH"], encoding="utf-8") as f:
             report = json.load(f)
 
-        endpoint = os.environ["DASHBOARD_URL"].rstrip("/") + "/api/scans/ci-ingest"
+        dashboard_url = os.environ["DASHBOARD_URL"].strip()
+        require_ingest = os.environ.get("REQUIRE_DASHBOARD_INGEST", "false").lower() == "true"
+        parsed = urlparse(dashboard_url)
+        if parsed.scheme not in ("http", "https") or not parsed.netloc:
+            msg = (
+                f"Invalid DASHBOARD_URL '{dashboard_url}'. "
+                "Expected full URL like https://your-domain.com"
+            )
+            if require_ingest:
+                raise SystemExit(msg)
+            print(f"{msg}. Skipping dashboard ingest.")
+            raise SystemExit(0)
+
+        endpoint = dashboard_url.rstrip("/") + "/api/scans/ci-ingest"
         payload = {
             "projectId": os.environ.get("DASHBOARD_PROJECT_ID") or None,
             "repositoryUrl": os.environ["REPOSITORY_URL"],
@@ -119,9 +143,15 @@ runs:
             method="POST",
         )
 
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
-            print(resp.read().decode("utf-8", errors="replace")[:500])
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
+                print(resp.read().decode("utf-8", errors="replace")[:500])
+        except (urllib.error.URLError, TimeoutError) as exc:
+            if require_ingest:
+                raise
+            print(f"Dashboard ingest skipped due to network error: {exc}")
+            sys.exit(0)
         PY
 
     - name: Enforce gate
