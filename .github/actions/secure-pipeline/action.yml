@@ -25,6 +25,9 @@ inputs:
   dashboard-api-key:
     required: false
     default: ""
+  dashboard-backup-url:
+    required: false
+    default: ""
   require-dashboard-ingest:
     required: false
     default: "false"
@@ -77,6 +80,7 @@ runs:
       shell: bash
       env:
         DASHBOARD_URL: ${{ inputs.dashboard-url }}
+        DASHBOARD_BACKUP_URL: ${{ inputs.dashboard-backup-url }}
         DASHBOARD_PROJECT_ID: ${{ inputs.dashboard-project-id }}
         DASHBOARD_API_KEY: ${{ inputs.dashboard-api-key }}
         REQUIRE_DASHBOARD_INGEST: ${{ inputs.require-dashboard-ingest }}
@@ -109,45 +113,56 @@ runs:
         with open(os.environ["REPORT_PATH"], encoding="utf-8") as f:
             report = json.load(f)
 
-        dashboard_url = os.environ["DASHBOARD_URL"].strip().strip("'\"")
-        if dashboard_url and "://" not in dashboard_url:
-            dashboard_url = f"https://{dashboard_url}"
+        raw_primary = os.environ.get("DASHBOARD_URL", "").strip().strip("'\"")
+        raw_backup = os.environ.get("DASHBOARD_BACKUP_URL", "").strip().strip("'\"")
+        candidate_urls = [u for u in (raw_primary, raw_backup) if u]
+        if not candidate_urls:
+            msg = "No dashboard URL candidates provided."
+            if require_ingest:
+                raise SystemExit(msg)
+            print(f"{msg} Skipping dashboard ingest.")
+            raise SystemExit(0)
+
+        def normalize_url(u: str) -> str:
+            return u if "://" in u else f"https://{u}"
+
+        dashboard_url = normalize_url(candidate_urls[0])
         require_ingest = os.environ.get("REQUIRE_DASHBOARD_INGEST", "false").lower() == "true"
-        parsed = urlparse(dashboard_url)
-        if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        errors = []
+        endpoint = ""
+        for raw in candidate_urls:
+            dashboard_url = normalize_url(raw)
+            parsed = urlparse(dashboard_url)
+            if parsed.scheme not in ("http", "https") or not parsed.netloc:
+                errors.append(f"Invalid DASHBOARD_URL '{dashboard_url}'")
+                continue
+
+            host = (parsed.hostname or "").strip()
+            if not host:
+                errors.append(f"Invalid DASHBOARD_URL '{dashboard_url}' (hostname missing)")
+                continue
+
+            try:
+                socket.getaddrinfo(host, parsed.port or (443 if parsed.scheme == "https" else 80))
+            except socket.gaierror as exc:
+                errors.append(
+                    f"Host not resolvable '{host}' (from '{dashboard_url}') details: {exc}"
+                )
+                continue
+
+            endpoint = dashboard_url.rstrip("/") + "/api/scans/ci-ingest"
+            break
+
+        if not endpoint:
             msg = (
-                f"Invalid DASHBOARD_URL '{dashboard_url}'. "
-                "Expected full URL like https://your-domain.com"
+                "No reachable dashboard URL. "
+                + " | ".join(errors)
+                + " | Set DASHBOARD_URL (or backup) to stable Render domain."
             )
             if require_ingest:
                 raise SystemExit(msg)
-            print(f"{msg}. Skipping dashboard ingest.")
+            print(f"{msg} Skipping dashboard ingest.")
             raise SystemExit(0)
-
-        host = (parsed.hostname or "").strip()
-        if not host:
-            msg = (
-                f"Invalid DASHBOARD_URL '{dashboard_url}'. "
-                "Hostname is missing."
-            )
-            if require_ingest:
-                raise SystemExit(msg)
-            print(f"{msg}. Skipping dashboard ingest.")
-            raise SystemExit(0)
-
-        try:
-            socket.getaddrinfo(host, parsed.port or (443 if parsed.scheme == "https" else 80))
-        except socket.gaierror as exc:
-            msg = (
-                f"DASHBOARD_URL host cannot be resolved: '{host}' (from '{dashboard_url}'). "
-                f"Update GitHub secret DASHBOARD_URL to your live backend/frontend domain. Details: {exc}"
-            )
-            if require_ingest:
-                raise SystemExit(msg)
-            print(f"{msg}. Skipping dashboard ingest.")
-            raise SystemExit(0)
-
-        endpoint = dashboard_url.rstrip("/") + "/api/scans/ci-ingest"
         payload = {
             "projectId": os.environ.get("DASHBOARD_PROJECT_ID") or None,
             "repositoryUrl": os.environ["REPOSITORY_URL"],
@@ -170,9 +185,18 @@ runs:
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')}")
-                print(resp.read().decode("utf-8", errors="replace")[:500])
+            response_body = None
+            for attempt in range(1, 4):
+                try:
+                    with urllib.request.urlopen(req, timeout=30) as resp:
+                        response_body = resp.read().decode("utf-8", errors="replace")
+                        print(f"Scans ingest status: {getattr(resp, 'status', 'unknown')} (attempt {attempt})")
+                        print(response_body[:500])
+                        break
+                except (urllib.error.URLError, TimeoutError) as retry_exc:
+                    if attempt == 3:
+                        raise retry_exc
+                    print(f"Ingest attempt {attempt} failed: {retry_exc}. Retrying...")
         except urllib.error.HTTPError as exc:
             body = ""
             try:
