@@ -46,7 +46,8 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        REQ_FILE="${{ github.workspace }}/capci_cd/requirements.txt"
+        ACTION_REPO_ROOT="$(cd "${{ github.action_path }}/../../.." && pwd)"
+        REQ_FILE="$ACTION_REPO_ROOT/capci_cd/requirements.txt"
         [ -f "$REQ_FILE" ] || { echo "Missing requirements file: $REQ_FILE" >&2; exit 1; }
         python -m pip install --upgrade pip
         python -m pip install -r "$REQ_FILE"
@@ -56,8 +57,9 @@ runs:
       shell: bash
       run: |
         set +e
+        ACTION_REPO_ROOT="$(cd "${{ github.action_path }}/../../.." && pwd)"
         cd "${{ inputs.target-path }}"
-        python "${{ github.workspace }}/capci_cd/run_secure_pipeline.py"
+        python "$ACTION_REPO_ROOT/capci_cd/run_secure_pipeline.py"
         echo "pipeline_exit_code=$?" >> "$GITHUB_OUTPUT"
         exit 0
 
@@ -66,7 +68,8 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        REPORT_SOURCE="${{ github.workspace }}/capci_cd/reports/report.json"
+        ACTION_REPO_ROOT="$(cd "${{ github.action_path }}/../../.." && pwd)"
+        REPORT_SOURCE="$ACTION_REPO_ROOT/capci_cd/reports/report.json"
         DEST_DIR="${{ github.workspace }}/security-reports"
         DEST_FILE="$DEST_DIR/report.json"
         [ -f "$REPORT_SOURCE" ] || { echo "Expected report not found: $REPORT_SOURCE" >&2; exit 1; }
