@@ -1,0 +1,192 @@
+Vulnerability Detection Detail (SQL Injection, Exposed Secrets, Supply Chain, Script Injection)
+Generated on: 2026-05-09
+
+Overview
+This project has two scanning layers:
+1) CI/CD and infra scanner (capci_cd) -> focused on workflows, Docker/K8s/Terraform/CloudFormation, scripts, and dependency hygiene.
+2) Code analyzer (main_analyzer.py) -> focused on source code patterns using regex + AST (taint-style checks for SQL/command sinks).
+
+Pipeline path:
+- capci_cd/run_secure_pipeline.py
+  - scan() -> parser -> rules_engine.apply_rules() -> scorer.calculate_risk() -> reporter.generate_report()
+- Report produced at capci_cd/reports/report.json (or custom output path)
+
+==================================================
+1) SQL Injection
+==================================================
+Is it scanned?
+- Yes, in main_analyzer.py (source-code analyzer).
+
+How it is detected
+- Abstract Syntax Tree-based detection of SQL calls where the first query argument is dynamic/tainted.
+  - main_analyzer.py:661-671
+  - Finding keys: tainted_sql_injection or sql_injection
+  - Severity: Critical when tainted user input is involved, High otherwise.
+- Regex/line heuristic for dynamic SQL string building patterns.
+  - main_analyzer.py:1047-1055
+  - Title: "SQL query appears to be built from dynamic input"
+
+Where results appear
+- In analyzer JSON output (critical_issues list), then merged into backend scan/risk views when analyzer-driven scans are run.
+
+Current result status (from latest capci_cd report)
+- In capci_cd/reports/report.json (timestamp: 2026-05-07T15:26:45Z), there are no SQL Injection findings listed.
+- Reason: capci_cd report is CI/CD+infra focused; SQLi is primarily from main_analyzer source analysis.
+
+==================================================
+2) Exposed Secrets
+==================================================
+Is it scanned?
+- Yes, in BOTH capci_cd and main_analyzer.py.
+
+How it is detected
+A) CI/CD scanner (rules_engine.py)
+- Hardcoded secret-like patterns in workflow text.
+  - capci_cd/rules_engine.py:133-149 (SEC-001)
+- Plaintext secret-like env vars not using ${{ secrets.* }}.
+  - capci_cd/rules_engine.py:157-173 (SEC-002), 225-241 (SEC-003)
+- Secret echo/printf leakage to logs.
+  - capci_cd/rules_engine.py:378-393 (SEC-004)
+- Secret-like files uploaded in artifacts (.env, .pem, token-like names).
+  - capci_cd/rules_engine.py:421-436
+- Script-file hardcoded secret check.
+  - capci_cd/rules_engine.py:627-643 (SEC-101)
+
+B) Code analyzer
+- Regex patterns for api_key/secret/token/password hardcoded in source/config.
+  - main_analyzer.py:1013-1032
+  - Finding keys: secret_exposure / hardcoded_secret
+
+Where results appear
+- capci_cd findings in report.json as threat_type = "Secret Exposure".
+- analyzer findings in analyzer/merged scan outputs and dashboard risks.
+
+Current result status (latest capci_cd report)
+- No Secret Exposure findings in capci_cd/reports/report.json snapshot (2026-05-07).
+
+==================================================
+3) Supply Chain
+==================================================
+Is it scanned?
+- Yes, strongly covered in BOTH capci_cd and main_analyzer.py.
+
+How it is detected
+A) CI/CD scanner (rules_engine.py)
+- Unpinned third-party GitHub Actions refs (not full commit SHA).
+  - IDs like 3P-001, 3P-002 at capci_cd/rules_engine.py:320-341
+- Risky container/dependency hygiene checks.
+  - DEP-001, DEP-002, DEP-003, DEP-101/102/103/104 in multiple rule blocks
+  - Examples include missing SCA step, unpinned images/tags, latest usage, curl|bash style patterns.
+  - Key sections: capci_cd/rules_engine.py around 291-365, 505-521, 543-655, 813, 905.
+
+B) Code analyzer (dependency manifests)
+- Known vulnerable package/version threshold matching.
+  - main_analyzer.py:730-743
+- Unpinned dependencies in requirements/package manifests.
+  - main_analyzer.py:775-781, 797-803
+- Direct URL/VCS dependencies.
+  - main_analyzer.py:766-771, 806-811
+- Unsafe install scripts piping remote content into shell.
+  - main_analyzer.py:822-827
+
+Where results appear
+- capci_cd report.json with threat_type "Supply Chain Attack" and IDs DEP-*/3P-*.
+- analyzer output with category "dependency_supply_chain".
+
+Current result status (latest capci_cd report)
+- Present.
+- Findings observed:
+  - DEP-003 (Low): No SCA step detected.
+  - DC-001 (Medium): Docker Compose image not pinned.
+  - K8S-004 (Medium): Kubernetes image not pinned.
+- So supply-chain checks are active and currently producing findings.
+
+==================================================
+4) Script Injection (Command Injection / Unsafe Script Execution)
+==================================================
+Is it scanned?
+- Yes, in main_analyzer.py directly, and partially in capci_cd via workflow/script safety rules.
+
+How it is detected
+A) Code analyzer
+- AST detection of dangerous execution sinks (subprocess/os.system/eval/exec), with taint awareness.
+  - main_analyzer.py:637-650, 643-644
+  - Finding keys: tainted_command_injection or command_injection
+  - Critical when shell=True/eval/exec or tainted input reaches sink.
+- Regex/line-level detection of execution primitives.
+  - main_analyzer.py:1059-1072
+
+B) CI/CD scanner support
+- Detects risky workflow patterns such as remote script execution style and unsafe runtime patterns under supply-chain/run rules.
+  - capci_cd/rules_engine.py (RUN/DEP checks around 250+, 360+, 654+).
+
+Where results appear
+- analyzer JSON/merged scan outputs and dashboard risks (for code-level sinks).
+- capci_cd report for workflow/script hygiene issues.
+
+Current result status (latest capci_cd report)
+- No explicit script-injection finding in the latest capci_cd report snapshot.
+- This does NOT mean safe code globally; it means current CI/CD+infra scan output did not emit that issue ID in this run.
+
+==================================================
+What this means for your 4 asked vulnerabilities
+==================================================
+- SQL Injection: Checked (main_analyzer), not shown in latest capci_cd snapshot.
+- Exposed Secrets: Checked (capci_cd + main_analyzer), not shown in latest capci_cd snapshot.
+- Supply Chain: Checked (capci_cd + main_analyzer), currently showing findings.
+- Script Injection: Checked (main_analyzer + some CI/CD workflow heuristics), not shown in latest capci_cd snapshot.
+
+Important operational note
+- If you run only the GitHub action based on capci_cd, you mostly get CI/CD + infra + dependency policy findings.
+- For deeper source-code SQL/script pattern findings, run flows that invoke main_analyzer and ingest merged results into backend/dashboard.
+
+==================================================
+Very Brief Definitions
+==================================================
+- SQL Injection: An attacker manipulates SQL queries through unsanitized input to read/modify data they should not access.
+- Exposed Secrets: Sensitive values (API keys, tokens, passwords) are hardcoded, logged, or stored insecurely where attackers can obtain them.
+- Supply Chain Vulnerability: Risk introduced through third-party dependencies, actions, images, or build artifacts that are untrusted, outdated, or tampered.
+- Script Injection (Command Injection): Untrusted input reaches shell/script execution paths, allowing attackers to run unintended commands.
+
+==================================================
+Detection Parameters (What We Look For In Code)
+==================================================
+1) SQL Injection
+- Query string built dynamically via concatenation/interpolation/formatting.
+  - Examples: `"SELECT ... " + userInput`, f-strings containing user data.
+- SQL execution calls where first argument is dynamic.
+  - Sinks checked via AST include execute-like DB calls.
+- Taint indicators: input originating from request/user-controlled variables flowing into SQL query text.
+- Severity signal used: tainted dynamic SQL => higher severity.
+
+2) Exposed Secrets
+- Hardcoded credential patterns in text/code:
+  - keys like `api_key`, `secret`, `token`, `password` with literal values.
+- Workflow/job env variables that look secret-like but are plaintext.
+  - Expected safe pattern: `${{ secrets.NAME }}`.
+- Secret values echoed/printed in CI steps (`echo/printf` with secrets context).
+- Artifact upload paths including secret-like files (`.env`, `.pem`, `id_rsa`, token-like names).
+
+3) Supply Chain
+- Unpinned dependency versions (`latest`, `*`, loose semver like `^`/`~`).
+- Direct URL/VCS dependencies (`git+`, raw `http(s)` package source).
+- Known vulnerable dependency/version pairs below built-in safe thresholds.
+- Unpinned third-party GitHub Actions references (not full commit SHA).
+- Container image tags not pinned (missing tag or `latest`) in Compose/K8s/workflows.
+- Missing SCA/security scan steps in workflow (dependency/container scanning absent).
+- Unsafe install/update scripts (remote content piped directly to shell, e.g., `curl|bash`).
+
+4) Script Injection (Command Injection)
+- Dangerous execution primitives in code:
+  - `os.system`, `subprocess.run/Popen/call/check_output`, `eval`, `exec`.
+- Shell execution flags that increase risk:
+  - `shell=True` (especially with variable input).
+- Taint flow to command arguments:
+  - request/user data passed into command strings/args without strict validation.
+- Workflow run-step patterns that execute remote scripts or untrusted inputs directly.
+
+Practical review checklist
+- If input is dynamic + reaches execution/SQL sink => high-risk candidate.
+- If secrets are literal or printed => secret exposure.
+- If dependencies/actions/images are unpinned or externally fetched without verification => supply-chain risk.
+- If shell/eval/exec is used with variable data => script-injection risk.
