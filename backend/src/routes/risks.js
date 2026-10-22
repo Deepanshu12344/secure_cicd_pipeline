@@ -1,11 +1,19 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import { protect } from '../middleware/authMiddleware.js'
+import { protect, requireRole } from '../middleware/authMiddleware.js'
 import Risk from '../models/Risk.js'
 import Project from '../models/Project.js'
 import Scan from '../models/Scan.js'
+import { generateFindingFingerprint } from '../utils/fingerprint.js'
+import {
+  saveFeedback,
+  removeFeedback,
+  getLatestFeedbackForFinding,
+  getActiveSuppressedFingerprints
+} from '../utils/feedbackStore.js'
 
 const router = express.Router()
+const ML_ENGINE_URL = process.env.ML_ENGINE_URL || 'http://localhost:5001'
 const getOwnerId = (req) => req.user?._id || req.user?.id
 const normalizeThreatType = (value) => {
   const raw = String(value || '')
@@ -44,6 +52,12 @@ const toResponse = (riskDoc) => ({
   sourceIssueId: riskDoc.sourceIssueId || null,
   threatType: riskDoc.threatType || '',
   remediation: riskDoc.remediation || '',
+  fingerprint: riskDoc.fingerprint || null,
+  modelPrediction: riskDoc.modelPrediction !== undefined && riskDoc.modelPrediction !== null ? Number(riskDoc.modelPrediction) : null,
+  modelVersion: riskDoc.modelVersion || null,
+  feedbackStatus: riskDoc.feedbackStatus || 'unreviewed',
+  isSuppressed: Boolean(riskDoc.isSuppressed),
+  suppressionReason: riskDoc.suppressionReason || '',
   createdAt: riskDoc.createdAt,
   updatedAt: riskDoc.updatedAt
 })
@@ -364,6 +378,323 @@ router.patch('/:id', protect, async (req, res) => {
   res.json({
     success: true,
     data: toResponse(risk)
+  })
+})
+
+// Bulk feedback submission with anti-poisoning validation
+router.post('/feedback/bulk', protect, requireRole('admin', 'security_reviewer', 'lead', 'developer'), async (req, res) => {
+  const { items, label, findingIds, note } = req.body || {}
+
+  let triageItems = []
+  if (Array.isArray(items) && items.length > 0) {
+    triageItems = items.map((i) => ({
+      findingId: i.findingId || i.id,
+      label: i.label || label,
+      note: i.note || note || ''
+    }))
+  } else if (Array.isArray(findingIds) && findingIds.length > 0 && label) {
+    triageItems = findingIds.map((id) => ({
+      findingId: id,
+      label,
+      note: note || ''
+    }))
+  } else {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid request: provide either "items" array or "findingIds" array with "label"'
+    })
+  }
+
+  if (triageItems.length > 50) {
+    return res.status(400).json({
+      success: false,
+      error: 'Bulk triage limit exceeded: Maximum 50 findings per request.'
+    })
+  }
+
+  // Anti-poisoning check: Flag or reject bulk operations where >= 5 items and > 90% are single class
+  if (triageItems.length >= 5) {
+    const fpCount = triageItems.filter((i) => i.label === 'false_positive').length
+    const tpCount = triageItems.filter((i) => i.label === 'confirmed').length
+    const ratio = Math.max(fpCount, tpCount) / triageItems.length
+    if (ratio > 0.90) {
+      return res.status(400).json({
+        success: false,
+        error: `Anti-poisoning policy: Bulk triage where >90% of findings (${Math.round(ratio * 100)}%) are labeled as one class is rejected. Review findings individually or in balanced batches.`
+      })
+    }
+  }
+
+  const ownerId = getOwnerId(req)
+  const updatedRisks = []
+
+  for (const item of triageItems) {
+    const { findingId, label: itemLabel, note: itemNote } = item
+    if (!['false_positive', 'confirmed'].includes(itemLabel)) continue
+    if (!mongoose.Types.ObjectId.isValid(findingId)) continue
+
+    const risk = await Risk.findOne({ _id: findingId, ownerId })
+    if (!risk) continue
+
+    const fingerprint = risk.fingerprint || generateFindingFingerprint({
+      ruleId: risk.sourceIssueId || risk.title,
+      file: risk.file,
+      snippet: risk.description || risk.notes,
+      threatType: risk.threatType
+    })
+    risk.fingerprint = fingerprint
+
+    const projId = String(risk.projectId?._id || risk.projectId)
+    const userRole = req.user?.role || 'developer'
+
+    await saveFeedback({
+      findingId: risk._id,
+      fingerprint,
+      projectId: projId,
+      scanId: risk.scanId,
+      userId: ownerId,
+      userName: req.user?.name || req.user?.username || '',
+      userRole,
+      label: itemLabel,
+      note: itemNote || '',
+      source: 'bulk'
+    })
+
+    const suppressedSet = await getActiveSuppressedFingerprints(projId)
+    const isSuppressedByRule = suppressedSet.has(fingerprint)
+    const isCritical = String(risk.severity).toLowerCase() === 'critical'
+
+    risk.feedbackStatus = itemLabel
+    if (isCritical) {
+      risk.isSuppressed = false
+      risk.suppressionReason = 'Critical finding: suppression prohibited by safety policy; tagged as disputed/false-positive review'
+    } else if (isSuppressedByRule) {
+      risk.isSuppressed = true
+      risk.suppressionReason = 'Suppressed: Consensus false_positive feedback'
+    } else {
+      risk.isSuppressed = false
+      risk.suppressionReason = ''
+    }
+
+    await risk.save()
+    updatedRisks.push(toResponse(risk))
+  }
+
+  res.json({
+    success: true,
+    data: {
+      triagedCount: updatedRisks.length,
+      risks: updatedRisks
+    }
+  })
+})
+
+// Submit single feedback for a finding
+router.post('/:id/feedback', protect, requireRole('admin', 'security_reviewer', 'lead', 'developer'), async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const { label, note, featureSnapshot } = req.body || {}
+  if (!['false_positive', 'confirmed'].includes(label)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid label. Must be "false_positive" or "confirmed"'
+    })
+  }
+
+  const ownerId = getOwnerId(req)
+  const risk = await Risk.findOne({ _id: req.params.id, ownerId })
+  if (!risk) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const fingerprint = risk.fingerprint || generateFindingFingerprint({
+    ruleId: risk.sourceIssueId || risk.title,
+    file: risk.file,
+    snippet: risk.description || risk.notes,
+    threatType: risk.threatType
+  })
+  risk.fingerprint = fingerprint
+
+  const userRole = req.user?.role || 'developer'
+  const projectId = String(risk.projectId?._id || risk.projectId)
+
+  await saveFeedback({
+    findingId: risk._id,
+    fingerprint,
+    projectId,
+    scanId: risk.scanId,
+    userId: ownerId,
+    userName: req.user?.name || req.user?.username || '',
+    userRole,
+    label,
+    note: String(note || ''),
+    featureSnapshot: featureSnapshot || {},
+    source: 'user'
+  })
+
+  const suppressedSet = await getActiveSuppressedFingerprints(projectId)
+  const isSuppressedByRule = suppressedSet.has(fingerprint)
+  const isCritical = String(risk.severity).toLowerCase() === 'critical'
+
+  risk.feedbackStatus = label
+  if (isCritical) {
+    risk.isSuppressed = false
+    risk.suppressionReason = 'Critical finding: suppression prohibited by safety policy; tagged as disputed/false-positive review'
+  } else if (isSuppressedByRule) {
+    risk.isSuppressed = true
+    risk.suppressionReason = 'Suppressed: Consensus false_positive feedback'
+  } else {
+    risk.isSuppressed = false
+    risk.suppressionReason = ''
+  }
+
+  await risk.save()
+
+  // Sibling update scoped strictly to the same project
+  if (isCritical) {
+    await Risk.updateMany(
+      { projectId, fingerprint, _id: { $ne: risk._id } },
+      {
+        feedbackStatus: label,
+        isSuppressed: false,
+        suppressionReason: 'Critical finding: suppression prohibited by safety policy; tagged as disputed/false-positive review'
+      }
+    )
+  } else {
+    await Risk.updateMany(
+      { projectId, fingerprint, _id: { $ne: risk._id }, severity: { $ne: 'critical' } },
+      {
+        feedbackStatus: isSuppressedByRule ? 'false_positive' : label,
+        isSuppressed: isSuppressedByRule,
+        suppressionReason: isSuppressedByRule ? 'Suppressed: Consensus false_positive feedback' : ''
+      }
+    )
+  }
+
+  res.json({
+    success: true,
+    data: toResponse(risk)
+  })
+})
+
+// Remove feedback for a finding
+router.delete('/:id/feedback', protect, requireRole('admin', 'security_reviewer', 'lead', 'developer'), async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const ownerId = getOwnerId(req)
+  const risk = await Risk.findOne({ _id: req.params.id, ownerId })
+  if (!risk) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  await removeFeedback({ findingId: risk._id, userId: ownerId })
+
+  const projectId = String(risk.projectId?._id || risk.projectId)
+  const suppressedSet = await getActiveSuppressedFingerprints(projectId)
+  const isSuppressedByRule = suppressedSet.has(risk.fingerprint)
+  const isCritical = String(risk.severity).toLowerCase() === 'critical'
+  const remaining = await getLatestFeedbackForFinding(risk._id)
+
+  risk.feedbackStatus = remaining ? remaining.label : 'unreviewed'
+  if (isCritical) {
+    risk.isSuppressed = false
+    risk.suppressionReason = 'Critical finding: suppression prohibited by safety policy; tagged as disputed/false-positive review'
+  } else if (isSuppressedByRule) {
+    risk.isSuppressed = true
+    risk.suppressionReason = 'Suppressed: Consensus false_positive feedback'
+  } else {
+    risk.isSuppressed = false
+    risk.suppressionReason = ''
+  }
+
+  await risk.save()
+
+  // Sibling update scoped strictly to the same project
+  if (!isCritical) {
+    await Risk.updateMany(
+      { projectId, fingerprint: risk.fingerprint, _id: { $ne: risk._id }, severity: { $ne: 'critical' } },
+      {
+        feedbackStatus: isSuppressedByRule ? 'false_positive' : (remaining ? remaining.label : 'unreviewed'),
+        isSuppressed: isSuppressedByRule,
+        suppressionReason: isSuppressedByRule ? 'Suppressed: Consensus false_positive feedback' : ''
+      }
+    )
+  }
+
+  res.json({
+    success: true,
+    data: toResponse(risk)
+  })
+})
+
+// Get explainable score and linear contributions for a finding
+router.get('/:id/explanation', protect, async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const ownerId = getOwnerId(req)
+  const risk = await Risk.findOne({ _id: req.params.id, ownerId })
+  if (!risk) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  try {
+    const mlResponse = await fetch(`${ML_ENGINE_URL}/api/explain`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        finding: {
+          file: risk.file,
+          snippet: risk.description || risk.notes,
+          severity: risk.severity,
+          rule_id: risk.sourceIssueId || risk.title,
+          threat_type: risk.threatType
+        }
+      })
+    })
+
+    if (mlResponse.ok) {
+      const mlJson = await mlResponse.json()
+      return res.json({
+        success: true,
+        data: {
+          risk: toResponse(risk),
+          explanation: mlJson.data?.explanation,
+          modelVersion: mlJson.data?.model_version
+        }
+      })
+    }
+  } catch (err) {
+    console.warn('[RiskExplanation] ML engine call failed, using heuristic fallback:', err.message)
+  }
+
+  const isCritical = String(risk.severity).toLowerCase() === 'critical'
+  const isTest = Boolean(risk.file && /test|spec|mock/i.test(risk.file))
+  const estProb = isCritical ? 0.95 : isTest ? 0.20 : 0.65
+
+  res.json({
+    success: true,
+    data: {
+      risk: toResponse(risk),
+      explanation: {
+        probability: estProb,
+        verdict: estProb >= 0.7 ? 'likely_real' : estProb <= 0.3 ? 'likely_false_positive' : 'needs_review',
+        summary: `Heuristic assessment (${Math.round(estProb * 100)}% estimated probability).`,
+        top_positive_factors: [
+          { feature: 'severity', description: `Severity is ${risk.severity}`, impact: 0.35 }
+        ],
+        top_negative_factors: isTest
+          ? [{ feature: 'is_test_file', description: 'Located in test file path', impact: -0.45 }]
+          : [],
+        clamped_by_floor: false
+      },
+      modelVersion: 'v0-heuristic-fallback'
+    }
   })
 })
 

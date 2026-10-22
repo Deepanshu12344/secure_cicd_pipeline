@@ -39,6 +39,8 @@ export default function Login() {
     if (!tokenFromGithub) {
       if (githubStatus === 'config_missing') {
         setError('GitHub sign in is not configured on the server.')
+      } else if (githubStatus === 'db_unavailable') {
+        setError('Authentication service is unavailable. Please check database connection.')
       } else if (githubStatus === 'email_unverified') {
         setError('GitHub account email is not verified. Verify it and try again.')
       } else if (githubStatus === 'account_conflict') {

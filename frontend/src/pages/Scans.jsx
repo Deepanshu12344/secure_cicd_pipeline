@@ -48,6 +48,15 @@ export default function Scans() {
   const [downloadingScanId, setDownloadingScanId] = useState('')
   const [expandedScanId, setExpandedScanId] = useState('')
   const [skillsFallbackByScan, setSkillsFallbackByScan] = useState({})
+  const [sourceFilter, setSourceFilter] = useState('all')
+
+  const filteredScans = useMemo(() => {
+    if (sourceFilter === 'all') return scans
+    if (sourceFilter === 'pre-commit') return scans.filter((s) => s.scanType === 'pre-commit')
+    if (sourceFilter === 'cicd') return scans.filter((s) => s.scanType === 'cicd')
+    if (sourceFilter === 'full') return scans.filter((s) => !s.scanType || s.scanType === 'full')
+    return scans
+  }, [scans, sourceFilter])
 
   const loadData = useCallback(async (showLoader = false) => {
     if (showLoader) setLoading(true)
@@ -257,7 +266,51 @@ export default function Scans() {
 
       <div className="p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h1 className="text-2xl font-normal text-[#303030]">Scans</h1>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-normal text-[#303030]">Scans</h1>
+          <div className="flex items-center border border-gray-200 rounded overflow-hidden text-xs">
+            <button
+              onClick={() => setSourceFilter('all')}
+              className={`px-3 py-1.5 transition-colors ${
+                sourceFilter === 'all'
+                  ? 'bg-[#1f75cb] text-white font-medium'
+                  : 'bg-white text-[#666] hover:bg-gray-50'
+              }`}
+            >
+              All ({scans.length})
+            </button>
+            <button
+              onClick={() => setSourceFilter('pre-commit')}
+              className={`px-3 py-1.5 border-l border-gray-200 transition-colors ${
+                sourceFilter === 'pre-commit'
+                  ? 'bg-[#1f75cb] text-white font-medium'
+                  : 'bg-white text-[#666] hover:bg-gray-50'
+              }`}
+            >
+              Pre-Commit ({scans.filter((s) => s.scanType === 'pre-commit').length})
+            </button>
+            <button
+              onClick={() => setSourceFilter('cicd')}
+              className={`px-3 py-1.5 border-l border-gray-200 transition-colors ${
+                sourceFilter === 'cicd'
+                  ? 'bg-[#1f75cb] text-white font-medium'
+                  : 'bg-white text-[#666] hover:bg-gray-50'
+              }`}
+            >
+              CI/CD ({scans.filter((s) => s.scanType === 'cicd').length})
+            </button>
+            <button
+              onClick={() => setSourceFilter('full')}
+              className={`px-3 py-1.5 border-l border-gray-200 transition-colors ${
+                sourceFilter === 'full'
+                  ? 'bg-[#1f75cb] text-white font-medium'
+                  : 'bg-white text-[#666] hover:bg-gray-50'
+              }`}
+            >
+              Manual ({scans.filter((s) => !s.scanType || s.scanType === 'full').length})
+            </button>
+          </div>
+        </div>
         <button
           onClick={() => setModalOpen(true)}
           className="w-full sm:w-auto px-4 py-2 text-sm border border-[#d4d4d4] rounded bg-white text-[#303030] hover:bg-[#f8f8f8]"
@@ -283,14 +336,16 @@ export default function Scans() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {scans.length === 0 ? (
+            {filteredScans.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-8 text-center text-sm text-[#666]">
-                  No scans available.
+                  {sourceFilter === 'all'
+                    ? 'No scans available.'
+                    : `No ${sourceFilter} scans found.`}
                 </td>
               </tr>
             ) : (
-              scans.map((scan) => {
+              filteredScans.map((scan) => {
                 const progress = Number(scan.progress || 0)
                 const summary = scan.analysisSummary
                 const metrics = summary?.metrics || {}
@@ -323,7 +378,24 @@ export default function Scans() {
                     >
                       <td className="px-6 py-4 text-[#303030] text-sm">{scan.id}</td>
                       <td className="px-6 py-4 text-[#666] text-sm">{scan.projectFullName || scan.projectName || scan.projectId || '-'}</td>
-                      <td className="px-6 py-4 text-[#666] text-sm">{scan.scanType || '-'}</td>
+                      <td className="px-6 py-4 text-[#666] text-sm">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                            scan.scanType === 'pre-commit'
+                              ? 'bg-purple-100 text-purple-700'
+                              : scan.scanType === 'cicd'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}>
+                            {scan.scanType || 'full'}
+                          </span>
+                          {scan.isBypass && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+                              BYPASSED
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded text-xs font-medium ${statusClass(scan.status)}`}>
                           {String(scan.status || 'unknown')}

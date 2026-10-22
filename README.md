@@ -9,19 +9,30 @@ This enterprise-grade solution combines:
 - **Backend API**: Node.js/Express REST API for core functionality
 - **ML/AI Engine**: Python-based machine learning engine for risk scoring
 - **VS Code Extension**: Real-time security feedback during development
+- **Pre-Commit CLI (`secure-cicd`)**: Cross-platform pre-commit scanner that blocks insecure commits
 
 ## 📊 Key Features
 
+### Pre-Commit Security Scanning
+- Automated staged file scanning before every `git commit`
+- Sub-second execution using SHA-256 caching and AST/regex inspection
+- Automatic commit blocking if risks exceed configured threshold
+- Masked terminal secret redaction (`AKIA...****...MPLE`)
+- Zero mandatory Python dependency for developers (built-in offline rules)
+- Automatic online fallback to ML engine when reachable
+- Non-destructive hook installer with automatic backup and hook chaining
+- Seamless CI Dashboard ingestion and policy bypass tracking
+
 ### Security Scanning
-- Automated code vulnerability detection
-- Dependency vulnerability checking
-- Configuration security analysis
+- Automated code vulnerability detection (SQLi, XSS, Weak Crypto, Secrets)
+- Dependency vulnerability and wildcard package checking
+- Configuration and Dockerfile security analysis
 - Real-time threat identification
 
 ### Intelligent Risk Scoring
-- ML-based risk calculation
+- Normalized 0–10 risk calculation scale
 - Severity classification (Critical, High, Medium, Low)
-- False positive reduction
+- False positive reduction via allowlists and path ignores
 - Risk trend analysis
 
 ### Pipeline Integration
@@ -32,55 +43,60 @@ This enterprise-grade solution combines:
 
 ### Developer Experience
 - VS Code extension for real-time feedback
-- Interactive dashboard for insights
-- Detailed risk reports
+- Interactive dashboard for insights with Scan Source filters
+- Detailed risk reports (ASCII Table, JSON, SARIF 2.1.0)
 - Actionable remediation suggestions
 
 ## 🏗️ Project Structure
 
 ```
-BtechCapstone/
+secure_cicd_pipeline/
+├── cli/                     # Node.js Pre-Commit Scanner & CLI tool
+│   ├── bin/secure-cicd.js   # CLI executable entrypoint
+│   ├── src/engine/          # Offline rule engine, scorer, cache & git index reader
+│   ├── src/commands/        # init, scan, install-hook, uninstall-hook, doctor
+│   ├── src/formatters/      # Table, JSON, and SARIF 2.1.0 output
+│   └── package.json
+│
 ├── backend/                 # Node.js/Express API
 │   ├── src/
-│   │   ├── routes/         # API endpoints
-│   │   ├── controllers/    # Request handlers
-│   │   ├── models/         # Data models
-│   │   ├── middleware/     # Auth, validation
-│   │   ├── services/       # Business logic
-│   │   └── utils/          # Helper functions
+│   │   ├── routes/          # API endpoints (scans, ci-status, auth, etc.)
+│   │   ├── controllers/     # Request handlers
+│   │   ├── models/          # Data models (Scan, Risk, Project, Pipeline)
+│   │   ├── middleware/      # Auth, validation
+│   │   └── utils/           # CI Dashboard store & sync helpers
 │   ├── package.json
 │   └── .env.example
 │
-├── frontend/               # React application
+├── frontend/                # React application
 │   ├── src/
-│   │   ├── components/     # Reusable React components
-│   │   ├── pages/          # Page components
-│   │   ├── services/       # API client
-│   │   ├── store/          # State management
-│   │   ├── hooks/          # Custom React hooks
-│   │   └── index.css       # Tailwind styles
+│   │   ├── components/      # Reusable React components
+│   │   ├── pages/           # Scans (with Source filter), Home, Dashboard, etc.
+│   │   ├── services/        # API client
+│   │   └── store/           # State management
 │   ├── package.json
 │   └── vite.config.js
 │
-├── ml-engine/             # Python ML/AI service
+├── ml-engine/               # Python ML/AI service
 │   ├── src/
-│   │   ├── app.py         # Flask application
-│   │   ├── models/        # ML models
-│   │   └── utils/         # Processing utilities
+│   │   ├── app.py           # Flask application
+│   │   ├── models/          # ML models
+│   │   └── utils/           # Processing utilities
 │   └── requirements.txt
 │
-├── vscode-extension/      # VS Code extension
+├── vscode-extension/        # VS Code extension
 │   ├── src/
-│   │   └── extension.js   # Extension entry point
+│   │   └── extension.js     # Extension entry point
 │   └── package.json
 │
-├── .github/workflows/     # CI/CD configurations
-│   └── main.yml          # GitHub Actions
+├── .github/workflows/       # CI/CD configurations
+│   └── main.yml             # GitHub Actions
 │
-└── docs/                  # Documentation
-    ├── API.md            # API documentation
-    ├── SETUP.md          # Setup guide
-    └── ARCHITECTURE.md   # System architecture
+├── .pre-commit-hooks.yaml   # Python pre-commit framework manifest
+└── docs/                    # Documentation
+    ├── API.md               # API documentation
+    ├── SETUP.md             # Setup guide
+    └── ARCHITECTURE.md      # System architecture
 ```
 
 ## 🚀 Quick Start
@@ -129,6 +145,152 @@ cd vscode-extension
 npm install
 # Open in VS Code and press F5 to debug
 ```
+
+### Pre-Commit CLI Scanner Setup
+
+The pre-commit scanner (`secure-cicd`) can be installed into any git project with a single command:
+
+```bash
+# Inside any repository
+npx secure-cicd init
+```
+
+This creates a customized `.securecicd.yaml` configuration file and installs a non-destructive `.git/hooks/pre-commit` hook that automatically protects the repository on every `git commit`.
+
+---
+
+## 🛡️ Pre-Commit Security Scanner Guide
+
+The `secure-cicd` CLI is an autonomous, developer-friendly security scanner designed to prevent vulnerable code from entering version control.
+
+### Key Capabilities
+
+1. **Deterministic Built-in Rules**:
+   - **Secrets**: API keys, AWS credentials, GitHub tokens, database URIs with passwords, private keys, staged `.env` files.
+   - **SQL Injection**: Dynamic string concatenations and template literals in SQL queries.
+   - **Cross-Site Scripting (XSS)**: Unsanitized DOM injection (`innerHTML`, `dangerouslySetInnerHTML`, `eval`).
+   - **Insecure Cryptography**: MD5, SHA-1, broken DES/RC4 ciphers, weak random tokens for auth.
+   - **Security Configurations**: `curl | bash` pipelines, wildcard CORS with credentials, Docker `--privileged`.
+   - **Dependency Vulnerabilities**: Wildcard dependency versions (`"*"`, `">="`) in `package.json` and `requirements.txt`.
+
+2. **Automated Risk Scoring & Gate Evaluation**:
+   - Risk score calculated on a standard **0–10 scale** (Low: 0.5, Medium: 1.0, High: 1.5, Critical: 2.5 per issue).
+   - Blocks commit if risk score exceeds `max_risk_score` (default: 6.0) or if finding matches `fail_on` severity (default: `high`).
+
+3. **Masked Secret Redaction**:
+   - Secrets are masked with asterisks in console reports (e.g., `AKIA...****...MPLE`), preventing accidental leaks in terminals or CI logs.
+
+4. **Zero-Friction Git Integration**:
+   - Reads directly from git staging index (`git show :<file>`), ignoring unstaged workspace edits.
+   - Skips binaries, minified bundles, and files larger than 1MB.
+   - Uses SHA-256 caching (`.securecicd_cache.json`) for sub-second execution (<500ms).
+   - Hook installer creates backups (`pre-commit.backup.<timestamp>`) and chains existing pre-commit hooks safely.
+
+5. **Dual Operating Modes**:
+   - **Online Mode**: Queries `ml-engine` (`http://localhost:5001`) for enhanced ML vulnerability classification.
+   - **Offline Mode**: Operates autonomously with zero external dependencies when `ml-engine` is unreachable.
+
+### Installation Options
+
+#### Option A: Standalone NPX (Recommended - Zero Installation)
+```bash
+# One-time initialization in any project
+npx secure-cicd init
+
+# Or install globally
+npm install -g secure-cicd
+secure-cicd init
+```
+
+#### Option B: Python Pre-Commit Framework
+Add to your project's `.pre-commit-config.yaml`:
+```yaml
+repos:
+  - repo: https://github.com/your-org/secure_cicd_pipeline
+    rev: v1.0.0
+    hooks:
+      - id: secure-cicd
+```
+
+#### Option C: Husky (Modern Web Projects)
+```bash
+npm install --save-dev husky
+npx husky init
+echo "npx secure-cicd scan --staged" > .husky/pre-commit
+```
+
+### Configuration (`.securecicd.yaml`)
+
+```yaml
+# Secure CI/CD Pre-Commit Scanner Configuration
+version: 1
+
+# Scan scope: 'staged' (fast, staged files only) or 'all' (entire repository)
+scan_scope: staged
+
+# Minimum finding severity that blocks a commit: 'critical' | 'high' | 'medium' | 'low'
+fail_on: high
+
+# Maximum allowed overall risk score on a 0-10 scale (blocks if score > threshold)
+max_risk_score: 6.0
+
+# Operating mode: 'block' (block commit), 'warn' (show report but allow commit), or 'off'
+mode: block
+
+# Optional URL to ML engine (seamlessly falls back to offline rules if unreachable)
+ml_engine_url: http://localhost:5001
+
+# Optional CI Dashboard integration
+dashboard:
+  enabled: true
+  url: "http://localhost:5000"
+  api_key_env: CI_INGEST_API_KEY
+
+# Ignore file paths and specific rule IDs
+ignore:
+  paths:
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    - "*.min.js"
+    - "*.min.css"
+  rules: []
+
+# Known false-positive exceptions
+allowlist:
+  - rule: "SEC-004"
+    path: "tests/fixtures/sample.js"
+    reason: "Dummy test fixture credential"
+```
+
+### CLI Command Reference
+
+| Command | Description |
+|---|---|
+| `secure-cicd init` | Creates `.securecicd.yaml` and installs the git pre-commit hook |
+| `secure-cicd scan --staged` | Scans staged git files (default mode during git commit) |
+| `secure-cicd scan --all` | Scans all files across the repository |
+| `secure-cicd scan --format json` | Outputs report in structured JSON format |
+| `secure-cicd scan --format sarif` | Generates standard SARIF 2.1.0 output for GitHub / IDE integration |
+| `secure-cicd doctor` | Runs diagnostics on git repository, config, hooks, and services |
+| `secure-cicd install-hook` | Installs or updates the Git pre-commit hook with backup |
+| `secure-cicd uninstall-hook` | Cleanly removes hook and restores any previous backup |
+
+### Bypassing Security Gates
+
+When an emergency hotfix requires committing code despite security warnings, developers can bypass using either method:
+
+1. **Git Native Flag**:
+   ```bash
+   git commit --no-verify -m "Emergency fix"
+   ```
+2. **Environment Variable**:
+   ```bash
+   SECURECICD_SKIP=1 git commit -m "Emergency fix"
+   ```
+   *Note: If dashboard reporting is enabled, bypassed commits are logged with a prominent `[BYPASSED]` audit badge in the web dashboard.*
+
+---
 
 ## 📡 API Endpoints
 

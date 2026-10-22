@@ -8,8 +8,11 @@ import { protect } from '../middleware/authMiddleware.js'
 import Scan from '../models/Scan.js'
 import Project from '../models/Project.js'
 import Risk from '../models/Risk.js'
+import { generateFindingFingerprint } from '../utils/fingerprint.js'
+import { getActiveSuppressedFingerprints } from '../utils/feedbackStore.js'
 
 const router = express.Router()
+const ML_ENGINE_URL = process.env.ML_ENGINE_URL || 'http://localhost:5001'
 const getOwnerId = (req) => req.user?._id || req.user?.id
 
 const __filename = fileURLToPath(import.meta.url)
@@ -257,9 +260,22 @@ const parseJsonFile = (filePath) => {
   }
 }
 
+const resolveDefaultPython = () => {
+  if (process.env.PYTHON_BIN && fs.existsSync(process.env.PYTHON_BIN)) {
+    return process.env.PYTHON_BIN
+  }
+  const rootVenv = getVenvPythonPath(workspaceRoot)
+  if (rootVenv) return rootVenv
+  if (cicdScannerDir) {
+    const cicdVenv = getVenvPythonPath(cicdScannerDir)
+    if (cicdVenv) return cicdVenv
+  }
+  return process.platform === 'win32' ? 'python' : 'python3'
+}
+
 const runPythonCommand = ({ cwd, args, allowExitCodes = [0], outputLimit = 120000, pythonBin }) =>
   new Promise((resolve, reject) => {
-    const resolvedPythonBin = pythonBin || process.env.PYTHON_BIN || 'python'
+    const resolvedPythonBin = pythonBin || resolveDefaultPython()
     let output = ''
 
     const child = spawn(resolvedPythonBin, args, {
@@ -313,7 +329,7 @@ const ensurePythonEnv = async ({ baseDir, requirementsFile, label }) => {
     await runPythonCommand({
       cwd: baseDir,
       args: ['-m', 'venv', venvDir],
-      pythonBin: process.env.PYTHON_BIN || 'python'
+      pythonBin: resolveDefaultPython()
     })
   }
 
@@ -408,6 +424,8 @@ const syncRisksForScan = async ({ scanDoc, projectId, mergedIssues }) => {
     source: { $in: ['analyzer', 'cicd'] }
   })
 
+  const suppressedFingerprints = await getActiveSuppressedFingerprints(projectId)
+
   const risksToInsert = mergedIssues
     .map((issue) => {
       const severity = normalizeSeverity(issue?.severity)
@@ -421,6 +439,33 @@ const syncRisksForScan = async ({ scanDoc, projectId, mergedIssues }) => {
       const title = String(issue?.issue || issue?.title || '').trim()
       if (!title) return null
 
+      const effectiveFile = fileFromIssue || (fileFromLocation && !fileFromLocation.includes(' ') ? fileFromLocation : null)
+      const fingerprint = generateFindingFingerprint({
+        ruleId: String(issue?.sourceIssueId || issue?.id || title),
+        file: effectiveFile,
+        snippet: String(issue?.snippet || issue?.code || issue?.match || issue?.reason || ''),
+        threatType
+      })
+
+      const isCritical = severity.toLowerCase() === 'critical'
+      const isSuppressedByProjectFeedback = suppressedFingerprints.has(fingerprint)
+
+      let feedbackStatus = 'unreviewed'
+      let isSuppressed = false
+      let suppressionReason = ''
+
+      if (isSuppressedByProjectFeedback) {
+        feedbackStatus = 'false_positive'
+        if (isCritical) {
+          // Safety policy: CRITICAL findings are NEVER suppressed
+          isSuppressed = false
+          suppressionReason = 'Critical finding: suppression prohibited by safety policy; tagged as disputed/false-positive review'
+        } else {
+          isSuppressed = true
+          suppressionReason = 'Suppressed: Marked false_positive in project review'
+        }
+      }
+
       return {
         ownerId: scanDoc.ownerId,
         projectId,
@@ -429,13 +474,17 @@ const syncRisksForScan = async ({ scanDoc, projectId, mergedIssues }) => {
         description: String(issue?.reason || ''),
         severity: severity.toLowerCase(),
         riskScore: mapSeverityToRiskScore(severity),
-        file: fileFromIssue || (fileFromLocation && !fileFromLocation.includes(' ') ? fileFromLocation : null),
+        file: effectiveFile,
         line: parsedLine,
         status: 'open',
         source,
         sourceIssueId: String(issue?.sourceIssueId || issue?.id || '') || null,
         threatType,
-        remediation: String(issue?.remediation || '')
+        remediation: String(issue?.remediation || ''),
+        fingerprint,
+        feedbackStatus,
+        isSuppressed,
+        suppressionReason
       }
     })
     .filter(Boolean)
@@ -516,6 +565,7 @@ const toResponse = (scanDoc) => ({
     typeof scanDoc.projectId === 'object' && scanDoc.projectId?.fullName ? scanDoc.projectId.fullName : null,
   repositoryUrl: scanDoc.repositoryUrl,
   scanType: scanDoc.scanType || 'full',
+  isBypass: Boolean(scanDoc.isBypass),
   branch: scanDoc.branch || 'main',
   status: scanDoc.status || 'queued',
   progress: Number(scanDoc.progress || 0),
@@ -529,6 +579,11 @@ const toResponse = (scanDoc) => ({
     jsonFile: scanDoc.reportFiles?.jsonFile || null
   },
   reportAvailable: Boolean(scanDoc.reportFiles?.pdfPath || scanDoc.reportFiles?.jsonPath),
+  rawRiskScore: scanDoc.rawRiskScore !== undefined && scanDoc.rawRiskScore !== null ? Number(scanDoc.rawRiskScore) : null,
+  adjustedRiskScore: scanDoc.adjustedRiskScore !== undefined && scanDoc.adjustedRiskScore !== null ? Number(scanDoc.adjustedRiskScore) : null,
+  scoreSource: scanDoc.scoreSource || 'raw',
+  fallbackReason: scanDoc.fallbackReason || null,
+  modelMetrics: scanDoc.modelMetrics || null,
   createdAt: scanDoc.createdAt,
   updatedAt: scanDoc.updatedAt
 })
@@ -590,7 +645,7 @@ const executeAnalyzerForScan = async (scan) => {
       baseDir: analyzerBaseDir,
       requirementsFile: analyzerRequirements,
       label: 'Code Analyzer'
-    })) || getVenvPythonPath(analyzerBaseDir) || process.env.PYTHON_BIN || 'python'
+    })) || getVenvPythonPath(analyzerBaseDir) || resolveDefaultPython()
   const cicdPython = cicdScannerDir
     ? (await ensurePythonEnv({
         baseDir: cicdScannerDir,
@@ -799,6 +854,9 @@ router.get('/', protect, async (req, res) => {
   if (req.query.projectId && mongoose.Types.ObjectId.isValid(req.query.projectId)) {
     filter.projectId = req.query.projectId
   }
+  if (req.query.scanType) {
+    filter.scanType = req.query.scanType
+  }
 
   const scanDocs = await Scan.find(filter).populate('projectId', 'name fullName repositoryUrl').sort({ createdAt: -1 })
   const hydrated = await Promise.all(scanDocs.map((scanDoc) => hydrateSummaryFromJsonIfNeeded(scanDoc)))
@@ -965,6 +1023,77 @@ router.get('/:id/report', protect, async (req, res) => {
   res.download(resolvedPath, path.basename(resolvedPath))
 })
 
+// Get overall scan risk explanation, score comparison, and suppressed findings breakdown
+router.get('/:id/explanation', protect, async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Scan not found' })
+  }
+
+  const ownerId = getOwnerId(req)
+  const scan = await Scan.findOne({ _id: req.params.id, ownerId }).populate('projectId', 'name fullName')
+  if (!scan) {
+    return res.status(404).json({ success: false, error: 'Scan not found' })
+  }
+
+  const risks = await Risk.find({ scanId: scan._id, ownerId })
+  const activeRisks = risks.filter((r) => !r.isSuppressed)
+  const suppressedRisks = risks.filter((r) => r.isSuppressed)
+
+  let modelInfo = {
+    active_version: 'v1',
+    confidence: 'bootstrap',
+    provenance: { disclaimer: 'Synthetic bootstrap model' }
+  }
+
+  try {
+    const mlRes = await fetch(`${ML_ENGINE_URL}/api/model/info`)
+    if (mlRes.ok) {
+      const mlData = await mlRes.json()
+      modelInfo = mlData.data || modelInfo
+    }
+  } catch (err) {
+    console.warn('[ScanExplanation] Could not query ML engine info:', err.message)
+  }
+
+  res.json({
+    success: true,
+    data: {
+      scanId: String(scan._id),
+      projectName: scan.projectId?.name || 'Project',
+      rawRiskScore: scan.rawRiskScore !== undefined && scan.rawRiskScore !== null ? Number(scan.rawRiskScore) : null,
+      adjustedRiskScore: scan.adjustedRiskScore !== undefined && scan.adjustedRiskScore !== null ? Number(scan.adjustedRiskScore) : null,
+      totalFindings: risks.length,
+      activeFindingsCount: activeRisks.length,
+      suppressedFindingsCount: suppressedRisks.length,
+      modelInfo: {
+        version: modelInfo.active_version,
+        confidence: modelInfo.confidence,
+        dataProvenance: modelInfo.data_provenance || modelInfo.provenance
+      },
+      topContributingRisks: activeRisks
+        .sort((a, b) => (b.riskScore || 0) - (a.riskScore || 0))
+        .slice(0, 5)
+        .map((r) => ({
+          id: String(r._id),
+          title: r.title,
+          severity: r.severity,
+          file: r.file,
+          riskScore: r.riskScore,
+          modelPrediction: r.modelPrediction,
+          threatType: r.threatType
+        })),
+      suppressedRisks: suppressedRisks.map((r) => ({
+        id: String(r._id),
+        title: r.title,
+        severity: r.severity,
+        file: r.file,
+        fingerprint: r.fingerprint,
+        suppressionReason: r.suppressionReason
+      }))
+    }
+  })
+})
+
 router.patch('/:id', protect, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(404).json({ success: false, error: 'Scan not found' })
@@ -1097,8 +1226,7 @@ router.post('/ci-ingest', async (req, res) => {
           label: 'CI/CD Scanner'
         })) ||
         getVenvPythonPath(cicdScannerDir || reportsBaseDir) ||
-        process.env.PYTHON_BIN ||
-        'python'
+        resolveDefaultPython()
 
       combinedPdfFile = `${repoName}_combined_ci_ingest_${timestamp}.pdf`
       combinedPdfPath = path.join(reportsDir, combinedPdfFile)

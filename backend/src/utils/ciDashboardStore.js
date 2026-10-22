@@ -4,6 +4,8 @@ import mongoose from 'mongoose'
 import { fileURLToPath } from 'url'
 import Project from '../models/Project.js'
 import Pipeline from '../models/Pipeline.js'
+import Scan from '../models/Scan.js'
+import Risk from '../models/Risk.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -86,6 +88,7 @@ const normalizeStatus = (status) => (String(status || '').toLowerCase() === 'fai
 
 export const saveCiDashboardStatus = async (payload) => {
   const timestamp = payload.timestamp ? new Date(payload.timestamp) : new Date()
+  const isBypass = Boolean(payload.isBypass)
   const normalizedPayload = {
     projectId: payload.projectId || null,
     repositoryUrl: String(payload.repositoryUrl || '').trim(),
@@ -104,6 +107,7 @@ export const saveCiDashboardStatus = async (payload) => {
     },
     timestamp: timestamp.toISOString(),
     source: String(payload.source || 'ci').trim(),
+    isBypass,
     report: payload.report && typeof payload.report === 'object' ? payload.report : null
   }
 
@@ -119,7 +123,8 @@ export const saveCiDashboardStatus = async (payload) => {
   normalizedPayload.projectId = String(project._id)
   project.lastScan = timestamp
   if (typeof normalizedPayload.report?.overall_risk_score === 'number') {
-    project.riskScore = normalizedPayload.report.overall_risk_score
+    const rawScore = normalizedPayload.report.overall_risk_score
+    project.riskScore = rawScore <= 10 ? Math.round(rawScore * 10) : rawScore
   }
   await project.save()
 
@@ -127,13 +132,17 @@ export const saveCiDashboardStatus = async (payload) => {
     { ownerId: project.ownerId, projectId: project._id },
     {
       $set: {
-        name: 'CI/CD Security Check',
+        name: normalizedPayload.source === 'pre-commit' ? 'Pre-Commit Security Check' : 'CI/CD Security Check',
         enabled: true,
-        lastScanStatus: normalizedPayload.status === 'failed' ? 'failed' : 'completed',
+        lastScanStatus: normalizedPayload.status === 'failed' && !isBypass ? 'failed' : 'completed',
         lastScanStartedAt: timestamp,
         lastScanCompletedAt: timestamp,
         lastScanError:
-          normalizedPayload.status === 'failed' ? 'Critical issues detected during CI/CD security check.' : '',
+          normalizedPayload.status === 'failed' && !isBypass
+            ? 'Critical issues detected during security check.'
+            : isBypass
+              ? 'Security check bypassed by developer.'
+              : '',
         lastScanSummary: {
           status: normalizedPayload.status,
           issueCount: normalizedPayload.issueCount,
@@ -141,7 +150,9 @@ export const saveCiDashboardStatus = async (payload) => {
           timestamp: normalizedPayload.timestamp,
           branch: normalizedPayload.branch,
           commitSha: normalizedPayload.commitSha,
-          workflowRunUrl: normalizedPayload.workflowRunUrl
+          workflowRunUrl: normalizedPayload.workflowRunUrl,
+          source: normalizedPayload.source,
+          isBypass
         },
         lastScanIssues: Array.isArray(normalizedPayload.report?.issues) ? normalizedPayload.report.issues : []
       },
@@ -152,6 +163,61 @@ export const saveCiDashboardStatus = async (payload) => {
     },
     { upsert: true, new: true, setDefaultsOnInsert: true }
   )
+
+  try {
+    const scanDoc = await Scan.create({
+      ownerId: project.ownerId,
+      projectId: project._id,
+      repositoryUrl: String(normalizedPayload.repositoryUrl || project.repositoryUrl || '').trim(),
+      scanType: normalizedPayload.source === 'pre-commit' ? 'pre-commit' : 'cicd',
+      isBypass,
+      branch: normalizedPayload.branch,
+      status: normalizedPayload.status === 'failed' && !isBypass ? 'failed' : 'completed',
+      progress: 100,
+      startedAt: timestamp,
+      completedAt: timestamp,
+      findings: Array.isArray(normalizedPayload.report?.issues) ? normalizedPayload.report.issues.slice(0, 50) : [],
+      analysisSummary: {
+        totalFilesAnalyzed: Number(normalizedPayload.report?.scannedFilesCount || 0),
+        totalIssues: normalizedPayload.issueCount,
+        metrics: {
+          overall: Math.max(0, 100 - (project.riskScore || 0))
+        },
+        severityCounts: {
+          Critical: normalizedPayload.severitySummary.critical,
+          High: normalizedPayload.severitySummary.high,
+          Medium: normalizedPayload.severitySummary.medium,
+          Low: normalizedPayload.severitySummary.low
+        }
+      },
+      analyzerLogTail: `${normalizedPayload.source} scan ${normalizedPayload.commitSha ? `commit=${normalizedPayload.commitSha}` : ''} ${isBypass ? '[BYPASSED]' : ''}`.trim()
+    })
+
+    if (Array.isArray(normalizedPayload.report?.issues) && normalizedPayload.report.issues.length > 0) {
+      const risksToInsert = normalizedPayload.report.issues.map((issue) => {
+        const severity = String(issue?.severity || 'medium').toLowerCase()
+        const riskScore = severity === 'critical' ? 95 : severity === 'high' ? 80 : severity === 'medium' ? 55 : 25
+        return {
+          ownerId: project.ownerId,
+          projectId: project._id,
+          scanId: scanDoc._id,
+          title: String(issue?.title || issue?.issue || 'Security finding').trim(),
+          description: String(issue?.remediation || issue?.description || ''),
+          severity,
+          riskScore,
+          file: issue?.file || null,
+          line: issue?.line ? Number(issue.line) : null,
+          status: 'open',
+          source: normalizedPayload.source === 'pre-commit' ? 'pre-commit' : 'cicd',
+          threatType: String(issue?.threatType || issue?.threat_type || 'Code Security'),
+          remediation: String(issue?.remediation || '')
+        }
+      })
+      await Risk.insertMany(risksToInsert, { ordered: false }).catch(() => {})
+    }
+  } catch {
+    // Non-fragile: continue if scan doc creation fails
+  }
 
   return normalizedPayload
 }

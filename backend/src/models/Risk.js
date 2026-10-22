@@ -69,6 +69,34 @@ const riskSchema = new mongoose.Schema(
     remediation: {
       type: String,
       default: ''
+    },
+    fingerprint: {
+      type: String,
+      default: null,
+      index: true
+    },
+    modelPrediction: {
+      type: Number,
+      default: null
+    },
+    modelVersion: {
+      type: String,
+      default: null
+    },
+    feedbackStatus: {
+      type: String,
+      enum: ['unreviewed', 'false_positive', 'confirmed'],
+      default: 'unreviewed',
+      index: true
+    },
+    isSuppressed: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+    suppressionReason: {
+      type: String,
+      default: ''
     }
   },
   {
@@ -77,6 +105,7 @@ const riskSchema = new mongoose.Schema(
 )
 
 riskSchema.index({ ownerId: 1, projectId: 1, severity: 1, status: 1 }, { name: 'owner_project_filter_idx' })
+riskSchema.index({ projectId: 1, fingerprint: 1 }, { name: 'project_fingerprint_idx' })
 
 const Risk = mongoose.models.Risk || mongoose.model('Risk', riskSchema)
 

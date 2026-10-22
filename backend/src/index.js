@@ -14,6 +14,7 @@ import pipelineRoutes from './routes/pipelines.js';
 import dashboardRoutes from './routes/dashboard.js';
 import githubRoutes from './routes/github.js';
 import ciStatusRoutes from './routes/ciStatus.js';
+import mlRoutes from './routes/ml.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +55,7 @@ app.use('/api/scans', scanRoutes);
 app.use('/api/risks', riskRoutes);
 app.use('/api/pipelines', pipelineRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/ml', mlRoutes);
 app.use('/api', githubRoutes);
 app.use('/api/ci-status', ciStatusRoutes);
 
@@ -99,6 +101,21 @@ const ensureUserIndexes = async () => {
       partialFilterExpression: { googleId: { $type: 'string' } }
     }
   );
+
+  const legacyGithubIndex = indexes.find((index) => index.name === 'githubId_1');
+  if (legacyGithubIndex) {
+    await usersCollection.dropIndex('githubId_1');
+    console.log('Dropped legacy users.githubId_1 unique index');
+  }
+
+  await usersCollection.createIndex(
+    { githubId: 1 },
+    {
+      name: 'githubId_unique_non_null',
+      unique: true,
+      partialFilterExpression: { githubId: { $type: 'string' } }
+    }
+  );
 };
 
 const startServer = async () => {
@@ -113,10 +130,13 @@ const startServer = async () => {
       await ensureUserIndexes();
     }
 
-    app.listen(PORT, () => {
-      console.log(`Backend server running on port ${PORT}`);
-      console.log(`Health Check: http://localhost:${PORT}/health`);
-    });
+    const isTest = process.env.NODE_ENV === 'test' || Boolean(process.env.JEST_WORKER_ID);
+    if (!isTest) {
+      app.listen(PORT, () => {
+        console.log(`Backend server running on port ${PORT}`);
+        console.log(`Health Check: http://localhost:${PORT}/health`);
+      });
+    }
   } catch (error) {
     console.error('Failed to start backend:', error.message);
     process.exit(1);

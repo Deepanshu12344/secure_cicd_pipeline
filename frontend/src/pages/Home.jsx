@@ -152,10 +152,11 @@ const Home = () => {
     const updates = []
 
     scans.slice(0, 8).forEach((scan) => {
+      const bypassLabel = scan.isBypass ? ' [BYPASSED]' : ''
       updates.push({
         id: `scan-${scan.id}`,
-        title: `Scan ${scan.status}: ${scan.projectFullName || scan.projectName || scan.projectId}`,
-        subtitle: `Type: ${scan.scanType || 'full'} ? Progress: ${Number(scan.progress || 0)}%`,
+        title: `Scan ${scan.status}${bypassLabel}: ${scan.projectFullName || scan.projectName || scan.projectId}`,
+        subtitle: `Type: ${scan.scanType || 'full'} • Progress: ${Number(scan.progress || 0)}%`,
         when: scan.updatedAt,
         link: '/scans'
       })
@@ -165,7 +166,7 @@ const Home = () => {
       updates.push({
         id: `project-${project.id}`,
         title: `Project updated: ${project.fullName || project.name}`,
-        subtitle: `Language: ${project.language || 'unknown'} ? Risk: ${Number(project.riskScore || 0)}`,
+        subtitle: `Language: ${project.language || 'unknown'} • Risk: ${Number(project.riskScore || 0)}`,
         when: project.updatedAt,
         link: `/projects/${project.id}`
       })
@@ -191,7 +192,7 @@ const Home = () => {
       .map((scan) => ({
         id: scan.id,
         title: scan.projectFullName || scan.projectName || scan.projectId,
-        subtitle: `Scan ${scan.status} ? ${formatRelative(scan.updatedAt)}`,
+        subtitle: `Scan ${scan.status}${scan.isBypass ? ' [BYPASSED]' : ''} • ${formatRelative(scan.updatedAt)}`,
         link: '/scans'
       }))
 

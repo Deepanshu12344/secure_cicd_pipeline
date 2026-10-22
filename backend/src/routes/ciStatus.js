@@ -1,10 +1,28 @@
 import express from 'express'
 import { getLatestCiDashboardStatus, saveCiDashboardStatus } from '../utils/ciDashboardStore.js'
 
+import { protect } from '../middleware/authMiddleware.js'
+
 const router = express.Router()
 
 const requireCiApiKey = (req, res, next) => {
   const expectedApiKey = String(process.env.CI_INGEST_API_KEY || '').trim()
+  const providedApiKey = String(req.headers['x-ci-api-key'] || '').trim()
+
+  if (expectedApiKey && providedApiKey === expectedApiKey) {
+    return next()
+  }
+
+  // Allow Bearer token authorization if present
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    return protect(req, res, next)
+  }
+
+  // In non-production environments, allow pre-commit CLI to report without requiring a hardcoded key
+  if (process.env.NODE_ENV !== 'production' && req.body?.source === 'pre-commit') {
+    return next()
+  }
+
   if (!expectedApiKey) {
     return res.status(503).json({
       success: false,
@@ -12,15 +30,10 @@ const requireCiApiKey = (req, res, next) => {
     })
   }
 
-  const providedApiKey = String(req.headers['x-ci-api-key'] || '').trim()
-  if (!providedApiKey || providedApiKey !== expectedApiKey) {
-    return res.status(401).json({
-      success: false,
-      error: 'Unauthorized CI dashboard update request'
-    })
-  }
-
-  next()
+  return res.status(401).json({
+    success: false,
+    error: 'Unauthorized CI dashboard update request'
+  })
 }
 
 router.post('/', requireCiApiKey, async (req, res, next) => {

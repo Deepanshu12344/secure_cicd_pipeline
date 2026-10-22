@@ -107,6 +107,49 @@ code .
 # Press F5 to launch extension in debug mode
 ```
 
+### 6. Pre-Commit CLI Scanner Setup
+
+The pre-commit scanner protects any repository by blocking commits with critical vulnerabilities, hardcoded secrets, or risk scores exceeding the policy threshold:
+
+```bash
+# Inside any project repository:
+npx secure-cicd init
+
+# Verify installation:
+npx secure-cicd doctor
+```
+
+#### Running Scans Manually:
+```bash
+# Scan staged changes:
+npx secure-cicd scan --staged
+
+# Scan entire repository:
+npx secure-cicd scan --all
+
+# Export report in JSON or SARIF:
+npx secure-cicd scan --all --format json
+npx secure-cicd scan --all --format sarif
+```
+
+#### Pre-Commit Framework (`.pre-commit-config.yaml`):
+```yaml
+repos:
+  - repo: https://github.com/your-org/secure_cicd_pipeline
+    rev: v1.0.0
+    hooks:
+      - id: secure-cicd
+```
+
+#### Bypassing Checks:
+```bash
+# Native Git bypass:
+git commit --no-verify -m "Emergency fix"
+
+# Environment variable bypass:
+SECURECICD_SKIP=1 git commit -m "Emergency fix"
+```
+
 ## Post-Installation Configuration
 
 ### 1. Create API Keys

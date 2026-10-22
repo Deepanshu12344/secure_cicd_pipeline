@@ -14,7 +14,10 @@ from datetime import datetime
 from pathlib import Path
 import html
 import time
-import anthropic
+try:
+    import anthropic
+except ImportError:
+    anthropic = None
 import yaml
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -39,7 +42,7 @@ DEFAULT_CONFIG = {
     'api_delay_seconds': 1.0,
     'max_retries': 3,
     'retry_delay_seconds': 2,
-    'skip_directories': ['node_modules', 'venv', 'env', '__pycache__', '.git', 'dist', 'build', 'target',
+    'skip_directories': ['node_modules', '.venv', 'venv', 'env', '__pycache__', '.git', 'dist', 'build', 'target',
                          '.pytest_cache', '.idea', '.next', '.nuxt', '.turbo', 'coverage', '.coverage',
                          '.run-logs', 'reports', 'json_output'],
     'skip_patterns': ['*.min.js', '*.min.css', 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml'],
@@ -117,9 +120,14 @@ class RepositoryAnalyzer:
         except Exception:
             pass
         self.api_key = api_key or os.environ.get('ANTHROPIC_API_KEY')
-        if not self.api_key:
-            print("WARNING: ANTHROPIC_API_KEY not set. Running local analysis only.")
-        self.client = anthropic.Anthropic(api_key=self.api_key) if self.api_key else None
+        if not self.api_key or anthropic is None:
+            if not self.api_key:
+                print("WARNING: ANTHROPIC_API_KEY not set. Running local analysis only.")
+            if anthropic is None:
+                print("WARNING: 'anthropic' package not installed. Running local analysis only.")
+            self.client = None
+        else:
+            self.client = anthropic.Anthropic(api_key=self.api_key)
         
         # Load configuration
         self.config = self.load_config(config_file)
@@ -279,7 +287,13 @@ class RepositoryAnalyzer:
             except:
                 pass
         
-        os.system(f'git clone {repo_url} {target_dir}')
+        if os.path.isdir(repo_url):
+            import shutil
+            shutil.copytree(repo_url, target_dir, ignore=shutil.ignore_patterns('.git', 'node_modules', '.venv', 'reports', 'json_output'))
+        else:
+            ret = os.system(f'git clone --depth 1 {repo_url} {target_dir}')
+            if ret != 0 or not os.path.exists(target_dir):
+                os.system(f'git clone {repo_url} {target_dir}')
         
         if not os.path.exists(target_dir):
             raise Exception("Failed to clone repository")

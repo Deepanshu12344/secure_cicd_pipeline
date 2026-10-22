@@ -25,9 +25,22 @@ const classifyIssues = (report) => {
 
 const readJsonFile = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf-8'))
 
+const resolvePythonCommand = () => {
+  if (process.env.PYTHON && process.env.PYTHON !== 'python') return process.env.PYTHON
+  if (process.env.PYTHON_BIN) return process.env.PYTHON_BIN
+  const venvs = [
+    path.join(repoRoot, '.venv', 'bin', 'python'),
+    path.join(scannerDir, '.venv', 'bin', 'python')
+  ]
+  for (const venvPython of venvs) {
+    if (fs.existsSync(venvPython)) return venvPython
+  }
+  return process.platform === 'win32' ? 'python' : 'python3'
+}
+
 const runScanner = () =>
   new Promise((resolve, reject) => {
-    const pythonCommand = process.env.PYTHON || 'python'
+    const pythonCommand = resolvePythonCommand()
     const child = spawn(pythonCommand, [scannerEntry], {
       cwd: scannerDir,
       stdio: 'inherit',

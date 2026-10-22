@@ -23,6 +23,10 @@ const scanSchema = new mongoose.Schema(
       type: String,
       default: 'full'
     },
+    isBypass: {
+      type: Boolean,
+      default: false
+    },
     branch: {
       type: String,
       default: 'main'
@@ -70,6 +74,27 @@ const scanSchema = new mongoose.Schema(
     analyzerLogTail: {
       type: String,
       default: ''
+    },
+    rawRiskScore: {
+      type: Number,
+      default: null
+    },
+    adjustedRiskScore: {
+      type: Number,
+      default: null
+    },
+    scoreSource: {
+      type: String,
+      enum: ['raw', 'adjusted'],
+      default: 'raw'
+    },
+    fallbackReason: {
+      type: String,
+      default: null
+    },
+    modelMetrics: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
     }
   },
   {

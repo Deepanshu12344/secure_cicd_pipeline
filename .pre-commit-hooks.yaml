@@ -1,0 +1,7 @@
+- id: secure-cicd
+  name: Secure CI/CD Pre-Commit Scanner
+  description: Automatically scans staged files for secrets, SQL injection, XSS, insecure cryptography, risky config, and vulnerable dependencies before committing.
+  entry: secure-cicd scan --staged
+  language: node
+  files: ""
+  pass_filenames: false
