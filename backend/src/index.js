@@ -139,6 +139,9 @@ const startServer = async () => {
     }
   } catch (error) {
     console.error('Failed to start backend:', error.message);
+    if (process.env.VERCEL === '1') {
+      return;
+    }
     process.exit(1);
   }
 };
