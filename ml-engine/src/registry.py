@@ -235,7 +235,8 @@ class ModelRegistry:
         current_meta = self.active_metadata
         current_clf = self.active_classifier
 
-        if force_promote or not current_meta or not current_clf or not current_clf.is_fitted:
+        # Bootstrap case: initial model has no active baseline to compare against
+        if not current_meta or not current_clf or not current_clf.is_fitted:
             promoted = True
         else:
             # Condition C: Never promote if insufficient real labels

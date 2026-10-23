@@ -10,6 +10,7 @@ import Project from '../models/Project.js'
 import Risk from '../models/Risk.js'
 import { generateFindingFingerprint } from '../utils/fingerprint.js'
 import { getActiveSuppressedFingerprints } from '../utils/feedbackStore.js'
+import { calculateRiskScore, evaluateGate } from '../utils/scorer.js'
 
 const router = express.Router()
 const ML_ENGINE_URL = process.env.ML_ENGINE_URL || 'http://localhost:5001'
@@ -489,8 +490,64 @@ const syncRisksForScan = async ({ scanDoc, projectId, mergedIssues }) => {
     })
     .filter(Boolean)
 
-  if (risksToInsert.length === 0) return
-  await Risk.insertMany(risksToInsert, { ordered: false })
+  if (risksToInsert.length > 0) {
+    await Risk.insertMany(risksToInsert, { ordered: false })
+  }
+
+  let rawScore = 0.0
+  let adjustedScore = 0.0
+  let modelInfo = null
+  let fallbackReason = null
+
+  try {
+    const mlScoreRes = await fetch(`${ML_ENGINE_URL}/api/score`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        findings: risksToInsert.map((r) => ({
+          file: r.file,
+          snippet: r.description || '',
+          severity: r.severity,
+          threat_type: r.threatType,
+          rule_id: r.sourceIssueId || r.title,
+          is_suppressed: r.isSuppressed
+        }))
+      })
+    })
+
+    if (mlScoreRes.ok) {
+      const mlJson = await mlScoreRes.json()
+      rawScore = Number(mlJson.data?.raw_score || 0.0)
+      adjustedScore = Number(mlJson.data?.adjusted_score || 0.0)
+      modelInfo = {
+        version: mlJson.data?.model_version || 'v1',
+        confidence: mlJson.data?.confidence || 'bootstrap'
+      }
+    } else {
+      fallbackReason = 'ML engine returned error status ' + mlScoreRes.status
+    }
+  } catch (err) {
+    fallbackReason = 'ML engine unavailable: ' + err.message
+  }
+
+  if (fallbackReason || (rawScore === 0.0 && risksToInsert.length > 0)) {
+    const localScoring = calculateRiskScore(risksToInsert, { score_source: 'raw' })
+    if (fallbackReason) {
+      rawScore = localScoring.rawScore
+      adjustedScore = localScoring.adjustedScore
+    }
+  }
+
+  const scoreSource = String(scanDoc.scoreSource || 'raw').toLowerCase() === 'adjusted' ? 'adjusted' : 'raw'
+  scanDoc.rawRiskScore = rawScore
+  scanDoc.adjustedRiskScore = adjustedScore
+  scanDoc.scoreSource = scoreSource
+  scanDoc.fallbackReason = fallbackReason
+  scanDoc.riskScore = scoreSource === 'adjusted' ? adjustedScore : rawScore
+  if (modelInfo) {
+    scanDoc.modelMetrics = modelInfo
+  }
+  await scanDoc.save()
 }
 
 const buildAnalysisSummary = (jsonData) => {
@@ -835,7 +892,9 @@ const processScanRun = async (scanId) => {
     const project = await Project.findById(freshScan.projectId)
     if (project) {
       project.lastScan = new Date()
-      if (analysisSummary?.metrics?.overall !== undefined) {
+      if (freshScan.riskScore !== undefined && freshScan.riskScore !== null) {
+        project.riskScore = freshScan.riskScore <= 10 ? Math.round(freshScan.riskScore * 10) : freshScan.riskScore
+      } else if (analysisSummary?.metrics?.overall !== undefined) {
         project.riskScore = Number((100 - analysisSummary.metrics.overall).toFixed(1))
       } else if (analysisSummary?.totalIssues !== undefined) {
         project.riskScore = Math.min(100, Number(analysisSummary.totalIssues || 0) * 5)
@@ -1024,7 +1083,7 @@ router.get('/:id/report', protect, async (req, res) => {
 })
 
 // Get overall scan risk explanation, score comparison, and suppressed findings breakdown
-router.get('/:id/explanation', protect, async (req, res) => {
+router.get(['/:id/explanation', '/:id/explain'], protect, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(404).json({ success: false, error: 'Scan not found' })
   }
@@ -1257,11 +1316,13 @@ router.post('/ci-ingest', async (req, res) => {
     combinedPdfPath
   }
 
+  const reqScoreSource = req.body?.score_source || req.body?.scoreSource || report?.score_source || project.scoreSource || 'raw'
   const scan = await Scan.create({
     ownerId: project.ownerId,
     projectId: project._id,
     repositoryUrl: String(repositoryUrl || project.repositoryUrl || '').trim(),
     scanType: 'cicd',
+    scoreSource: reqScoreSource,
     branch: String(branch || 'main').trim() || 'main',
     status: 'completed',
     progress: 100,
@@ -1280,7 +1341,10 @@ router.post('/ci-ingest', async (req, res) => {
   })
 
   project.lastScan = new Date()
-  project.riskScore = Number(report?.overall_risk_score || 0)
+  project.riskScore = scan.riskScore !== undefined && scan.riskScore !== null
+    ? (scan.riskScore <= 10 ? Math.round(scan.riskScore * 10) : scan.riskScore)
+    : Number(report?.overall_risk_score || 0)
+  project.scoreSource = scan.scoreSource || 'raw'
   await project.save()
 
   res.status(201).json({

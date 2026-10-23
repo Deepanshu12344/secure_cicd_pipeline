@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { Trash2 } from 'lucide-react'
+import { AlertTriangle, ShieldAlert, ShieldCheck, Sparkles, Trash2, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import {
   CartesianGrid,
@@ -38,6 +38,8 @@ export default function Scans() {
   const [scans, setScans] = useState([])
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
+  const [scanExplainData, setScanExplainData] = useState(null)
+  const [scanExplainLoading, setScanExplainLoading] = useState(false)
   const [error, setError] = useState('')
   const [banner, setBanner] = useState('')
 
@@ -49,6 +51,23 @@ export default function Scans() {
   const [expandedScanId, setExpandedScanId] = useState('')
   const [skillsFallbackByScan, setSkillsFallbackByScan] = useState({})
   const [sourceFilter, setSourceFilter] = useState('all')
+
+  const handleOpenScanExplain = async (scan) => {
+    try {
+      setScanExplainLoading(true)
+      setScanExplainData({ scan, loading: true })
+      const res = await scansApi.getExplanation(scan.id)
+      setScanExplainData({
+        scan,
+        ...res.data?.data
+      })
+    } catch (err) {
+      setBanner(err.response?.data?.error || err.response?.data?.message || 'Failed to load score explanation')
+      setScanExplainData(null)
+    } finally {
+      setScanExplainLoading(false)
+    }
+  }
 
   const filteredScans = useMemo(() => {
     if (sourceFilter === 'all') return scans
@@ -331,6 +350,7 @@ export default function Scans() {
               <th className="px-6 py-3 text-left text-sm font-medium text-[#303030]">Project</th>
               <th className="px-6 py-3 text-left text-sm font-medium text-[#303030]">Type</th>
               <th className="px-6 py-3 text-left text-sm font-medium text-[#303030]">Status</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-[#303030]">Risk Score</th>
               <th className="px-6 py-3 text-left text-sm font-medium text-[#303030]">Progress</th>
               <th className="px-6 py-3 text-left text-sm font-medium text-[#303030]">Actions</th>
             </tr>
@@ -338,7 +358,7 @@ export default function Scans() {
           <tbody className="divide-y divide-gray-200">
             {filteredScans.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-sm text-[#666]">
+                <td colSpan={7} className="px-6 py-8 text-center text-sm text-[#666]">
                   {sourceFilter === 'all'
                     ? 'No scans available.'
                     : `No ${sourceFilter} scans found.`}
@@ -402,6 +422,30 @@ export default function Scans() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
+                        <div className="flex flex-col gap-0.5">
+                          <div className="flex items-center gap-1.5 font-mono text-xs">
+                            <span className="font-semibold text-[#303030]">
+                              {scan.scoreSource === 'adjusted'
+                                ? (scan.adjustedRiskScore ?? scan.riskScore ?? 0)
+                                : (scan.rawRiskScore ?? scan.riskScore ?? 0)}
+                              /10
+                            </span>
+                            {scan.scoreSource ? (
+                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium uppercase ${
+                                scan.scoreSource === 'adjusted' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'
+                              }`}>
+                                {scan.scoreSource}
+                              </span>
+                            ) : null}
+                          </div>
+                          {scan.modelMetrics?.version ? (
+                            <span className="text-[10px] text-gray-400">
+                              {scan.modelMetrics.version} ({scan.modelMetrics.confidence || 'bootstrap'})
+                            </span>
+                          ) : null}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
                         <div className="flex flex-wrap items-center gap-2">
                           <div className="w-24 bg-gray-200 rounded-full h-2">
                             <div
@@ -414,6 +458,17 @@ export default function Scans() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleOpenScanExplain(scan)
+                            }}
+                            className="px-2 py-1.5 text-xs border border-blue-200 bg-blue-50 hover:bg-blue-100 text-[#1f75cb] rounded font-medium flex items-center gap-1"
+                            title="Explain scan score"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            Explain
+                          </button>
                           {scan.reportAvailable ? (
                             <>
                               <button
@@ -456,13 +511,52 @@ export default function Scans() {
 
                     {isExpanded ? (
                       <tr className="bg-[#fcfcfc]">
-                        <td colSpan={6} className="px-3 sm:px-6 py-5">
+                        <td colSpan={7} className="px-3 sm:px-6 py-5">
                           {hasAnalytics ? (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                               <div className="border border-gray-200 rounded p-4 bg-white">
-                                <div className="text-xs text-[#666] mb-1">Overall score</div>
+                                <div className="text-xs text-[#666] mb-1">Quality score</div>
                                 <div className="text-3xl text-[#303030] leading-none">{Math.round(Number(metrics.overall || 0))}</div>
                                 <div className="text-xs text-[#666] mt-1">Files analyzed: {summary.totalFilesAnalyzed || 0}</div>
+                              </div>
+
+                              <div className="border border-gray-200 rounded p-4 bg-white flex flex-col justify-between">
+                                <div>
+                                  <div className="flex items-center justify-between mb-1">
+                                    <div className="text-xs text-[#666] font-medium">Risk score</div>
+                                    {scan.scoreSource ? (
+                                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono uppercase ${
+                                        scan.scoreSource === 'adjusted' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'
+                                      }`}>
+                                        {scan.scoreSource}
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                  <div className="text-3xl text-[#303030] leading-none font-semibold">
+                                    {scan.scoreSource === 'adjusted'
+                                      ? (scan.adjustedRiskScore ?? scan.riskScore ?? 0)
+                                      : (scan.rawRiskScore ?? scan.riskScore ?? 0)}
+                                    <span className="text-sm text-gray-400 font-normal"> / 10</span>
+                                  </div>
+                                  <div className="text-xs text-gray-500 mt-1">
+                                    Raw: {scan.rawRiskScore ?? scan.riskScore ?? 0} | Adj: {scan.adjustedRiskScore ?? scan.riskScore ?? 0}
+                                  </div>
+                                  {scan.fallbackReason ? (
+                                    <div className="mt-2 p-1.5 bg-amber-50 border border-amber-200 text-amber-800 text-[10px] rounded">
+                                      ⚠️ {scan.fallbackReason}
+                                    </div>
+                                  ) : null}
+                                </div>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleOpenScanExplain(scan)
+                                  }}
+                                  className="mt-3 w-full px-2.5 py-1 text-xs bg-white border border-[#1f75cb] text-[#1f75cb] hover:bg-blue-50 rounded font-medium flex items-center justify-center gap-1.5"
+                                >
+                                  <Sparkles className="w-3.5 h-3.5" />
+                                  Explain Score
+                                </button>
                               </div>
 
                               <div className="border border-gray-200 rounded p-4 bg-white md:col-span-2">
@@ -634,6 +728,156 @@ export default function Scans() {
         </table>
         </div>
       </div>
+
+      {/* SCAN EXPLANATION MODAL */}
+      {scanExplainData ? (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-3 sm:p-4">
+          <div className="w-full max-w-3xl bg-white rounded-lg border border-gray-300 shadow-xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#1f75cb]" />
+                <h3 className="text-base font-medium text-[#303030]">Scan Risk Score Explanation</h3>
+              </div>
+              <button
+                className="text-gray-400 hover:text-gray-600 p-1 rounded"
+                onClick={() => setScanExplainData(null)}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 border-b border-gray-100">
+                <div>
+                  <div className="text-sm font-semibold text-[#303030]">
+                    {scanExplainData.scan?.projectFullName || scanExplainData.scan?.projectName || scanExplainData.scan?.projectId || 'Project Scan'}
+                  </div>
+                  <div className="text-xs text-gray-500 font-mono mt-0.5">Scan ID: {scanExplainData.scan?.id}</div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded text-xs font-mono uppercase bg-purple-100 text-purple-700 font-medium">
+                    Source: {scanExplainData.scoreSource || scanExplainData.scan?.scoreSource || 'raw'}
+                  </span>
+                  <span className="px-2 py-0.5 rounded text-xs font-mono bg-blue-50 text-blue-700 border border-blue-200">
+                    Model: {scanExplainData.modelMetrics?.version || 'v1'} ({scanExplainData.modelMetrics?.confidence || 'bootstrap'})
+                  </span>
+                </div>
+              </div>
+
+              {scanExplainLoading ? (
+                <div className="py-12 text-center text-sm text-gray-500">Computing explainable breakdown...</div>
+              ) : (
+                <>
+                  {/* Score Comparison Cards */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded">
+                      <div className="text-xs text-gray-500 font-medium uppercase">Raw Severity Score</div>
+                      <div className="text-2xl font-bold text-[#303030] mt-1">
+                        {scanExplainData.rawRiskScore ?? scanExplainData.scan?.rawRiskScore ?? 0}
+                        <span className="text-sm text-gray-400 font-normal"> / 10.0</span>
+                      </div>
+                      <div className="text-[11px] text-gray-500 mt-1">
+                        Unweighted sum of all detected rule severities
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-purple-50 border border-purple-200 rounded">
+                      <div className="text-xs text-purple-700 font-medium uppercase">ML-Adjusted Risk Score</div>
+                      <div className="text-2xl font-bold text-purple-900 mt-1">
+                        {scanExplainData.adjustedRiskScore ?? scanExplainData.scan?.adjustedRiskScore ?? 0}
+                        <span className="text-sm text-purple-400 font-normal"> / 10.0</span>
+                      </div>
+                      <div className="text-[11px] text-purple-700 mt-1">
+                        Probability-weighted with auto-suppression of false positives
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Formula explanation */}
+                  {scanExplainData.explanation?.formula ? (
+                    <div className="p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-900">
+                      <span className="font-semibold">Scoring Policy & Formula: </span>
+                      {scanExplainData.explanation.formula}
+                    </div>
+                  ) : null}
+
+                  {/* Top contributing findings */}
+                  <div>
+                    <div className="text-xs font-semibold text-[#303030] mb-2">Findings Breakdown</div>
+                    <div className="border border-gray-200 rounded overflow-hidden">
+                      <table className="w-full text-xs">
+                        <thead className="bg-[#f8f8f8] border-b border-gray-200 text-[#666]">
+                          <tr>
+                            <th className="px-3 py-2 text-left font-medium">Finding / Rule</th>
+                            <th className="px-3 py-2 text-left font-medium">Severity</th>
+                            <th className="px-3 py-2 text-left font-medium">P(TP)</th>
+                            <th className="px-3 py-2 text-left font-medium">Status / Impact</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {(scanExplainData.explanation?.top_contributing_findings || []).length === 0 ? (
+                            <tr>
+                              <td colSpan={4} className="px-4 py-4 text-center text-gray-500">
+                                No individual findings to display.
+                              </td>
+                            </tr>
+                          ) : (
+                            (scanExplainData.explanation?.top_contributing_findings || []).map((f, idx) => (
+                              <tr key={idx} className="hover:bg-gray-50">
+                                <td className="px-3 py-2">
+                                  <div className="font-medium text-[#303030]">{f.ruleId || f.title || f.issue}</div>
+                                  <div className="text-[11px] text-gray-400 font-mono">{f.file || 'Repository'}</div>
+                                </td>
+                                <td className="px-3 py-2">
+                                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                    String(f.severity).toLowerCase() === 'critical'
+                                      ? 'bg-red-100 text-red-800'
+                                      : String(f.severity).toLowerCase() === 'high'
+                                      ? 'bg-orange-100 text-orange-800'
+                                      : 'bg-amber-100 text-amber-800'
+                                  }`}>
+                                    {String(f.severity).toUpperCase()}
+                                  </span>
+                                </td>
+                                <td className="px-3 py-2 font-mono">
+                                  {f.probability !== undefined && f.probability !== null
+                                    ? `${Math.round(Number(f.probability) * 100)}%`
+                                    : '-'}
+                                </td>
+                                <td className="px-3 py-2">
+                                  {f.is_suppressed ? (
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-green-100 text-green-800 font-medium">
+                                      Suppressed (FP)
+                                    </span>
+                                  ) : (
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-red-50 text-red-700 font-medium font-mono">
+                                      +{Number(f.effective_weight || 0).toFixed(2)} pts
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="px-6 py-3 border-t border-gray-200 bg-gray-50 flex justify-end">
+              <button
+                onClick={() => setScanExplainData(null)}
+                className="px-4 py-1.5 text-xs border border-gray-300 rounded bg-white hover:bg-gray-100 text-[#303030]"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {modalOpen ? (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-3 sm:p-4">

@@ -157,7 +157,7 @@ class RiskClassifier:
         y = np.asarray(y, dtype=np.int64)
         n_samples = len(y)
         
-        actual_splits = min(n_splits, min(np.bincount(y)))
+        actual_splits = int(min(n_splits, int(np.bincount(y).min())))
         if actual_splits < 2:
             # Fallback if too few samples in minority class
             actual_splits = 2
@@ -212,5 +212,5 @@ class RiskClassifier:
             'recall_std': round(rec_std, 4),
             'brier_score': round(brier_mean, 4),
             'brier_score_std': round(brier_std, 4),
-            'total_samples': n_samples
+            'total_samples': int(n_samples)
         }

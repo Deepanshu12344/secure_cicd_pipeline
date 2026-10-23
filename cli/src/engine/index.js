@@ -137,10 +137,72 @@ export const runScan = async ({
     return true;
   });
 
+  let requestedSource = String(config.score_source || 'raw').toLowerCase();
+  let effectiveSource = requestedSource;
+  let fallbackReason = null;
+  let modelInfo = null;
+
+  if (requestedSource === 'adjusted') {
+    const mlUrl = config.ml_engine_url || 'http://localhost:5001';
+    try {
+      const infoRes = await fetch(`${mlUrl}/api/model/info`, { signal: AbortSignal.timeout(2000) });
+      if (!infoRes.ok) {
+        effectiveSource = 'raw';
+        fallbackReason = `ML engine returned HTTP ${infoRes.status} on /api/model/info`;
+      } else {
+        const infoJson = await infoRes.json();
+        modelInfo = infoJson.data || infoJson;
+        const confidence = modelInfo.confidence || 'bootstrap';
+
+        if (confidence === 'bootstrap') {
+          effectiveSource = 'raw';
+          fallbackReason = 'Model in bootstrap mode (requires >= 50 real feedback labels)';
+        } else if (activeIssues.length > 0) {
+          try {
+            const scoreRes = await fetch(`${mlUrl}/api/score`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                findings: activeIssues.map((issue) => ({
+                  file: issue.file,
+                  snippet: issue.snippet || issue.lineContent || issue.description || '',
+                  severity: issue.severity,
+                  rule_id: issue.id || issue.threatType,
+                  threat_type: issue.threatType
+                }))
+              }),
+              signal: AbortSignal.timeout(3000)
+            });
+            if (scoreRes.ok) {
+              const scoreJson = await scoreRes.json();
+              const returnedFindings = scoreJson.data?.findings || [];
+              for (let i = 0; i < activeIssues.length; i++) {
+                if (returnedFindings[i]) {
+                  activeIssues[i].model_prediction = returnedFindings[i].model_prediction;
+                  activeIssues[i].explanation = returnedFindings[i].explanation;
+                  activeIssues[i].is_suppressed = returnedFindings[i].is_suppressed;
+                }
+              }
+            } else {
+              effectiveSource = 'raw';
+              fallbackReason = `ML score endpoint returned HTTP ${scoreRes.status}`;
+            }
+          } catch (scoreErr) {
+            effectiveSource = 'raw';
+            fallbackReason = `ML score request failed: ${scoreErr.message}`;
+          }
+        }
+      }
+    } catch (err) {
+      effectiveSource = 'raw';
+      fallbackReason = `ML engine unreachable at ${mlUrl}: ${err.message}`;
+    }
+  }
+
   const { score, rawScore, adjustedScore, scoreSource, riskLevel, counts } = calculateRiskScore(activeIssues, {
-    score_source: config.score_source || 'raw'
+    score_source: effectiveSource
   });
-  const gate = evaluateGate({ score, counts, config, issues: activeIssues });
+  const gate = evaluateGate({ score, counts, config, issues: activeIssues, scoreSource: effectiveSource });
 
   return {
     scanTimestamp: new Date().toISOString(),
@@ -151,7 +213,9 @@ export const runScan = async ({
     overall_risk_score: score,
     raw_risk_score: rawScore,
     adjusted_risk_score: adjustedScore,
-    score_source: scoreSource,
+    score_source: effectiveSource,
+    fallback_reason: fallbackReason,
+    model_info: modelInfo,
     riskLevel,
     summary: {
       total_issues: activeIssues.length,

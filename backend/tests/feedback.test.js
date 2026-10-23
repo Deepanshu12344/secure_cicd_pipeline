@@ -264,6 +264,8 @@ describe('Label Lifecycle (Gap 4)', () => {
       label: 'false_positive'
     })
 
+    await new Promise((r) => setTimeout(r, 15))
+
     await saveFeedback({
       findingId,
       fingerprint: lifecycleFp,
@@ -441,7 +443,8 @@ describe('Bulk Triage Happy Path & Anti-Poisoning Limits (Gap 5)', () => {
         { ownerId: TEST_ADMIN_ID, projectId: TEST_PROJECT_A, title: 'R2', severity: 'medium', file: 'b.js' },
         { ownerId: TEST_ADMIN_ID, projectId: TEST_PROJECT_A, title: 'R3', severity: 'medium', file: 'c.js' },
         { ownerId: TEST_ADMIN_ID, projectId: TEST_PROJECT_A, title: 'R4', severity: 'medium', file: 'd.js' },
-        { ownerId: TEST_ADMIN_ID, projectId: TEST_PROJECT_A, title: 'R5', severity: 'medium', file: 'e.js' }
+        { ownerId: TEST_ADMIN_ID, projectId: TEST_PROJECT_A, title: 'R5', severity: 'medium', file: 'e.js' },
+        { ownerId: TEST_ADMIN_ID, projectId: TEST_PROJECT_A, title: 'R6', severity: 'medium', file: 'f.js' }
       ])
       risks.forEach((r) => createdRiskIds.push(r._id))
 
@@ -450,7 +453,8 @@ describe('Bulk Triage Happy Path & Anti-Poisoning Limits (Gap 5)', () => {
         { findingId: String(risks[1]._id), label: 'confirmed' },
         { findingId: String(risks[2]._id), label: 'confirmed' },
         { findingId: String(risks[3]._id), label: 'false_positive' },
-        { findingId: String(risks[4]._id), label: 'false_positive' }
+        { findingId: String(risks[4]._id), label: 'false_positive' },
+        { findingId: String(risks[5]._id), label: 'false_positive' }
       ]
 
       const res = await request(app)
@@ -460,30 +464,35 @@ describe('Bulk Triage Happy Path & Anti-Poisoning Limits (Gap 5)', () => {
 
       expect(res.status).toBe(200)
       expect(res.body.success).toBe(true)
-      expect(res.body.data.triagedCount).toBe(5)
+      expect(res.body.data.triagedCount).toBe(6)
     }
   }, 15000)
 })
 
 describe('Retrain Success Path via API & Model Metrics Integration (Gap 6)', () => {
   it('should return promoted/rejected status with reason and update metrics', async () => {
-    const resRetrain = await request(app)
-      .post('/api/ml/retrain')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ force: true })
+    process.env.ALLOW_FORCE_RETRAIN = 'true'
+    try {
+      const resRetrain = await request(app)
+        .post('/api/ml/retrain')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ force: true })
 
-    expect(resRetrain.status).toBe(200)
-    expect(resRetrain.body.success).toBe(true)
-    expect(resRetrain.body.data).toBeDefined()
-    expect(typeof resRetrain.body.data.promoted).toBe('boolean')
-    expect(resRetrain.body.data.version).toBeDefined()
+      expect(resRetrain.status).toBe(200)
+      expect(resRetrain.body.success).toBe(true)
+      expect(resRetrain.body.data).toBeDefined()
+      expect(typeof resRetrain.body.data.promoted).toBe('boolean')
+      expect(resRetrain.body.data.version).toBeDefined()
 
-    const resMetrics = await request(app).get('/api/dashboard/model/metrics')
-    expect(resMetrics.status).toBe(200)
-    expect(resMetrics.body.success).toBe(true)
-    expect(resMetrics.body.data.activeVersion).toBeDefined()
-    expect(resMetrics.body.data.confidence).toBeDefined()
-    expect(resMetrics.body.data.realFeedbackStats).toBeDefined()
+      const resMetrics = await request(app).get('/api/dashboard/model/metrics')
+      expect(resMetrics.status).toBe(200)
+      expect(resMetrics.body.success).toBe(true)
+      expect(resMetrics.body.data.activeVersion).toBeDefined()
+      expect(resMetrics.body.data.confidence).toBeDefined()
+      expect(resMetrics.body.data.realFeedbackStats).toBeDefined()
+    } finally {
+      delete process.env.ALLOW_FORCE_RETRAIN
+    }
   }, 15000)
 })
 
@@ -551,3 +560,172 @@ describe('Explainable Score Endpoints & Fallback Resilience (Gap 7)', () => {
     }
   }, 15000)
 })
+
+describe('Step 4 A3: Reviewed Waiver Endpoints & Lifecycle', () => {
+  it('should enforce role permissions on POST and DELETE /api/risks/:id/waiver', async () => {
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
+      const risk = await Risk.create({
+        ownerId: TEST_ADMIN_ID,
+        projectId: TEST_PROJECT_A,
+        title: 'Critical Auth Bypass in Gateway',
+        severity: 'critical',
+        riskScore: 9.5
+      })
+      createdRiskIds.push(risk._id)
+
+      const futureDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
+
+      // Unauthorized roles should get 403
+      for (const token of [viewerToken, plainUserToken, devToken]) {
+        const resPost = await request(app)
+          .post(`/api/risks/${risk._id}/waiver`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ reason: 'Attempted waiver by non-reviewer', expiresAt: futureDate })
+        expect(resPost.status).toBe(403)
+
+        const resDel = await request(app)
+          .delete(`/api/risks/${risk._id}/waiver`)
+          .set('Authorization', `Bearer ${token}`)
+        expect(resDel.status).toBe(403)
+      }
+
+      // Security reviewer and admin succeed
+      const resSec = await request(app)
+        .post(`/api/risks/${risk._id}/waiver`)
+        .set('Authorization', `Bearer ${secToken}`)
+        .send({ reason: 'Approved temporary waiver for migration', expiresAt: futureDate })
+      expect(resSec.status).toBe(200)
+      expect(resSec.body.data.waiver.isWaived).toBe(true)
+      expect(resSec.body.data.feedbackStatus).toBe('waived')
+    }
+  }, 15000)
+
+  it('should validate reason, future expiration and max 90 days limit', async () => {
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
+      const risk = await Risk.create({
+        ownerId: TEST_ADMIN_ID,
+        projectId: TEST_PROJECT_A,
+        title: 'Critical RCE in Parser',
+        severity: 'critical',
+        riskScore: 10.0
+      })
+      createdRiskIds.push(risk._id)
+
+      // Missing reason
+      const resNoReason = await request(app)
+        .post(`/api/risks/${risk._id}/waiver`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ expiresAt: new Date(Date.now() + 86400000).toISOString() })
+      expect(resNoReason.status).toBe(400)
+      expect(resNoReason.body.error).toContain('reason')
+
+      // Past date
+      const resPast = await request(app)
+        .post(`/api/risks/${risk._id}/waiver`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ reason: 'Past date', expiresAt: new Date(Date.now() - 86400000).toISOString() })
+      expect(resPast.status).toBe(400)
+      expect(resPast.body.error).toContain('future')
+
+      // Exceeds 90 days
+      const resTooLong = await request(app)
+        .post(`/api/risks/${risk._id}/waiver`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ reason: 'Too long', expiresAt: new Date(Date.now() + 100 * 86400000).toISOString() })
+      expect(resTooLong.status).toBe(400)
+      expect(resTooLong.body.error).toContain('90 days')
+    }
+  }, 15000)
+
+  it('should record audit log, sync siblings by fingerprint within same project, and revoke cleanly', async () => {
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
+      const fingerprint = 'shared-fp-for-waiver-sync'
+      const risk1 = await Risk.create({
+        ownerId: TEST_ADMIN_ID,
+        projectId: TEST_PROJECT_A,
+        title: 'Hardcoded Production Secret',
+        severity: 'critical',
+        riskScore: 9.0,
+        fingerprint
+      })
+      const risk2 = await Risk.create({
+        ownerId: TEST_ADMIN_ID,
+        projectId: TEST_PROJECT_A,
+        title: 'Hardcoded Production Secret',
+        severity: 'critical',
+        riskScore: 9.0,
+        fingerprint
+      })
+      const risk3 = await Risk.create({
+        ownerId: TEST_ADMIN_ID,
+        projectId: TEST_PROJECT_B, // Different project
+        title: 'Hardcoded Production Secret',
+        severity: 'critical',
+        riskScore: 9.0,
+        fingerprint
+      })
+      createdRiskIds.push(risk1._id, risk2._id, risk3._id)
+
+      const futureDate = new Date(Date.now() + 30 * 86400000).toISOString()
+      const resGrant = await request(app)
+        .post(`/api/risks/${risk1._id}/waiver`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ reason: 'Emergency fix in progress (Jira SEC-104)', expiresAt: futureDate })
+
+      expect(resGrant.status).toBe(200)
+      expect(resGrant.body.data.waiver.isWaived).toBe(true)
+      expect(resGrant.body.data.waiver.auditLog.length).toBeGreaterThanOrEqual(1)
+      expect(resGrant.body.data.waiver.auditLog[0].action).toBe('grant')
+
+      // Check sibling in same project
+      const updatedRisk2 = await Risk.findById(risk2._id)
+      expect(updatedRisk2.waiver.isWaived).toBe(true)
+      expect(updatedRisk2.waiver.reason).toContain('Jira SEC-104')
+
+      // Check risk in different project was NOT affected
+      const updatedRisk3 = await Risk.findById(risk3._id)
+      expect(Boolean(updatedRisk3.waiver?.isWaived)).toBe(false)
+
+      // Revoke waiver
+      const resRevoke = await request(app)
+        .delete(`/api/risks/${risk1._id}/waiver`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ reason: 'Fix deployed to production' })
+
+      expect(resRevoke.status).toBe(200)
+      expect(resRevoke.body.data.waiver.isWaived).toBe(false)
+
+      const revokedRisk2 = await Risk.findById(risk2._id)
+      expect(revokedRisk2.waiver.isWaived).toBe(false)
+    }
+  }, 15000)
+})
+
+describe('Step 4 A5: Retrain Force Gate Guard', () => {
+  it('should block force retrain unless ALLOW_FORCE_RETRAIN=true and role is admin', async () => {
+    // 1. Without ALLOW_FORCE_RETRAIN=true -> 403
+    delete process.env.ALLOW_FORCE_RETRAIN
+    const resNoEnv = await request(app)
+      .post('/api/ml/retrain')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ force: true })
+
+    expect(resNoEnv.status).toBe(403)
+    expect(resNoEnv.body.error).toContain('ALLOW_FORCE_RETRAIN=true')
+
+    // 2. With ALLOW_FORCE_RETRAIN=true but non-admin (e.g. security_reviewer) -> 403
+    process.env.ALLOW_FORCE_RETRAIN = 'true'
+    try {
+      const resNonAdmin = await request(app)
+        .post('/api/ml/retrain')
+        .set('Authorization', `Bearer ${secToken}`)
+        .send({ force: true })
+
+      expect(resNonAdmin.status).toBe(403)
+      expect(resNonAdmin.body.error).toContain('administrators only')
+    } finally {
+      delete process.env.ALLOW_FORCE_RETRAIN
+    }
+  })
+})
+

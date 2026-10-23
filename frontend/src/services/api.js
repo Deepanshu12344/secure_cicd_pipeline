@@ -42,7 +42,8 @@ export const scansApi = {
   downloadReport: (id, type = 'pdf') =>
     apiClient.get(`/scans/${id}/report`, { params: { type }, responseType: 'blob' }),
   update: (id, data) => apiClient.patch(`/scans/${id}`, data),
-  delete: (id) => apiClient.delete(`/scans/${id}`)
+  delete: (id) => apiClient.delete(`/scans/${id}`),
+  getExplanation: (id) => apiClient.get(`/scans/${id}/explain`)
 }
 
 export const risksApi = {
@@ -52,14 +53,28 @@ export const risksApi = {
   getProjectDetail: (projectId) => apiClient.get(`/risks/project/${projectId}/details`),
   create: (data) => apiClient.post('/risks', data),
   syncFromScan: (data) => apiClient.post('/risks/sync-from-scan', data),
-  update: (id, data) => apiClient.patch(`/risks/${id}`, data)
+  update: (id, data) => apiClient.patch(`/risks/${id}`, data),
+  submitFeedback: (id, data) => apiClient.post(`/risks/${id}/feedback`, data),
+  deleteFeedback: (id) => apiClient.delete(`/risks/${id}/feedback`),
+  submitBulkFeedback: (items) => apiClient.post('/risks/feedback/bulk', { items }),
+  getHistory: (id) => apiClient.get(`/risks/${id}/history`),
+  getExplanation: (id) => apiClient.get(`/risks/${id}/explain`),
+  submitWaiver: (id, data) => apiClient.post(`/risks/${id}/waiver`, data),
+  deleteWaiver: (id) => apiClient.delete(`/risks/${id}/waiver`)
+}
+
+export const mlApi = {
+  getInfo: () => apiClient.get('/ml/info'),
+  retrain: (data = {}) => apiClient.post('/ml/retrain', data),
+  rollback: (data) => apiClient.post('/ml/rollback', data)
 }
 
 export const dashboardApi = {
   getMetrics: () => apiClient.get('/dashboard'),
   getRiskTrends: () => apiClient.get('/dashboard/risks/trend'),
   getScanStats: () => apiClient.get('/dashboard/scans/stats'),
-  getVulnerabilities: () => apiClient.get('/dashboard/vulnerabilities/types')
+  getVulnerabilities: () => apiClient.get('/dashboard/vulnerabilities/types'),
+  getModelMetrics: () => apiClient.get('/dashboard/model/metrics')
 }
 
 export const pipelinesApi = {

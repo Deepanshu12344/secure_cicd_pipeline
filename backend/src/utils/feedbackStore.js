@@ -156,13 +156,17 @@ export const removeFeedback = async ({ findingId, userId }) => {
 
 export const getLatestFeedbackForFinding = async (findingId) => {
   if (isMongoReady()) {
-    return Feedback.findOne({ findingId }).sort({ createdAt: -1 })
+    return Feedback.findOne({ findingId }).sort({ createdAt: -1, _id: -1 })
   }
   const store = readFallbackStore()
   return (
     store
       .filter((item) => String(item.findingId) === String(findingId))
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] || null
+      .sort((a, b) => {
+        const timeDiff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        if (timeDiff !== 0) return timeDiff
+        return String(b._id || '').localeCompare(String(a._id || ''))
+      })[0] || null
   )
 }
 

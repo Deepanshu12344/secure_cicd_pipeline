@@ -174,8 +174,8 @@ The `secure-cicd` CLI is an autonomous, developer-friendly security scanner desi
    - **Dependency Vulnerabilities**: Wildcard dependency versions (`"*"`, `">="`) in `package.json` and `requirements.txt`.
 
 2. **Automated Risk Scoring & Gate Evaluation**:
-   - Risk score calculated on a standard **0–10 scale** (Low: 0.5, Medium: 1.0, High: 1.5, Critical: 2.5 per issue).
-   - Blocks commit if risk score exceeds `max_risk_score` (default: 6.0) or if finding matches `fail_on` severity (default: `high`).
+   - Risk score calculated on a standard **0–10 scale** (Low: 0.3, Medium: 0.8, High: 1.5, Critical: 2.5 per issue, matching CI scanner 25/15/8/3 weights divided by 10).
+   - Blocks commit if risk score exceeds `max_risk_score` (default: 6.0) or if finding matches `fail_on` severity (default: `high`). Supports `max_adjusted_risk_score` for ML-adjusted scoring.
 
 3. **Masked Secret Redaction**:
    - Secrets are masked with asterisks in console reports (e.g., `AKIA...****...MPLE`), preventing accidental leaks in terminals or CI logs.
@@ -339,23 +339,33 @@ When an emergency hotfix requires committing code despite security warnings, dev
 - Environment variable management
 - API rate limiting (to be added)
 
-## 📈 Risk Scoring Algorithm
+## 📈 Risk Scoring Algorithm & Gate Semantics
 
-The ML engine calculates risk scores (0-10) based on:
+The pipeline standardizes risk scoring on a unified **0–10 scale** across the Pre-Commit CLI, CI Scanner, and ML Engine:
 
+### 1. Raw Risk Score (`raw`)
+Deterministic severity-weighted summation directly equivalent to the pre-change CI scanner (`capci_cd/scorer.py` 25/15/8/3 weights divided by 10):
 ```
-Risk Score = Σ(Vulnerability Weight × Count) / 10
+Raw Risk Score = min(10.0, Σ(w_severity × count))
 ```
+- **CRITICAL**: 2.5
+- **HIGH**: 1.5
+- **MEDIUM**: 0.8
+- **LOW**: 0.3
 
-Where vulnerability weights are:
-- SQL Injection: 10
-- Authentication Bypass: 9
-- XSS: 8
-- Data Exposure: 8
-- Weak Encryption: 7
-- Insecure Dependencies: 6
-- Misconfiguration: 5
-- Missing CORS: 4
+### 2. ML-Adjusted Risk Score (`adjusted`)
+Probability-weighted risk calculation incorporating true positive probability $P(\text{TP})$ learned from developer feedback:
+```
+Adjusted Risk Score = min(10.0, Σ(w_severity × P(TP)))
+```
+- **Safety Policy**: Critical findings enforce a non-negotiable probability floor of `0.20` (`P(TP) = max(0.20, P(TP))`). Critical findings can never be suppressed.
+- **Suppression Weight**: Consensus false-positive findings have weight `0` in adjusted scoring.
+- **Reviewed Waivers**: Findings with an active, audited temporary waiver ($\le 90$ days) are excluded from gate blocking and have weight `0` in adjusted scoring.
+
+### 3. Gate Semantics
+- **`mode`**: `block` (exit code 1 on failure), `warn` (report findings, exit code 0), or `off`.
+- **`fail_on`**: Blocks commit/build if unsuppressed/un-waived findings of severity $\ge$ `fail_on` exist. Active critical findings always block unless actively waived.
+- **Threshold**: Blocks if overall score exceeds `max_risk_score` (in `raw` mode) or `max_adjusted_risk_score` (in `adjusted` mode, defaults to `max_risk_score`).
 
 ## 🎨 Frontend Features
 

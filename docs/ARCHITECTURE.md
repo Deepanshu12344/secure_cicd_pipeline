@@ -208,20 +208,27 @@ vscode-extension/
 8. Frontend displays results in real-time
 ```
 
-### Risk Scoring Algorithm
+### Standardized Risk Scoring & Decision Logic
+
+The platform standardizes risk calculation on a **0–10 scale** shared identically between the pre-commit CLI, CI scanner, and backend:
 
 ```
-Input: Code analysis, dependencies, configurations
+1. Raw Score (Deterministic Baseline):
+   Raw Score = min(10.0, Σ(w_severity × count))
+   Weights: Critical=2.5, High=1.5, Medium=0.8, Low=0.3
+   (Direct 1:10 scaling of capci_cd/scorer.py 25/15/8/3 weights)
 
-Process:
-1. Extract vulnerabilities
-2. Assign weights (10-4 scale)
-3. Count violations
-4. Calculate: Σ(weight × count) / 10
-5. Normalize to 0-10 scale
-6. Classify severity
+2. Adjusted Score (ML True-Positive Probability-Weighted):
+   Adjusted Score = min(10.0, Σ(w_severity × P(TP)))
+   - P(TP) predicted by logistic regression on 10 structural & lexical features
+   - Safety clamp: Critical finding P(TP) has a strict floor of 0.20
+   - Consensus false-positive findings: weight = 0
+   - Actively waived findings: weight = 0
 
-Output: Risk score + level (Critical/High/Medium/Low)
+3. Gate Evaluation & Failure Policy:
+   - Severity check: fail_on (default 'high') triggers if active unsuppressed findings of that severity exist.
+     Active critical findings always block unless actively waived (temporary, audited, <= 90 days).
+   - Score threshold: blocks if score > max_risk_score (or max_adjusted_risk_score in adjusted mode).
 ```
 
 ## Database Schema

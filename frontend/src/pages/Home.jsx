@@ -1,7 +1,7 @@
-import { AlertCircle, Camera, CheckCircle2, Clock3, FolderGit2, Settings } from 'lucide-react'
+import { AlertCircle, Camera, CheckCircle2, Clock3, FolderGit2, RefreshCw, Settings, Sparkles, X } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { authApi, projectsApi, scansApi } from '../services/api'
+import { authApi, dashboardApi, mlApi, projectsApi, scansApi } from '../services/api'
 import { useAuthStore } from '../store/auth'
 
 const formatRelative = (value) => {
@@ -27,9 +27,17 @@ const Home = () => {
 
   const [projects, setProjects] = useState([])
   const [scans, setScans] = useState([])
+  const [modelMetrics, setModelMetrics] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [quickTab, setQuickTab] = useState('recent')
+
+  // Retrain modal state
+  const [showRetrainModal, setShowRetrainModal] = useState(false)
+  const [retraining, setRetraining] = useState(false)
+  const [retrainResult, setRetrainResult] = useState(null)
+  const [forceRetrain, setForceRetrain] = useState(false)
+  const [forceReason, setForceReason] = useState('')
   const apiBase =
     String(import.meta.env.VITE_API_URL || '').trim() ||
     `${window.location.origin}/api`
@@ -77,15 +85,51 @@ const Home = () => {
     if (showLoader) setLoading(true)
     setError('')
     try {
-      const [projectsRes, scansRes] = await Promise.all([projectsApi.getAll(), scansApi.getAll()])
+      const [projectsRes, scansRes, modelMetricsRes] = await Promise.all([
+        projectsApi.getAll(),
+        scansApi.getAll(),
+        dashboardApi.getModelMetrics().catch(() => ({ data: { data: null } }))
+      ])
       setProjects(projectsRes.data?.data || [])
       setScans(scansRes.data?.data || [])
+      if (modelMetricsRes.data?.data) {
+        setModelMetrics(modelMetricsRes.data.data)
+      }
     } catch (err) {
       setError(err.response?.data?.error || err.response?.data?.message || 'Failed to load home data')
     } finally {
       if (showLoader) setLoading(false)
     }
   }, [])
+
+  const handleRetrain = async () => {
+    try {
+      setRetraining(true)
+      setRetrainResult(null)
+      const payload = {}
+      if (forceRetrain) {
+        payload.force = true
+        payload.reason = forceReason.trim() || 'Manual administrator override'
+      }
+      const res = await mlApi.retrain(payload)
+      setRetrainResult({
+        success: true,
+        data: res.data?.data || res.data
+      })
+      // Reload metrics
+      const metricsRes = await dashboardApi.getModelMetrics()
+      if (metricsRes.data?.data) {
+        setModelMetrics(metricsRes.data.data)
+      }
+    } catch (err) {
+      setRetrainResult({
+        success: false,
+        error: err.response?.data?.error || err.response?.data?.message || 'Retraining failed'
+      })
+    } finally {
+      setRetraining(false)
+    }
+  }
 
   useEffect(() => {
     loadData(true)

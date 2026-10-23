@@ -28,39 +28,63 @@ const normalizeThreatType = (value) => {
   return raw
 }
 
-const toResponse = (riskDoc) => ({
-  id: String(riskDoc._id),
-  ownerId: String(riskDoc.ownerId),
-  projectId:
-    typeof riskDoc.projectId === 'object' && riskDoc.projectId?._id
-      ? String(riskDoc.projectId._id)
-      : String(riskDoc.projectId),
-  projectName:
-    typeof riskDoc.projectId === 'object' && riskDoc.projectId?.name ? String(riskDoc.projectId.name) : null,
-  projectFullName:
-    typeof riskDoc.projectId === 'object' && riskDoc.projectId?.fullName ? String(riskDoc.projectId.fullName) : null,
-  scanId: riskDoc.scanId ? String(riskDoc.scanId) : null,
-  title: riskDoc.title,
-  description: riskDoc.description || '',
-  severity: riskDoc.severity || 'medium',
-  riskScore: Number(riskDoc.riskScore || 0),
-  file: riskDoc.file || null,
-  line: riskDoc.line ?? null,
-  status: riskDoc.status || 'open',
-  notes: riskDoc.notes || '',
-  source: riskDoc.source || 'manual',
-  sourceIssueId: riskDoc.sourceIssueId || null,
-  threatType: riskDoc.threatType || '',
-  remediation: riskDoc.remediation || '',
-  fingerprint: riskDoc.fingerprint || null,
-  modelPrediction: riskDoc.modelPrediction !== undefined && riskDoc.modelPrediction !== null ? Number(riskDoc.modelPrediction) : null,
-  modelVersion: riskDoc.modelVersion || null,
-  feedbackStatus: riskDoc.feedbackStatus || 'unreviewed',
-  isSuppressed: Boolean(riskDoc.isSuppressed),
-  suppressionReason: riskDoc.suppressionReason || '',
-  createdAt: riskDoc.createdAt,
-  updatedAt: riskDoc.updatedAt
-})
+const toResponse = (riskDoc) => {
+  const now = new Date()
+  const rawWaiver = riskDoc.waiver || {}
+  const isExpired = rawWaiver.expiresAt ? new Date(rawWaiver.expiresAt) <= now : false
+  const isActivelyWaived = Boolean(rawWaiver.isWaived && !isExpired)
+  const waiverText = isActivelyWaived
+    ? `waived by ${rawWaiver.waivedBy || 'authorized reviewer'} until ${new Date(rawWaiver.expiresAt).toISOString().split('T')[0]}`
+    : null
+
+  const feedbackStatus = isActivelyWaived
+    ? 'waived'
+    : (riskDoc.feedbackStatus === 'waived' ? 'unreviewed' : (riskDoc.feedbackStatus || 'unreviewed'))
+
+  return {
+    id: String(riskDoc._id),
+    ownerId: String(riskDoc.ownerId),
+    projectId:
+      typeof riskDoc.projectId === 'object' && riskDoc.projectId?._id
+        ? String(riskDoc.projectId._id)
+        : String(riskDoc.projectId),
+    projectName:
+      typeof riskDoc.projectId === 'object' && riskDoc.projectId?.name ? String(riskDoc.projectId.name) : null,
+    projectFullName:
+      typeof riskDoc.projectId === 'object' && riskDoc.projectId?.fullName ? String(riskDoc.projectId.fullName) : null,
+    scanId: riskDoc.scanId ? String(riskDoc.scanId) : null,
+    title: riskDoc.title,
+    description: riskDoc.description || '',
+    severity: riskDoc.severity || 'medium',
+    riskScore: Number(riskDoc.riskScore || 0),
+    file: riskDoc.file || null,
+    line: riskDoc.line ?? null,
+    status: riskDoc.status || 'open',
+    notes: riskDoc.notes || '',
+    source: riskDoc.source || 'manual',
+    sourceIssueId: riskDoc.sourceIssueId || null,
+    threatType: riskDoc.threatType || '',
+    remediation: riskDoc.remediation || '',
+    fingerprint: riskDoc.fingerprint || null,
+    modelPrediction: riskDoc.modelPrediction !== undefined && riskDoc.modelPrediction !== null ? Number(riskDoc.modelPrediction) : null,
+    modelVersion: riskDoc.modelVersion || null,
+    feedbackStatus,
+    isSuppressed: Boolean(riskDoc.isSuppressed),
+    suppressionReason: riskDoc.suppressionReason || '',
+    waiver: {
+      isWaived: isActivelyWaived,
+      waivedBy: rawWaiver.waivedBy || null,
+      waivedAt: rawWaiver.waivedAt || null,
+      expiresAt: rawWaiver.expiresAt || null,
+      reason: rawWaiver.reason || '',
+      statusText: waiverText,
+      isExpired,
+      auditLog: Array.isArray(rawWaiver.auditLog) ? rawWaiver.auditLog : []
+    },
+    createdAt: riskDoc.createdAt,
+    updatedAt: riskDoc.updatedAt
+  }
+}
 
 const buildDeduplicationKey = (risk) =>
   [
@@ -388,9 +412,9 @@ router.post('/feedback/bulk', protect, requireRole('admin', 'security_reviewer',
   let triageItems = []
   if (Array.isArray(items) && items.length > 0) {
     triageItems = items.map((i) => ({
-      findingId: i.findingId || i.id,
+      findingId: i.findingId || i.riskId || i.id,
       label: i.label || label,
-      note: i.note || note || ''
+      note: i.note || i.notes || note || ''
     }))
   } else if (Array.isArray(findingIds) && findingIds.length > 0 && label) {
     triageItems = findingIds.map((id) => ({
@@ -504,7 +528,11 @@ router.post('/:id/feedback', protect, requireRole('admin', 'security_reviewer', 
   }
 
   const ownerId = getOwnerId(req)
-  const risk = await Risk.findOne({ _id: req.params.id, ownerId })
+  const userRole = req.user?.role || 'developer'
+  const isPrivileged = ['admin', 'security_reviewer', 'lead'].includes(userRole)
+  const risk = isPrivileged
+    ? await Risk.findById(req.params.id)
+    : await Risk.findOne({ _id: req.params.id, ownerId })
   if (!risk) {
     return res.status(404).json({ success: false, error: 'Risk not found' })
   }
@@ -517,7 +545,6 @@ router.post('/:id/feedback', protect, requireRole('admin', 'security_reviewer', 
   })
   risk.fingerprint = fingerprint
 
-  const userRole = req.user?.role || 'developer'
   const projectId = String(risk.projectId?._id || risk.projectId)
 
   await saveFeedback({
@@ -586,7 +613,11 @@ router.delete('/:id/feedback', protect, requireRole('admin', 'security_reviewer'
   }
 
   const ownerId = getOwnerId(req)
-  const risk = await Risk.findOne({ _id: req.params.id, ownerId })
+  const userRole = req.user?.role || 'developer'
+  const isPrivileged = ['admin', 'security_reviewer', 'lead'].includes(userRole)
+  const risk = isPrivileged
+    ? await Risk.findById(req.params.id)
+    : await Risk.findOne({ _id: req.params.id, ownerId })
   if (!risk) {
     return res.status(404).json({ success: false, error: 'Risk not found' })
   }
@@ -631,14 +662,153 @@ router.delete('/:id/feedback', protect, requireRole('admin', 'security_reviewer'
   })
 })
 
-// Get explainable score and linear contributions for a finding
-router.get('/:id/explanation', protect, async (req, res) => {
+// Grant reviewed temporary waiver for a finding (e.g. Critical finding review)
+router.post('/:id/waiver', protect, requireRole('admin', 'security_reviewer', 'lead'), async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const { reason, expiresAt } = req.body || {}
+  if (!reason || typeof reason !== 'string' || !reason.trim()) {
+    return res.status(400).json({ success: false, error: 'Waiver reason is required' })
+  }
+
+  if (!expiresAt) {
+    return res.status(400).json({ success: false, error: 'Waiver expiresAt date is required' })
+  }
+
+  const expDate = new Date(expiresAt)
+  if (isNaN(expDate.getTime())) {
+    return res.status(400).json({ success: false, error: 'Invalid expiresAt date format' })
+  }
+
+  const now = new Date()
+  if (expDate <= now) {
+    return res.status(400).json({ success: false, error: 'Waiver expiration must be in the future' })
+  }
+
+  const maxWaiverMs = 90 * 24 * 60 * 60 * 1000
+  if (expDate.getTime() - now.getTime() > maxWaiverMs) {
+    return res.status(400).json({ success: false, error: 'Waiver expiration cannot exceed 90 days' })
+  }
+
+  const ownerId = getOwnerId(req)
+  const risk = await Risk.findById(req.params.id)
+  if (!risk) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const userName = req.user?.username || req.user?.name || req.user?.email || 'security_reviewer'
+  const waiverEntry = {
+    action: 'grant',
+    userId: ownerId,
+    userName,
+    timestamp: now,
+    reason: reason.trim(),
+    expiresAt: expDate
+  }
+
+  risk.waiver = {
+    isWaived: true,
+    waivedBy: userName,
+    waivedById: ownerId,
+    waivedAt: now,
+    expiresAt: expDate,
+    reason: reason.trim(),
+    auditLog: Array.isArray(risk.waiver?.auditLog) ? [...risk.waiver.auditLog, waiverEntry] : [waiverEntry]
+  }
+
+  await risk.save()
+
+  // Project-scoped synchronization for identical findings by fingerprint
+  const projectId = String(risk.projectId?._id || risk.projectId)
+  if (risk.fingerprint) {
+    const siblings = await Risk.find({ projectId, fingerprint: risk.fingerprint, _id: { $ne: risk._id } })
+    for (const sib of siblings) {
+      sib.waiver = {
+        isWaived: true,
+        waivedBy: userName,
+        waivedById: ownerId,
+        waivedAt: now,
+        expiresAt: expDate,
+        reason: reason.trim(),
+        auditLog: Array.isArray(sib.waiver?.auditLog) ? [...sib.waiver.auditLog, waiverEntry] : [waiverEntry]
+      }
+      await sib.save()
+    }
+  }
+
+  res.json({
+    success: true,
+    data: toResponse(risk)
+  })
+})
+
+// Revoke waiver for a finding
+router.delete('/:id/waiver', protect, requireRole('admin', 'security_reviewer', 'lead'), async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(404).json({ success: false, error: 'Risk not found' })
   }
 
   const ownerId = getOwnerId(req)
-  const risk = await Risk.findOne({ _id: req.params.id, ownerId })
+  const risk = await Risk.findById(req.params.id)
+  if (!risk) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const now = new Date()
+  const userName = req.user?.username || req.user?.name || req.user?.email || 'security_reviewer'
+  const revokeEntry = {
+    action: 'revoke',
+    userId: ownerId,
+    userName,
+    timestamp: now,
+    reason: String(req.body?.reason || 'Waiver revoked').trim(),
+    expiresAt: null
+  }
+
+  const currentWaiver = risk.waiver || {}
+  risk.waiver = {
+    ...currentWaiver,
+    isWaived: false,
+    auditLog: Array.isArray(currentWaiver.auditLog) ? [...currentWaiver.auditLog, revokeEntry] : [revokeEntry]
+  }
+
+  await risk.save()
+
+  // Sync siblings in same project
+  const projectId = String(risk.projectId?._id || risk.projectId)
+  if (risk.fingerprint) {
+    const siblings = await Risk.find({ projectId, fingerprint: risk.fingerprint, _id: { $ne: risk._id } })
+    for (const sib of siblings) {
+      const sibWaiver = sib.waiver || {}
+      sib.waiver = {
+        ...sibWaiver,
+        isWaived: false,
+        auditLog: Array.isArray(sibWaiver.auditLog) ? [...sibWaiver.auditLog, revokeEntry] : [revokeEntry]
+      }
+      await sib.save()
+    }
+  }
+
+  res.json({
+    success: true,
+    data: toResponse(risk)
+  })
+})
+
+// Get explainable score and linear contributions for a finding
+router.get(['/:id/explanation', '/:id/explain'], protect, async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Risk not found' })
+  }
+
+  const ownerId = getOwnerId(req)
+  const userRole = req.user?.role || 'developer'
+  const isPrivileged = ['admin', 'security_reviewer', 'lead'].includes(userRole)
+  const risk = isPrivileged
+    ? await Risk.findById(req.params.id)
+    : await Risk.findOne({ _id: req.params.id, ownerId })
   if (!risk) {
     return res.status(404).json({ success: false, error: 'Risk not found' })
   }

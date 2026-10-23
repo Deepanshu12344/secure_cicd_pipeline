@@ -18,8 +18,17 @@ export const normalizeScoreThreshold = (val, defaultVal = 6.0) => {
   if (val === null || val === undefined || val === '') return defaultVal;
   const num = Number(val);
   if (!Number.isFinite(num)) return defaultVal;
-  // If user provided a 0-100 scale value (e.g. 80 or 60), normalize to 0-10 (8.0 or 6.0)
   return num > 10 ? num / 10 : num;
+};
+
+export const isActivelyWaived = (issue) => {
+  const w = issue.waiver || (issue.isWaived !== undefined ? issue : null);
+  if (!w) return false;
+  const isWaived = Boolean(w.isWaived);
+  if (!isWaived) return false;
+  if (w.isExpired) return false;
+  if (w.expiresAt && new Date(w.expiresAt) <= new Date()) return false;
+  return true;
 };
 
 export const calculateRiskScore = (issues = [], options = {}) => {
@@ -37,27 +46,24 @@ export const calculateRiskScore = (issues = [], options = {}) => {
       adjustedScore: 0.0,
       scoreSource,
       riskLevel: 'LOW',
-      counts: { critical: 0, high: 0, medium: 0, low: 0, total: 0 }
+      counts: { critical: 0, high: 0, medium: 0, low: 0, total: 0 },
+      enrichedIssues: []
     };
   }
 
   let totalRawWeight = 0;
   let totalAdjustedWeight = 0;
   const counts = { critical: 0, high: 0, medium: 0, low: 0, total: issues.length };
+  const enrichedIssues = [];
 
-  issues.forEach((issue) => {
+  for (const issue of issues) {
     const sev = String(issue.severity || 'LOW').toUpperCase();
     const weight = SEVERITY_WEIGHTS[sev] || SEVERITY_WEIGHTS.LOW;
 
-    if (sev === 'CRITICAL') {
-      counts.critical++;
-    } else if (sev === 'HIGH') {
-      counts.high++;
-    } else if (sev === 'MEDIUM') {
-      counts.medium++;
-    } else {
-      counts.low++;
-    }
+    if (sev === 'CRITICAL') counts.critical++;
+    else if (sev === 'HIGH') counts.high++;
+    else if (sev === 'MEDIUM') counts.medium++;
+    else counts.low++;
 
     totalRawWeight += weight;
 
@@ -70,16 +76,28 @@ export const calculateRiskScore = (issues = [], options = {}) => {
     }
 
     // Safety policy: Critical findings floor protection
+    let clampedByFloor = false;
     if (sev === 'CRITICAL' && prob < criticalFloor) {
       prob = criticalFloor;
+      clampedByFloor = true;
     }
 
-    // Auto-suppressed finding check: suppressed findings have 0 weight in adjusted score
+    // Auto-suppressed or actively waived finding check: 0 weight in adjusted calculation
     const isSuppressed = Boolean(issue.is_suppressed || issue.isSuppressed);
-    if (!isSuppressed) {
+    const isWaived = isActivelyWaived(issue);
+    if (!isSuppressed && !isWaived) {
       totalAdjustedWeight += weight * prob;
     }
-  });
+
+    enrichedIssues.push({
+      ...issue,
+      baseWeight: weight,
+      probability: prob,
+      clampedByFloor,
+      isSuppressed,
+      isWaived
+    });
+  }
 
   const rawScore = Number(Math.min(10.0, Math.round(totalRawWeight * 10) / 10).toFixed(1));
   const adjustedScore = Number(Math.min(10.0, Math.round(totalAdjustedWeight * 10) / 10).toFixed(1));
@@ -100,28 +118,56 @@ export const calculateRiskScore = (issues = [], options = {}) => {
     adjustedScore,
     scoreSource,
     riskLevel,
-    counts
+    counts,
+    enrichedIssues
   };
 };
 
-export const evaluateGate = ({ score, counts, config = {}, issues = [] }) => {
+export const evaluateGate = ({ score, counts, config = {}, issues = [], scoreSource = 'raw' }) => {
   const mode = String(config.mode || 'block').toLowerCase();
   if (mode === 'off') {
     return { blocked: false, warnOnly: false, reason: 'Scanning mode is turned off.' };
   }
 
+  const effectiveSource = String(scoreSource || config.score_source || 'raw').toLowerCase();
   const failOn = String(config.fail_on || 'high').toUpperCase();
-  const maxScore = normalizeScoreThreshold(config.max_risk_score, 6.0);
+
+  // Gate threshold selection: max_adjusted_risk_score when adjusted, else max_risk_score
+  const maxScore = (effectiveSource === 'adjusted' && config.max_adjusted_risk_score !== undefined)
+    ? normalizeScoreThreshold(config.max_adjusted_risk_score, 6.0)
+    : normalizeScoreThreshold(config.max_risk_score, 6.0);
+
+  // Compute effective counts for gate evaluation
+  let effectiveCounts = { critical: 0, high: 0, medium: 0, low: 0 };
+  if (issues && issues.length > 0) {
+    for (const issue of issues) {
+      const sev = String(issue.severity || 'LOW').toUpperCase();
+      const waived = isActivelyWaived(issue);
+      const suppressed = Boolean(issue.is_suppressed || issue.isSuppressed);
+
+      // Actively waived findings are ALWAYS excluded from gate blocking (A3)
+      if (waived) continue;
+
+      // In adjusted mode, suppressed findings are also excluded from gate blocking (A4)
+      if (effectiveSource === 'adjusted' && suppressed) continue;
+
+      const k = sev.toLowerCase();
+      if (effectiveCounts[k] !== undefined) effectiveCounts[k]++;
+    }
+  } else if (counts) {
+    effectiveCounts = { ...counts };
+  }
 
   let violatesThreshold = false;
   let reason = '';
 
-  // Severity gate: ALWAYS enforces fail_on, so critical findings still block regardless of score_source!
+  // 1. Severity gate: Enforces fail_on against effective counts
+  // Active unsuppressed critical findings will always block unless actively waived
   const failIndex = SEVERITY_ORDER.indexOf(failOn);
   if (failIndex !== -1) {
     for (let i = 0; i <= failIndex; i++) {
       const sev = SEVERITY_ORDER[i];
-      const count = counts[sev.toLowerCase()] || 0;
+      const count = effectiveCounts[sev.toLowerCase()] || 0;
       if (count > 0) {
         violatesThreshold = true;
         reason = `Found ${count} ${sev} severity finding(s) (configured fail_on: ${failOn.toLowerCase()}).`;
@@ -130,23 +176,27 @@ export const evaluateGate = ({ score, counts, config = {}, issues = [] }) => {
     }
   }
 
-  // Risk score gate
+  // 2. Score threshold gate
   if (!violatesThreshold && score > maxScore) {
     violatesThreshold = true;
-    reason = `Overall risk score ${score}/10 exceeds maximum configured threshold ${maxScore}/10.`;
+    reason = effectiveSource === 'adjusted'
+      ? `Adjusted risk score ${score}/10 exceeds maximum configured threshold ${maxScore}/10.`
+      : `Overall risk score ${score}/10 exceeds maximum configured threshold ${maxScore}/10.`;
   }
 
   if (mode === 'warn') {
     return {
       blocked: false,
       warnOnly: true,
-      reason: violatesThreshold ? `[WARN MODE] ${reason}` : 'All checks passed.'
+      reason: violatesThreshold ? `[WARN MODE] ${reason}` : 'All checks passed.',
+      effectiveCounts
     };
   }
 
   return {
     blocked: violatesThreshold,
     warnOnly: false,
-    reason: violatesThreshold ? reason : 'All checks passed.'
+    reason: violatesThreshold ? reason : 'All checks passed.',
+    effectiveCounts
   };
 };

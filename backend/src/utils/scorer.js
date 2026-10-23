@@ -21,6 +21,16 @@ export const normalizeScoreThreshold = (val, defaultVal = 6.0) => {
   return num > 10 ? num / 10 : num
 }
 
+export const isActivelyWaived = (issue) => {
+  const w = issue.waiver || (issue.isWaived !== undefined ? issue : null)
+  if (!w) return false
+  const isWaived = Boolean(w.isWaived)
+  if (!isWaived) return false
+  if (w.isExpired) return false
+  if (w.expiresAt && new Date(w.expiresAt) <= new Date()) return false
+  return true
+}
+
 export const calculateRiskScore = (issues = [], options = {}) => {
   const scoreSource = String(options.score_source || options.scoreSource || 'raw').toLowerCase() === 'adjusted'
     ? 'adjusted'
@@ -72,9 +82,10 @@ export const calculateRiskScore = (issues = [], options = {}) => {
       clampedByFloor = true
     }
 
-    // Check suppression: suppressed findings have 0 weight in adjusted calculation
+    // Check suppression and waiver: suppressed or actively waived findings have 0 weight in adjusted calculation
     const isSuppressed = Boolean(issue.is_suppressed || issue.isSuppressed)
-    if (!isSuppressed) {
+    const isWaived = isActivelyWaived(issue)
+    if (!isSuppressed && !isWaived) {
       totalAdjustedWeight += weight * prob
     }
 
@@ -83,7 +94,8 @@ export const calculateRiskScore = (issues = [], options = {}) => {
       baseWeight: weight,
       probability: prob,
       clampedByFloor,
-      isSuppressed
+      isSuppressed,
+      isWaived
     })
   }
 
@@ -111,25 +123,51 @@ export const calculateRiskScore = (issues = [], options = {}) => {
   }
 }
 
-export const evaluateGate = ({ score, counts, config = {}, issues = [] }) => {
+export const evaluateGate = ({ score, counts, config = {}, issues = [], scoreSource = 'raw' }) => {
   const mode = String(config.mode || 'block').toLowerCase()
   if (mode === 'off') {
     return { blocked: false, warnOnly: false, reason: 'Scanning mode is turned off.' }
   }
 
+  const effectiveSource = String(scoreSource || config.score_source || 'raw').toLowerCase()
   const failOn = String(config.fail_on || 'high').toUpperCase()
-  const maxScore = normalizeScoreThreshold(config.max_risk_score, 6.0)
+
+  // Gate threshold selection: max_adjusted_risk_score when adjusted, else max_risk_score
+  const maxScore = (effectiveSource === 'adjusted' && config.max_adjusted_risk_score !== undefined)
+    ? normalizeScoreThreshold(config.max_adjusted_risk_score, 6.0)
+    : normalizeScoreThreshold(config.max_risk_score, 6.0)
+
+  // Compute effective counts for gate evaluation
+  let effectiveCounts = { critical: 0, high: 0, medium: 0, low: 0 }
+  if (issues && issues.length > 0) {
+    for (const issue of issues) {
+      const sev = String(issue.severity || 'LOW').toUpperCase()
+      const waived = isActivelyWaived(issue)
+      const suppressed = Boolean(issue.is_suppressed || issue.isSuppressed)
+
+      // Actively waived findings are ALWAYS excluded from gate blocking (A3)
+      if (waived) continue
+
+      // In adjusted mode, suppressed findings are also excluded from gate blocking (A4)
+      if (effectiveSource === 'adjusted' && suppressed) continue
+
+      const k = sev.toLowerCase()
+      if (effectiveCounts[k] !== undefined) effectiveCounts[k]++
+    }
+  } else if (counts) {
+    effectiveCounts = { ...counts }
+  }
 
   let violatesThreshold = false
   let reason = ''
 
-  // 1. Severity gate: Unconditionally checks fail_on severity counts
-  // Active unsuppressed critical findings will always block if fail_on is HIGH or CRITICAL
+  // 1. Severity gate: Enforces fail_on against effective counts
+  // Active unsuppressed critical findings will always block unless actively waived
   const failIndex = SEVERITY_ORDER.indexOf(failOn)
   if (failIndex !== -1) {
     for (let i = 0; i <= failIndex; i++) {
       const sev = SEVERITY_ORDER[i]
-      const count = counts[sev.toLowerCase()] || 0
+      const count = effectiveCounts[sev.toLowerCase()] || 0
       if (count > 0) {
         violatesThreshold = true
         reason = `Found ${count} ${sev} severity finding(s) (configured fail_on: ${failOn.toLowerCase()}).`
@@ -141,20 +179,24 @@ export const evaluateGate = ({ score, counts, config = {}, issues = [] }) => {
   // 2. Score threshold gate
   if (!violatesThreshold && score > maxScore) {
     violatesThreshold = true
-    reason = `Overall risk score ${score}/10 exceeds maximum configured threshold ${maxScore}/10.`
+    reason = effectiveSource === 'adjusted'
+      ? `Adjusted risk score ${score}/10 exceeds maximum configured threshold ${maxScore}/10.`
+      : `Overall risk score ${score}/10 exceeds maximum configured threshold ${maxScore}/10.`
   }
 
   if (mode === 'warn') {
     return {
       blocked: false,
       warnOnly: true,
-      reason: violatesThreshold ? `[WARN MODE] ${reason}` : 'All checks passed.'
+      reason: violatesThreshold ? `[WARN MODE] ${reason}` : 'All checks passed.',
+      effectiveCounts
     }
   }
 
   return {
     blocked: violatesThreshold,
     warnOnly: false,
-    reason: violatesThreshold ? reason : 'All checks passed.'
+    reason: violatesThreshold ? reason : 'All checks passed.',
+    effectiveCounts
   }
 }

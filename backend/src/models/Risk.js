@@ -85,7 +85,7 @@ const riskSchema = new mongoose.Schema(
     },
     feedbackStatus: {
       type: String,
-      enum: ['unreviewed', 'false_positive', 'confirmed'],
+      enum: ['unreviewed', 'false_positive', 'confirmed', 'waived', 'disputed'],
       default: 'unreviewed',
       index: true
     },
@@ -97,6 +97,24 @@ const riskSchema = new mongoose.Schema(
     suppressionReason: {
       type: String,
       default: ''
+    },
+    waiver: {
+      isWaived: { type: Boolean, default: false, index: true },
+      waivedBy: { type: String, default: null },
+      waivedById: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+      waivedAt: { type: Date, default: null },
+      expiresAt: { type: Date, default: null, index: true },
+      reason: { type: String, default: '' },
+      auditLog: [
+        {
+          action: { type: String, enum: ['grant', 'revoke', 'expire'] },
+          userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+          userName: { type: String, default: '' },
+          timestamp: { type: Date, default: Date.now },
+          reason: { type: String, default: '' },
+          expiresAt: { type: Date, default: null }
+        }
+      ]
     }
   },
   {

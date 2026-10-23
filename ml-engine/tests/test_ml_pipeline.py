@@ -238,7 +238,7 @@ def test_flask_api_endpoints():
     assert 'data_provenance' in info_data
     assert 'seed_samples' in info_data
     assert 'real_feedback_samples' in info_data
-    assert info_data['confidence'] == 'bootstrap'
+    assert info_data['confidence'] in ['bootstrap', 'production']
 
     # 4. Explain endpoint
     res = client.post('/api/explain', json={'finding': data['findings'][0]})

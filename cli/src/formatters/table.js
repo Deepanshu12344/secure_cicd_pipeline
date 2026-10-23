@@ -54,7 +54,10 @@ export const formatTable = (report) => {
 
   lines.push('─────────────────────────────────────────────────────────────────────');
   lines.push(`${BOLD}Summary:${RESET}`);
-  lines.push(`   Risk Score: ${report.overall_risk_score}/10  (Threshold: ${report.gate.maxScore ?? 'N/A'}/10)`);
+  lines.push(`   Risk Score: ${report.overall_risk_score}/10 (${report.score_source || 'raw'})  (Threshold: ${report.gate.maxScore ?? 'N/A'}/10)`);
+  if (report.fallback_reason) {
+    lines.push(`   ${YELLOW}⚠ Score Fallback:${RESET} ${report.fallback_reason} (fell back to raw score)`);
+  }
   lines.push(`   Severity Counts: Critical: ${report.summary.critical_count} | High: ${report.summary.high_count} | Medium: ${report.summary.medium_count} | Low: ${report.summary.low_count}`);
   lines.push('');
 

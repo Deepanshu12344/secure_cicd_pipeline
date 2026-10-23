@@ -6,6 +6,7 @@ export const DEFAULT_CONFIG = {
   scan_scope: 'staged',
   fail_on: 'high',
   max_risk_score: 6.0,
+  max_adjusted_risk_score: 6.0,
   score_source: 'raw',
   mode: 'block',
   ml_engine_url: 'http://localhost:5001',
@@ -32,6 +33,9 @@ fail_on: high
 
 # Maximum allowed overall risk score on a 0-10 scale (blocks commit if score exceeds this)
 max_risk_score: 6.0
+
+# Maximum allowed ML-adjusted risk score on a 0-10 scale (defaults to max_risk_score)
+max_adjusted_risk_score: 6.0
 
 # Score source: 'raw' (default, deterministic severity sum) or 'adjusted' (ML probability-weighted)
 score_source: raw
@@ -234,6 +238,12 @@ export const validateConfig = (userConfig = {}) => {
   // Validate max_risk_score
   const scoreNum = Number(config.max_risk_score);
   config.max_risk_score = Number.isFinite(scoreNum) && scoreNum >= 0 ? scoreNum : 6.0;
+
+  // Validate max_adjusted_risk_score (defaults to max_risk_score)
+  const adjScoreNum = Number(config.max_adjusted_risk_score);
+  config.max_adjusted_risk_score = Number.isFinite(adjScoreNum) && adjScoreNum >= 0
+    ? adjScoreNum
+    : config.max_risk_score;
 
   // Validate score_source (default 'raw', option 'adjusted')
   if (!['raw', 'adjusted'].includes(String(config.score_source || '').toLowerCase())) {

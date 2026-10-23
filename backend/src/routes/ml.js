@@ -26,6 +26,24 @@ router.post('/retrain', protect, requireRole('admin', 'lead', 'security_reviewer
     const fpCount = realFeedback.filter((f) => f.label === 'false_positive').length
     const force = Boolean(req.body.force || req.body.force_promote)
 
+    if (force) {
+      if (process.env.ALLOW_FORCE_RETRAIN !== 'true') {
+        return res.status(403).json({
+          success: false,
+          error: 'Force retrain is disabled. ALLOW_FORCE_RETRAIN=true must be explicitly configured in the environment.'
+        })
+      }
+      if (req.user?.role !== 'admin') {
+        return res.status(403).json({
+          success: false,
+          error: 'Force retrain is restricted to administrators only.'
+        })
+      }
+      console.info(
+        `[AUDIT] Force retrain executed by user=${req.user?.username || req.user?.email || 'admin'} role=${req.user?.role} reason=${req.body?.reason || 'unspecified'}`
+      )
+    }
+
     if (!force && (confirmedCount < 3 || fpCount < 3)) {
       return res.status(400).json({
         success: false,
