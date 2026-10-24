@@ -32,12 +32,10 @@ const getFrontendBaseUrl = (req) => {
   return host ? `${proto}://${host}` : 'http://localhost:3000';
 };
 
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
 const profilePhotoStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  destination: (_req, _file, cb) => {
+    fs.mkdir(uploadsDir, { recursive: true }, (error) => cb(error, uploadsDir));
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname || '').toLowerCase() || '.jpg';
     const safeExt = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext) ? ext : '.jpg';
